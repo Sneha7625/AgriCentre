@@ -1,0 +1,1909 @@
+{
+  "model": {
+    "name": "AgriCentre Demand Forecasting Model",
+    "type": "Seasonal Correction XGBoost",
+    "forecast_horizon": "7 days / 1 week",
+    "forecast_target": "market arrivals / market activity proxy",
+    "latest_training_data": "2024-01-22",
+    "note": "Forecast represents market activity using observed mandi arrivals as a proxy, not direct consumer demand."
+  },
+  "crops": [
+    {
+      "crop": "Apple",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 32691.71,
+      "predicted_arrivals_tonnes": 30028.42,
+      "naive_arrivals_tonnes": 32691.71,
+      "predicted_change_tonnes": -2663.29,
+      "predicted_change_percent": -8.15,
+      "forecast_direction": "Decreasing",
+      "insight_type": "moderate_decrease",
+      "insight_message": "Apple market activity is expected to decrease moderately by 8.2% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 264596.65
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 161698.64
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 135137.34
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 53779.41
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 82973.8
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 66422.52
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 64905.44
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 42573.59
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 38514.93
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 48001.23
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 46525.18
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 32691.71
+        }
+      ]
+    },
+    {
+      "crop": "Arhar (Tur-Red Gram)",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 39683.92,
+      "predicted_arrivals_tonnes": 48088.28,
+      "naive_arrivals_tonnes": 39683.92,
+      "predicted_change_tonnes": 8404.36,
+      "predicted_change_percent": 21.18,
+      "forecast_direction": "Increasing",
+      "insight_type": "high_increase",
+      "insight_message": "Arhar (Tur-Red Gram) market activity is forecast to increase by approximately 21.2% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 3838.32
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 1626.63
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 4905.73
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 2114.17
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 3500.53
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 6541.9
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 16606.69
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 24704.64
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 30015.1
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 38153.86
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 42548.31
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 39683.92
+        }
+      ]
+    },
+    {
+      "crop": "Banana",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 16205.15,
+      "predicted_arrivals_tonnes": 19572.07,
+      "naive_arrivals_tonnes": 16205.15,
+      "predicted_change_tonnes": 3366.92,
+      "predicted_change_percent": 20.78,
+      "forecast_direction": "Increasing",
+      "insight_type": "high_increase",
+      "insight_message": "Banana market activity is forecast to increase by approximately 20.8% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 51081.02
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 61353.05
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 58901.69
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 39740.78
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 44261.27
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 41386.42
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 27671.19
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 22395.71
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 14733.31
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 15887.26
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 16702.7
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 16205.15
+        }
+      ]
+    },
+    {
+      "crop": "Bengal Gram",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 8896.06,
+      "predicted_arrivals_tonnes": 10561.73,
+      "naive_arrivals_tonnes": 8896.06,
+      "predicted_change_tonnes": 1665.67,
+      "predicted_change_percent": 18.72,
+      "forecast_direction": "Increasing",
+      "insight_type": "high_increase",
+      "insight_message": "Bengal Gram market activity is forecast to increase by approximately 18.7% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 14536.51
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 6752.62
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 15264.93
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 11938.04
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 11245.34
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 11569.31
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 9008.63
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 7318.75
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 9348.14
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 9688.31
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 11582.14
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 8896.06
+        }
+      ]
+    },
+    {
+      "crop": "Bitter Gourd",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 2464.53,
+      "predicted_arrivals_tonnes": 2705.86,
+      "naive_arrivals_tonnes": 2464.53,
+      "predicted_change_tonnes": 241.33,
+      "predicted_change_percent": 9.79,
+      "forecast_direction": "Increasing",
+      "insight_type": "moderate_increase",
+      "insight_message": "Bitter Gourd market activity is expected to increase moderately by 9.8% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 19758.17
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 4293.89
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 5476.97
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 4373.26
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 7369.61
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 4079.09
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 3864.03
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 2630.2
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 2759.21
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 3002.64
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 3298.89
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 2464.53
+        }
+      ]
+    },
+    {
+      "crop": "Bottle Gourd",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 6422.3,
+      "predicted_arrivals_tonnes": 6966.79,
+      "naive_arrivals_tonnes": 6422.3,
+      "predicted_change_tonnes": 544.49,
+      "predicted_change_percent": 8.48,
+      "forecast_direction": "Increasing",
+      "insight_type": "moderate_increase",
+      "insight_message": "Bottle Gourd market activity is expected to increase moderately by 8.5% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 29382.5
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 18825.78
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 12888.07
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 9954.46
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 10294.31
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 8860.7
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 7787.96
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 7062.32
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 7179.5
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 8022.98
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 7407.49
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 6422.3
+        }
+      ]
+    },
+    {
+      "crop": "Brinjal",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 9904.65,
+      "predicted_arrivals_tonnes": 10948.13,
+      "naive_arrivals_tonnes": 9904.65,
+      "predicted_change_tonnes": 1043.48,
+      "predicted_change_percent": 10.54,
+      "forecast_direction": "Increasing",
+      "insight_type": "high_increase",
+      "insight_message": "Brinjal market activity is forecast to increase by approximately 10.5% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 34794.66
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 12508.54
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 16239.51
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 14298.99
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 15038.82
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 13975.32
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 12440.65
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 10523.77
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 10986.38
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 11274.85
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 10863.02
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 9904.65
+        }
+      ]
+    },
+    {
+      "crop": "Cabbage",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 17762.97,
+      "predicted_arrivals_tonnes": 19175.77,
+      "naive_arrivals_tonnes": 17762.97,
+      "predicted_change_tonnes": 1412.8,
+      "predicted_change_percent": 7.95,
+      "forecast_direction": "Increasing",
+      "insight_type": "moderate_increase",
+      "insight_message": "Cabbage market activity is expected to increase moderately by 8.0% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 39328.77
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 16172.74
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 22220.75
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 20260.66
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 25870.83
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 25238.51
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 22955.6
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 20415.14
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 20725.39
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 21330.27
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 20601.36
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 17762.97
+        }
+      ]
+    },
+    {
+      "crop": "Carrot",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 22583.53,
+      "predicted_arrivals_tonnes": 22779.15,
+      "naive_arrivals_tonnes": 22583.53,
+      "predicted_change_tonnes": 195.62,
+      "predicted_change_percent": 0.87,
+      "forecast_direction": "Stable",
+      "insight_type": "stable",
+      "insight_message": "Carrot market activity is expected to remain relatively stable next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 7706.43
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 7295.58
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 10916.98
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 10932.93
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 20839.86
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 20835.24
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 20886.08
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 19819.21
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 20701.7
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 25891.63
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 23009.05
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 22583.53
+        }
+      ]
+    },
+    {
+      "crop": "Cauliflower",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 28038.95,
+      "predicted_arrivals_tonnes": 29272.67,
+      "naive_arrivals_tonnes": 28038.95,
+      "predicted_change_tonnes": 1233.72,
+      "predicted_change_percent": 4.4,
+      "forecast_direction": "Stable",
+      "insight_type": "stable",
+      "insight_message": "Cauliflower market activity is expected to remain relatively stable next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 26704.76
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 23165.17
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 33861.28
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 32261.92
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 39316.96
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 37095.3
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 32475.52
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 30410.55
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 31480.65
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 30288.88
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 29562.87
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 28038.95
+        }
+      ]
+    },
+    {
+      "crop": "Cotton",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 105508.96,
+      "predicted_arrivals_tonnes": 112259.41,
+      "naive_arrivals_tonnes": 105508.96,
+      "predicted_change_tonnes": 6750.45,
+      "predicted_change_percent": 6.4,
+      "forecast_direction": "Increasing",
+      "insight_type": "moderate_increase",
+      "insight_message": "Cotton market activity is expected to increase moderately by 6.4% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 110358.9
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 75267.86
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 169671.52
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 131357.46
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 164290.43
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 206272.18
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 202466.17
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 145448.97
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 115338.16
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 124820.89
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 103837.37
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 105508.96
+        }
+      ]
+    },
+    {
+      "crop": "Garlic",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 7536.37,
+      "predicted_arrivals_tonnes": 9447.33,
+      "naive_arrivals_tonnes": 7536.37,
+      "predicted_change_tonnes": 1910.96,
+      "predicted_change_percent": 25.36,
+      "forecast_direction": "Increasing",
+      "insight_type": "high_increase",
+      "insight_message": "Garlic market activity is forecast to increase by approximately 25.4% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 23110.5
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 7508.93
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 23978.79
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 23757.23
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 22116.93
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 21526.83
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 17825.69
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 15562.89
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 12249.99
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 14621.72
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 10466.75
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 7536.37
+        }
+      ]
+    },
+    {
+      "crop": "Ginger",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 7844.9,
+      "predicted_arrivals_tonnes": 9003.52,
+      "naive_arrivals_tonnes": 7844.9,
+      "predicted_change_tonnes": 1158.62,
+      "predicted_change_percent": 14.77,
+      "forecast_direction": "Increasing",
+      "insight_type": "high_increase",
+      "insight_message": "Ginger market activity is forecast to increase by approximately 14.8% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 8379.06
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 7180.29
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 9750.11
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 8012.49
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 10021.13
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 9750.6
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 9945.72
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 10027.9
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 11060.17
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 11032.03
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 9803.52
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 7844.9
+        }
+      ]
+    },
+    {
+      "crop": "Green Chilli",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 17819.74,
+      "predicted_arrivals_tonnes": 19372.29,
+      "naive_arrivals_tonnes": 17819.74,
+      "predicted_change_tonnes": 1552.55,
+      "predicted_change_percent": 8.71,
+      "forecast_direction": "Increasing",
+      "insight_type": "moderate_increase",
+      "insight_message": "Green Chilli market activity is expected to increase moderately by 8.7% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 34497.89
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 21285.55
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 25319.5
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 24404.41
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 25110.51
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 26771.67
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 25234.74
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 25341.81
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 26463.68
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 23480.15
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 21253.11
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 17819.74
+        }
+      ]
+    },
+    {
+      "crop": "Groundnut",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 36983.33,
+      "predicted_arrivals_tonnes": 39946.31,
+      "naive_arrivals_tonnes": 36983.33,
+      "predicted_change_tonnes": 2962.98,
+      "predicted_change_percent": 8.01,
+      "forecast_direction": "Increasing",
+      "insight_type": "moderate_increase",
+      "insight_message": "Groundnut market activity is expected to increase moderately by 8.0% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 61362.71
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 21988.97
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 80407.8
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 64331.62
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 50196.97
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 52619.84
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 41599.34
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 34513.96
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 36607.79
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 34020.7
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 28187.32
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 36983.33
+        }
+      ]
+    },
+    {
+      "crop": "Guava",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 4643.24,
+      "predicted_arrivals_tonnes": 4852.8,
+      "naive_arrivals_tonnes": 4643.24,
+      "predicted_change_tonnes": 209.56,
+      "predicted_change_percent": 4.51,
+      "forecast_direction": "Stable",
+      "insight_type": "stable",
+      "insight_message": "Guava market activity is expected to remain relatively stable next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 4289.53
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 4416.74
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 6087.49
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 5863.1
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 7304.7
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 7125.96
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 6907.61
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 6937.28
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 6875.7
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 7936.73
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 7139.86
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 4643.24
+        }
+      ]
+    },
+    {
+      "crop": "Maize",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 97940.91,
+      "predicted_arrivals_tonnes": 92316.41,
+      "naive_arrivals_tonnes": 97940.91,
+      "predicted_change_tonnes": -5624.5,
+      "predicted_change_percent": -5.74,
+      "forecast_direction": "Decreasing",
+      "insight_type": "moderate_decrease",
+      "insight_message": "Maize market activity is expected to decrease moderately by 5.7% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 303397.24
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 108474.37
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 352208.09
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 263412.35
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 242891.18
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 290548.49
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 224068.35
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 175984.94
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 114264.8
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 134877.5
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 105817.29
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 97940.91
+        }
+      ]
+    },
+    {
+      "crop": "Mango",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 92.55,
+      "predicted_arrivals_tonnes": 223.85,
+      "naive_arrivals_tonnes": 92.55,
+      "predicted_change_tonnes": 131.3,
+      "predicted_change_percent": 141.87,
+      "forecast_direction": "Increasing",
+      "insight_type": "high_increase",
+      "insight_message": "Mango market activity is forecast to increase by approximately 141.9% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 54.24
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 33.73
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 61.7
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 61.4
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 27.4
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 38.9
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 44.18
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 31.45
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 18.35
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 643.37
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 72.3
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 92.55
+        }
+      ]
+    },
+    {
+      "crop": "Mustard",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 18844.91,
+      "predicted_arrivals_tonnes": 21273.59,
+      "naive_arrivals_tonnes": 18844.91,
+      "predicted_change_tonnes": 2428.68,
+      "predicted_change_percent": 12.89,
+      "forecast_direction": "Increasing",
+      "insight_type": "high_increase",
+      "insight_message": "Mustard market activity is forecast to increase by approximately 12.9% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 24610.65
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 19288.54
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 32259.46
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 30156.97
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 29349.88
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 30291.25
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 22534.38
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 20377.22
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 18581.04
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 25121.71
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 19715.72
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 18844.91
+        }
+      ]
+    },
+    {
+      "crop": "Onion",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 413158.11,
+      "predicted_arrivals_tonnes": 397413.94,
+      "naive_arrivals_tonnes": 413158.11,
+      "predicted_change_tonnes": -15744.17,
+      "predicted_change_percent": -3.81,
+      "forecast_direction": "Stable",
+      "insight_type": "stable",
+      "insight_message": "Onion market activity is expected to remain relatively stable next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 304228.67
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 180228.09
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 442734.04
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 365879.94
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 428906.22
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 456579.15
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 506257.84
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 370550.03
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 443643.11
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 447306.27
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 435849.25
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 413158.11
+        }
+      ]
+    },
+    {
+      "crop": "Orange",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 8064.53,
+      "predicted_arrivals_tonnes": 8483.78,
+      "naive_arrivals_tonnes": 8064.53,
+      "predicted_change_tonnes": 419.25,
+      "predicted_change_percent": 5.2,
+      "forecast_direction": "Increasing",
+      "insight_type": "moderate_increase",
+      "insight_message": "Orange market activity is expected to increase moderately by 5.2% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 11551.77
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 8709.96
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 12277.63
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 8929.22
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 8679.55
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 10625.26
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 8244.33
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 7749.21
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 5936.96
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 8557.96
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 7755.49
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 8064.53
+        }
+      ]
+    },
+    {
+      "crop": "Papaya",
+      "last_observed_week": "2023-05-22",
+      "forecast_week": "2023-05-29",
+      "last_observed_arrivals_tonnes": 20166.79,
+      "predicted_arrivals_tonnes": 22178.24,
+      "naive_arrivals_tonnes": 20166.79,
+      "predicted_change_tonnes": 2011.45,
+      "predicted_change_percent": 9.97,
+      "forecast_direction": "Increasing",
+      "insight_type": "moderate_increase",
+      "insight_message": "Papaya market activity is expected to increase moderately by 10.0% next week.",
+      "history": [
+        {
+          "week": "2021-05-24",
+          "arrivals_tonnes": 4259.33
+        },
+        {
+          "week": "2021-05-31",
+          "arrivals_tonnes": 735.72
+        },
+        {
+          "week": "2022-04-25",
+          "arrivals_tonnes": 321.25
+        },
+        {
+          "week": "2022-05-02",
+          "arrivals_tonnes": 8028.68
+        },
+        {
+          "week": "2022-05-09",
+          "arrivals_tonnes": 9061.6
+        },
+        {
+          "week": "2022-05-16",
+          "arrivals_tonnes": 9307.75
+        },
+        {
+          "week": "2022-05-23",
+          "arrivals_tonnes": 8925.53
+        },
+        {
+          "week": "2022-05-30",
+          "arrivals_tonnes": 2299.49
+        },
+        {
+          "week": "2023-05-01",
+          "arrivals_tonnes": 13957.81
+        },
+        {
+          "week": "2023-05-08",
+          "arrivals_tonnes": 11887.3
+        },
+        {
+          "week": "2023-05-15",
+          "arrivals_tonnes": 9746.27
+        },
+        {
+          "week": "2023-05-22",
+          "arrivals_tonnes": 20166.79
+        }
+      ]
+    },
+    {
+      "crop": "Pomegranate",
+      "last_observed_week": "2023-05-22",
+      "forecast_week": "2023-05-29",
+      "last_observed_arrivals_tonnes": 10536.81,
+      "predicted_arrivals_tonnes": 18805.41,
+      "naive_arrivals_tonnes": 10536.81,
+      "predicted_change_tonnes": 8268.6,
+      "predicted_change_percent": 78.47,
+      "forecast_direction": "Increasing",
+      "insight_type": "high_increase",
+      "insight_message": "Pomegranate market activity is forecast to increase by approximately 78.5% next week.",
+      "history": [
+        {
+          "week": "2021-05-24",
+          "arrivals_tonnes": 5860.73
+        },
+        {
+          "week": "2021-05-31",
+          "arrivals_tonnes": 1197.68
+        },
+        {
+          "week": "2022-04-25",
+          "arrivals_tonnes": 192.83
+        },
+        {
+          "week": "2022-05-02",
+          "arrivals_tonnes": 4961.68
+        },
+        {
+          "week": "2022-05-09",
+          "arrivals_tonnes": 6686.86
+        },
+        {
+          "week": "2022-05-16",
+          "arrivals_tonnes": 6796.79
+        },
+        {
+          "week": "2022-05-23",
+          "arrivals_tonnes": 10207.18
+        },
+        {
+          "week": "2022-05-30",
+          "arrivals_tonnes": 2112.69
+        },
+        {
+          "week": "2023-05-01",
+          "arrivals_tonnes": 10250.67
+        },
+        {
+          "week": "2023-05-08",
+          "arrivals_tonnes": 12155.48
+        },
+        {
+          "week": "2023-05-15",
+          "arrivals_tonnes": 12046.2
+        },
+        {
+          "week": "2023-05-22",
+          "arrivals_tonnes": 10536.81
+        }
+      ]
+    },
+    {
+      "crop": "Potato",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 328131.48,
+      "predicted_arrivals_tonnes": 339554.19,
+      "naive_arrivals_tonnes": 328131.48,
+      "predicted_change_tonnes": 11422.71,
+      "predicted_change_percent": 3.48,
+      "forecast_direction": "Stable",
+      "insight_type": "stable",
+      "insight_message": "Potato market activity is expected to remain relatively stable next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 306029.2
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 271152.21
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 322901.89
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 342045.24
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 345888.16
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 375132.8
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 339202.83
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 322191.57
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 354380.79
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 384270.93
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 347951.58
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 328131.48
+        }
+      ]
+    },
+    {
+      "crop": "Rice",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 110897.73,
+      "predicted_arrivals_tonnes": 114310.7,
+      "naive_arrivals_tonnes": 110897.73,
+      "predicted_change_tonnes": 3412.97,
+      "predicted_change_percent": 3.08,
+      "forecast_direction": "Stable",
+      "insight_type": "stable",
+      "insight_message": "Rice market activity is expected to remain relatively stable next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 125397.28
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 96445.03
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 140936.73
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 167010.77
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 154046.12
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 168804.57
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 124768.03
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 124825.39
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 119229.39
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 109317.46
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 105715.39
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 110897.73
+        }
+      ]
+    },
+    {
+      "crop": "Soybean",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 102740.49,
+      "predicted_arrivals_tonnes": 96878.13,
+      "naive_arrivals_tonnes": 102740.49,
+      "predicted_change_tonnes": -5862.36,
+      "predicted_change_percent": -5.71,
+      "forecast_direction": "Decreasing",
+      "insight_type": "moderate_decrease",
+      "insight_message": "Soybean market activity is expected to decrease moderately by 5.7% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 261032.87
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 81017.9
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 297147.73
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 197808.49
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 175494.03
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 166643.24
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 142965.39
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 141492.24
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 93283.96
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 171053.07
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 175564.39
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 102740.49
+        }
+      ]
+    },
+    {
+      "crop": "Spinach",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 35457.26,
+      "predicted_arrivals_tonnes": 35651.22,
+      "naive_arrivals_tonnes": 35457.26,
+      "predicted_change_tonnes": 193.96,
+      "predicted_change_percent": 0.55,
+      "forecast_direction": "Stable",
+      "insight_type": "stable",
+      "insight_message": "Spinach market activity is expected to remain relatively stable next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 33188.07
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 27002.47
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 36185.88
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 26338.26
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 39508.22
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 36914.47
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 31873.11
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 31917.22
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 33303.53
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 34404.79
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 36981.25
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 35457.26
+        }
+      ]
+    },
+    {
+      "crop": "Sugarcane",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 300.0,
+      "predicted_arrivals_tonnes": 239.64,
+      "naive_arrivals_tonnes": 300.0,
+      "predicted_change_tonnes": -60.36,
+      "predicted_change_percent": -20.12,
+      "forecast_direction": "Decreasing",
+      "insight_type": "high_decrease",
+      "insight_message": "Sugarcane market activity is forecast to decrease by approximately 20.1% next week.",
+      "history": [
+        {
+          "week": "2023-05-08",
+          "arrivals_tonnes": 41.0
+        },
+        {
+          "week": "2023-05-15",
+          "arrivals_tonnes": 68.0
+        },
+        {
+          "week": "2023-05-22",
+          "arrivals_tonnes": 14.5
+        },
+        {
+          "week": "2023-05-29",
+          "arrivals_tonnes": 34.5
+        },
+        {
+          "week": "2023-06-26",
+          "arrivals_tonnes": 15.0
+        },
+        {
+          "week": "2023-07-31",
+          "arrivals_tonnes": 21.5
+        },
+        {
+          "week": "2023-09-25",
+          "arrivals_tonnes": 180.0
+        },
+        {
+          "week": "2023-10-23",
+          "arrivals_tonnes": 17.0
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 18.0
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 130.0
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 5872.0
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 300.0
+        }
+      ]
+    },
+    {
+      "crop": "Tomato",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 47865.61,
+      "predicted_arrivals_tonnes": 50663.53,
+      "naive_arrivals_tonnes": 47865.61,
+      "predicted_change_tonnes": 2797.92,
+      "predicted_change_percent": 5.85,
+      "forecast_direction": "Increasing",
+      "insight_type": "moderate_increase",
+      "insight_message": "Tomato market activity is expected to increase moderately by 5.8% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 67971.26
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 63012.14
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 66718.54
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 56412.54
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 64029.19
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 70990.24
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 63174.19
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 57613.55
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 56846.4
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 55834.89
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 50768.62
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 47865.61
+        }
+      ]
+    },
+    {
+      "crop": "Wheat",
+      "last_observed_week": "2024-01-22",
+      "forecast_week": "2024-01-29",
+      "last_observed_arrivals_tonnes": 109993.31,
+      "predicted_arrivals_tonnes": 120114.27,
+      "naive_arrivals_tonnes": 109993.31,
+      "predicted_change_tonnes": 10120.96,
+      "predicted_change_percent": 9.2,
+      "forecast_direction": "Increasing",
+      "insight_type": "moderate_increase",
+      "insight_message": "Wheat market activity is expected to increase moderately by 9.2% next week.",
+      "history": [
+        {
+          "week": "2023-11-06",
+          "arrivals_tonnes": 201320.28
+        },
+        {
+          "week": "2023-11-13",
+          "arrivals_tonnes": 97751.3
+        },
+        {
+          "week": "2023-11-20",
+          "arrivals_tonnes": 262090.34
+        },
+        {
+          "week": "2023-11-27",
+          "arrivals_tonnes": 198199.56
+        },
+        {
+          "week": "2023-12-04",
+          "arrivals_tonnes": 187818.02
+        },
+        {
+          "week": "2023-12-11",
+          "arrivals_tonnes": 174220.13
+        },
+        {
+          "week": "2023-12-18",
+          "arrivals_tonnes": 168250.25
+        },
+        {
+          "week": "2023-12-25",
+          "arrivals_tonnes": 121829.28
+        },
+        {
+          "week": "2024-01-01",
+          "arrivals_tonnes": 112861.91
+        },
+        {
+          "week": "2024-01-08",
+          "arrivals_tonnes": 144827.69
+        },
+        {
+          "week": "2024-01-15",
+          "arrivals_tonnes": 145323.77
+        },
+        {
+          "week": "2024-01-22",
+          "arrivals_tonnes": 109993.31
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_crops": 30,
+    "increasing": 19,
+    "stable": 7,
+    "decreasing": 4,
+    "latest_overall_data": "2024-01-22"
+  }
+}

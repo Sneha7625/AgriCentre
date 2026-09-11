@@ -1,0 +1,18 @@
+{
+  "model_name": "AgriCentre Demand Forecasting Model",
+  "model_type": "Seasonal Correction XGBoost",
+  "status": "FINAL",
+  "forecast_horizon": "7 days / 1 week",
+  "forecast_target": "next_week_market_arrivals",
+  "target_interpretation": "market activity / arrivals proxy, not direct consumer demand",
+  "baseline": "Naive last-week arrivals",
+  "naive_wape_percent": 23.09951548409602,
+  "final_wape_percent": 20.795254233733594,
+  "improvement_over_naive_percent": 9.975366158432658,
+  "best_iteration": 201,
+  "model_file": "/content/drive/MyDrive/AgriCentre_ML/Demand_Forecasting/ml_models/demand_forecasting_model_final.pkl",
+  "scaling_file": "/content/drive/MyDrive/AgriCentre_ML/Demand_Forecasting/processed/crop_scaling_config.json",
+  "training_dataset": "/content/drive/MyDrive/AgriCentre_ML/Demand_Forecasting/processed/final_30_crop_training.csv",
+  "seasonal_dataset": "/content/drive/MyDrive/AgriCentre_ML/Demand_Forecasting/processed/final_30_crop_weekly_seasonal.csv",
+  "supported_crops": 30
+}

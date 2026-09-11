@@ -1,0 +1,22 @@
+{
+  "overall": {
+    "MAE_tonnes": 27551.21137481559,
+    "RMSE_tonnes": 79217.63087426084,
+    "WAPE_percent": 37.46457687790613,
+    "sMAPE_percent": 48.45090393337666
+  },
+  "best_iteration": 799,
+  "train_period": [
+    "2001-05-14",
+    "2017-03-27"
+  ],
+  "validation_period": [
+    "2017-04-03",
+    "2020-08-24"
+  ],
+  "test_period": [
+    "2020-08-31",
+    "2024-01-22"
+  ],
+  "forecast_horizon": "1 week / 7 days"
+}
