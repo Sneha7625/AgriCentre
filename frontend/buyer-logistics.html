@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriCentre – Delivery Tracking</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<style>
+:root{
+    --brand:#2f9e5c;
+    --brand-dark:#1f7a44;
+    --brand-light:#5cc98a;
+    --bg:#0d0e10;
+    --bg2:#14161a;
+    --surface:#1c1f25;
+    --surface2:#22262e;
+    --border:#2e3340;
+    --text:#eef1f6;
+    --muted:#8f99ab;
+    --light:#c5cad4;
+    --success:#10b981;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    --info:#3b82f6;
+    --sidebar-w:258px;
+    --nav-h:64px;
+    --radius:10px;
+    --radius-lg:16px;
+    --shadow:0 1px 3px rgba(0,0,0,.20),0 4px 16px rgba(0,0,0,.18);
+    --transition:.22s cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:inherit;text-decoration:none}
+button,input{font-family:inherit}
+
+.navbar{
+    position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:1000;
+    display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--bg2);
+    box-shadow:0 2px 12px rgba(0,0,0,.30)
+}
+.nav-toggle{padding:6px 8px;border:none;border-radius:6px;background:transparent;color:#fff;font-size:20px;cursor:pointer}
+.nav-toggle:hover{background:rgba(255,255,255,.1)}
+.nav-brand{display:flex;align-items:center;gap:10px;font-family:Rajdhani,sans-serif}
+.logo{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:var(--brand);font-size:20px}
+.brand-text{display:flex;flex-direction:column}
+.brand-name{color:#fff;font-size:25px;font-weight:700;line-height:1}
+.brand-name span{color:var(--brand)}
+.brand-subtitle{margin-top:3px;color:#9aa7bb;font-family:Inter,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:4px;margin-left:auto}
+.nav-links a{padding:9px 11px;border-radius:7px;color:#9aa7bb;font-size:13px}
+.nav-links a:hover,.nav-links a.active{background:rgba(255,255,255,.06);color:#fff}
+.nav-right{display:flex;gap:7px;margin-left:8px}
+.nav-btn{position:relative;width:38px;height:38px;border:none;border-radius:8px;background:var(--surface2);color:#fff;cursor:pointer}
+.nav-badge{position:absolute;top:-3px;right:-3px;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--danger);font-size:9px;font-weight:700}
+
+.layout{display:flex;min-height:100vh;padding-top:var(--nav-h)}
+.sidebar{
+    position:fixed;top:var(--nav-h);bottom:0;left:0;width:var(--sidebar-w);padding:20px 14px;
+    overflow-y:auto;background:var(--bg2);border-right:1px solid var(--border);
+    transition:transform var(--transition),width var(--transition);z-index:900
+}
+.sidebar.collapsed{width:76px}
+.sidebar.collapsed .sb-label,.sidebar.collapsed .sl{display:none}
+.sidebar.collapsed .sb-link{justify-content:center}
+.sb-section{margin-bottom:20px}
+.sb-label{padding:0 12px 8px;color:#68758a;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.sb-link{display:flex;align-items:center;gap:11px;margin-bottom:3px;padding:10px 12px;border-radius:8px;color:#9aa7bb;font-size:12px}
+.sb-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-link.active{background:rgba(47,158,92,.18);color:#fff}
+.si{width:20px;text-align:center;font-size:16px}
+
+.main{
+    width:calc(100% - var(--sidebar-w));min-height:calc(100vh - var(--nav-h));
+    margin-left:var(--sidebar-w);padding:34px 38px 55px;
+    transition:margin-left var(--transition),width var(--transition)
+}
+.main.expanded{width:calc(100% - 76px);margin-left:76px}
+
+.page-header{margin-bottom:25px}
+.page-eyebrow{margin-bottom:6px;color:var(--brand-light);font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.page-title{color:#fff;font-family:Rajdhani,sans-serif;font-size:36px;font-weight:700;line-height:1.15}
+.page-sub{max-width:850px;margin-top:7px;color:var(--muted);font-size:13px;line-height:1.65}
+
+.section{margin-bottom:20px;overflow:hidden;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:19px 21px;border-bottom:1px solid var(--border)}
+.section-head h2{color:#fff;font-family:Rajdhani,sans-serif;font-size:19px}
+.section-head p{margin-top:4px;color:var(--muted);font-size:11px}
+.body{padding:21px}
+
+.top-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+.summary-card,.status-card,.info-card,.timeline-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px
+}
+.summary-top{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:17px}
+.order-id{font-family:Rajdhani,sans-serif;font-size:23px;font-weight:700;color:#fff}
+.order-date{margin-top:4px;color:var(--muted);font-size:10px}
+.status-badge{
+    padding:6px 10px;border-radius:20px;font-size:9px;font-weight:800;text-transform:uppercase;white-space:nowrap
+}
+.status-pending{background:rgba(245,158,11,.14);color:#f7c15b}
+.status-accepted,.status-confirmed,.status-processing{background:rgba(59,130,246,.13);color:#86b9ff}
+.status-shipped,.status-in-transit{background:rgba(47,158,92,.14);color:#7be0a0}
+.status-delivered,.status-completed{background:rgba(16,185,129,.15);color:#6ee7a1}
+.status-declined,.status-cancelled{background:rgba(239,68,68,.14);color:#ff8b8b}
+
+.summary-product{display:flex;gap:14px;align-items:center}
+.product-icon{width:50px;height:50px;border-radius:12px;background:rgba(47,158,92,.13);display:flex;align-items:center;justify-content:center;font-size:25px}
+.summary-product strong{display:block;color:#fff;font-size:15px}
+.summary-product span{display:block;margin-top:4px;color:var(--muted);font-size:11px}
+.summary-rows{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.summary-row{display:flex;flex-direction:column;gap:4px}
+.summary-row span{color:#68758a;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px}
+.summary-row strong{color:#fff;font-size:12px}
+
+.current-status{height:100%;display:flex;flex-direction:column;justify-content:center}
+.status-label{color:var(--brand-light);font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+.current-status h3{margin-top:8px;color:#fff;font-family:Rajdhani,sans-serif;font-size:27px}
+.current-status p{margin-top:5px;color:var(--muted);font-size:11px;line-height:1.6}
+.eta-box{margin-top:17px;padding:12px;border-radius:9px;background:rgba(47,158,92,.08);border:1px solid rgba(47,158,92,.2)}
+.eta-box span{color:var(--muted);font-size:9px;text-transform:uppercase;font-weight:700}
+.eta-box strong{display:block;margin-top:3px;color:#fff;font-size:14px}
+
+.progress-wrap{padding:4px 3px 0}
+.progress-track{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:0}
+.progress-line{position:absolute;top:17px;left:8%;right:8%;height:3px;background:#343a44;z-index:0}
+.progress-fill{position:absolute;top:17px;left:8%;height:3px;background:var(--brand);z-index:1;transition:width .3s ease}
+.stage{position:relative;z-index:2;text-align:center}
+.stage-dot{width:34px;height:34px;margin:0 auto 8px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#303640;color:#7e8795;border:2px solid #3c434f;font-size:13px}
+.stage.completed .stage-dot{background:var(--brand);border-color:var(--brand);color:#fff}
+.stage.current .stage-dot{background:#123e27;border-color:var(--brand-light);color:#fff;box-shadow:0 0 0 5px rgba(47,158,92,.12)}
+.stage span{display:block;color:#778194;font-size:9px;font-weight:700}
+.stage.completed span,.stage.current span{color:#dce3eb}
+
+.details-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.info-card .icon{font-size:20px;margin-bottom:10px}
+.info-card .label{color:#68758a;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px}
+.info-card strong{display:block;margin-top:5px;color:#fff;font-size:13px}
+.info-card small{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.5}
+
+.timeline{position:relative;margin-top:4px}
+.timeline-item{position:relative;display:flex;gap:14px;padding-bottom:21px}
+.timeline-item:last-child{padding-bottom:0}
+.timeline-item:not(:last-child)::after{content:"";position:absolute;left:13px;top:29px;bottom:0;width:2px;background:#333943}
+.timeline-dot{position:relative;z-index:2;width:28px;height:28px;min-width:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#303640;color:#7f8997;font-size:11px}
+.timeline-item.done .timeline-dot{background:var(--brand);color:#fff}
+.timeline-item.current .timeline-dot{background:#123e27;color:#fff;box-shadow:0 0 0 5px rgba(47,158,92,.12)}
+.timeline-content strong{display:block;color:#fff;font-size:12px}
+.timeline-content span{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.5}
+.timeline-current{display:inline-block!important;margin-top:6px!important;padding:3px 7px;border-radius:20px;background:rgba(47,158,92,.13);color:#7be0a0!important;font-size:8px!important;font-weight:800}
+
+.map{height:410px;width:100%;overflow:hidden;border-radius:12px;border:1px solid var(--border)}
+.map-note{margin-top:9px;color:var(--muted);font-size:10px}
+.map-placeholder{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:12px;padding:20px;background:#181b20}
+
+.tracking-transit-marker{
+    width:25px;
+    height:25px;
+    border-radius:50%;
+    background:#fff;
+    border:3px solid #333;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:800;
+    color:#222;
+    box-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+
+.route-journey{
+    margin-top:14px;
+    padding:16px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--surface);
+}
+
+.route-journey-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.route-journey-head strong{
+    color:#fff;
+    font-family:Rajdhani,sans-serif;
+    font-size:17px;
+}
+
+.route-journey-head span{
+    color:var(--muted);
+    font-size:10px;
+}
+
+.journey-list{
+    position:relative;
+    margin-left:5px;
+}
+
+.journey-item{
+    position:relative;
+    display:flex;
+    gap:12px;
+    padding-bottom:14px;
+}
+
+.journey-item:last-child{padding-bottom:0}
+
+.journey-item:not(:last-child)::after{
+    content:"";
+    position:absolute;
+    left:11px;
+    top:25px;
+    bottom:0;
+    width:2px;
+    background:#343a44;
+}
+
+.journey-dot{
+    position:relative;
+    z-index:2;
+    width:24px;
+    height:24px;
+    min-width:24px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#303640;
+    border:2px solid #3c434f;
+    font-size:10px;
+}
+
+.journey-item.start .journey-dot,
+.journey-item.destination .journey-dot{
+    background:var(--brand);
+    border-color:var(--brand);
+}
+
+.journey-content strong{
+    display:block;
+    color:#fff;
+    font-size:11px;
+}
+
+.journey-content span{
+    display:block;
+    margin-top:3px;
+    color:var(--muted);
+    font-size:9px;
+}
+
+.actions{display:flex;justify-content:flex-end;gap:9px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 15px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer}
+.btn-primary{border:1px solid var(--brand);background:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand-dark)}
+.btn-secondary{border:1px solid var(--border);background:var(--surface2);color:var(--light)}
+.btn-secondary:hover{background:#2b3038}
+
+.empty{padding:35px 20px;text-align:center;color:var(--muted);font-size:12px}
+.error{padding:14px;border-radius:9px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ff9b9b;font-size:11px}
+
+footer{margin-top:30px;padding:42px 40px 0;background:var(--bg2);color:#8fa0b8}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:36px;padding-bottom:30px;border-bottom:1px solid rgba(255,255,255,.08)}
+.ft-brand{margin-bottom:8px;color:#fff;font-family:Rajdhani,sans-serif;font-size:22px;font-weight:700}
+.ft-brand span{color:var(--brand)}
+.ft-desc{max-width:290px;color:#8fa0b8;font-size:11px;line-height:1.7}
+.ft-col h4{margin-bottom:12px;color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:.8px}
+.ft-col a{display:block;margin-bottom:8px;color:#8fa0b8;font-size:11px}
+.ft-col a:hover{color:var(--brand-light)}
+.sub-box{display:flex;flex-direction:column;gap:9px}
+.sub-box p{color:#8fa0b8;font-size:11px}
+.sub-form{display:flex;gap:7px}
+.sub-input{flex:1;min-width:0;padding:8px 10px;border:1px solid rgba(255,255,255,.12);border-radius:7px;outline:none;background:rgba(255,255,255,.05);color:#fff;font-size:11px}
+.sub-btn{padding:8px 12px;border:none;border-radius:7px;background:var(--brand);color:#fff;cursor:pointer;font-size:10px;font-weight:600}
+.ft-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;color:#68758a;font-size:9px;flex-wrap:wrap}
+.ft-links{display:flex;gap:14px}
+
+@media(max-width:1100px){
+    .top-grid{grid-template-columns:1fr}
+    .details-grid{grid-template-columns:1fr 1fr}
+    .ft-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+    .sidebar{transform:translateX(-100%);width:var(--sidebar-w)}
+    .sidebar.open{transform:translateX(0)}
+    .sidebar.collapsed{width:var(--sidebar-w)}
+    .sidebar.collapsed .sb-label,.sidebar.collapsed .sl{display:block}
+    .sidebar.collapsed .sb-link{justify-content:flex-start}
+    .main,.main.expanded{width:100%;margin-left:0;padding:27px 18px 45px}
+    .nav-links{display:none}
+    .page-title{font-size:31px}
+    .details-grid{grid-template-columns:1fr}
+    .progress-track{grid-template-columns:repeat(3,1fr);row-gap:18px}
+    .progress-line,.progress-fill{display:none}
+    .ft-grid{grid-template-columns:1fr}
+    footer{padding:35px 20px 0}
+}
+@media(max-width:520px){
+    .summary-rows{grid-template-columns:1fr}
+    .progress-track{grid-template-columns:repeat(2,1fr)}
+    .actions{flex-direction:column}
+    .btn{width:100%}
+}
+</style>
+</head>
+
+<body>
+<nav class="navbar">
+    <button class="nav-toggle" id="sidebarToggle" type="button">☰</button>
+
+    <a href="index.html" class="nav-brand">
+        <div class="logo">🚜</div>
+        <div class="brand-text">
+            <span class="brand-name">Agri<span>Centre</span></span>
+            <span class="brand-subtitle">Smart India Hackathon 2026</span>
+        </div>
+    </a>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="features.html">Features</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+        <a href="profile.html">Profile</a>
+        <a href="#" onclick="logout();return false;">Logout</a>
+    </div>
+
+    <div class="nav-right">
+        <button class="nav-btn" onclick="location.href='alerts.html'" title="Alerts">🔔<span class="nav-badge">3</span></button>
+        <button class="nav-btn" onclick="location.href='ai-assistant.html'" title="AI Assistant">🤖</button>
+    </div>
+</nav>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+    <div class="sb-section">
+        <div class="sb-label">Main</div>
+        <a href="dashboard.html" class="sb-link"><span class="si">📊</span><span class="sl">Dashboard</span></a>
+    </div>
+
+    <div class="sb-section">
+        <div class="sb-label">Marketplace</div>
+        <a href="marketplace.html" class="sb-link"><span class="si">🛒</span><span class="sl">Marketplace</span></a>
+        <a href="favorites.html" class="sb-link"><span class="si">❤️</span><span class="sl">Favorites</span></a>
+        <a href="cart.html" class="sb-link"><span class="si">🛍️</span><span class="sl">Cart</span></a>
+    </div>
+
+    <div class="sb-section">
+        <div class="sb-label">Orders & Delivery</div>
+        <a href="buyer-orders.html" class="sb-link"><span class="si">📦</span><span class="sl">My Orders</span></a>
+        <a href="buyer-logistics.html" class="sb-link active"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a>
+        <a href="meeting.html" class="sb-link"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a>
+    </div>
+
+    <div class="sb-section">
+        <div class="sb-label">Account</div>
+        <a href="profile.html" class="sb-link"><span class="si">👤</span><span class="sl">Profile</span></a>
+        <a href="#" class="sb-link" onclick="logout();return false;"><span class="si">🚪</span><span class="sl">Logout</span></a>
+    </div>
+</aside>
+
+<main class="main" id="mainArea">
+    <div class="page-header">
+        <div class="page-eyebrow">🚚 Buyer Portal · Logistics</div>
+        <div class="page-title">Delivery Tracking</div>
+        <div class="page-sub">
+            Track the status, planned journey, delivery information and latest available shipment details for your order.
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="section-head">
+            <div>
+                <h2>Shipment</h2>
+                <p id="pageDescription">Loading your order details...</p>
+            </div>
+            <div class="actions">
+                <button class="btn btn-secondary" type="button" onclick="goBack()">← My Orders</button>
+                <button class="btn btn-primary" type="button" id="refreshBtn" onclick="loadPage()">↻ Refresh</button>
+            </div>
+        </div>
+
+        <div class="body" id="mainContent">
+            <div class="empty">Loading delivery information...</div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="ft-grid">
+            <div>
+                <div class="ft-brand">Agri<span>Centre</span></div>
+                <p class="ft-desc">
+                    A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers —
+                    eliminating middlemen, ensuring fair prices and fresher produce.
+                    Smart India Hackathon 2026 · Problem Statement ID 26033.
+                </p>
+            </div>
+
+            <div class="ft-col">
+                <h4>Platform</h4>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="marketplace.html">Marketplace</a>
+                <a href="favorites.html">Favorites</a>
+                <a href="buyer-orders.html">My Orders</a>
+            </div>
+
+            <div class="ft-col">
+                <h4>Buyer Tools</h4>
+                <a href="buyer-logistics.html">Delivery Tracking</a>
+                <a href="meeting.html">Meeting Centre</a>
+                <a href="ai-assistant.html">AI Assistant</a>
+            </div>
+
+            <div class="ft-col">
+                <h4>Stay Updated</h4>
+                <div class="sub-box">
+                    <p>Get alerts and platform updates via email.</p>
+                    <form class="sub-form" id="subForm">
+                        <input class="sub-input" id="subEmail" type="email" placeholder="Your email address" required>
+                        <button class="sub-btn" type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="ft-bottom">
+            <span>© 2026 AgriCentre · Smart India Hackathon 2026</span>
+            <div class="ft-links">
+                <a href="privacy.html">Privacy &amp; Terms</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </footer>
+</main>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+const API = "http://127.0.0.1:5000/api";
+
+let currentOrder = null;
+let currentDelivery = null;
+let trackingMap = null;
+
+const stages = [
+    { key: "PENDING", label: "Order Placed", icon: "📝" },
+    { key: "ACCEPTED", label: "Confirmed", icon: "✓" },
+    { key: "PROCESSING", label: "Processing", icon: "⚙️" },
+    { key: "SHIPPED", label: "Shipped", icon: "📦" },
+    { key: "IN_TRANSIT", label: "In Transit", icon: "🚚" },
+    { key: "DELIVERED", label: "Delivered", icon: "📍" }
+];
+
+function getToken(){
+    return localStorage.getItem("token");
+}
+
+function authHeaders(){
+    const token = getToken();
+    return token ? { "Authorization": "Bearer " + token } : {};
+}
+
+function logout(){
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    location.href = "login.html";
+}
+
+async function apiGet(path){
+    const response = await fetch(API + path, {
+        method: "GET",
+        headers: authHeaders()
+    });
+
+    let data = {};
+    try { data = await response.json(); } catch {}
+
+    if(!response.ok){
+        throw new Error(data.message || `HTTP ${response.status}`);
+    }
+
+    return data;
+}
+
+async function apiPost(path, body){
+    const response = await fetch(API + path, {
+        method: "POST",
+        headers: {
+            ...authHeaders(),
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+    });
+
+    let data = {};
+    try { data = await response.json(); } catch {}
+
+    if(!response.ok){
+        throw new Error(data.message || `HTTP ${response.status}`);
+    }
+
+    return data;
+}
+
+function escapeHtml(value){
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+function getOrderId(){
+    const params = new URLSearchParams(location.search);
+    return params.get("order") || params.get("order_id") || "";
+}
+
+function formatDate(value){
+    if(!value) return "—";
+
+    try{
+        const date = new Date(value);
+        if(Number.isNaN(date.getTime())) return String(value);
+
+        return date.toLocaleString("en-IN", {
+            day:"2-digit",
+            month:"short",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        });
+    }catch{
+        return String(value);
+    }
+}
+
+function money(value){
+    const number = Number(value);
+    if(!Number.isFinite(number)) return "—";
+    return "₹" + number.toLocaleString("en-IN", {
+        maximumFractionDigits: 2
+    });
+}
+
+function normalizeStatus(status){
+    const value = String(status || "PENDING").trim().toUpperCase();
+
+    if(value === "CONFIRMED") return "ACCEPTED";
+    if(value === "COMPLETED") return "DELIVERED";
+    if(value === "OUT_FOR_DELIVERY") return "IN_TRANSIT";
+
+    return value;
+}
+
+function statusClass(status){
+    return "status-" + normalizeStatus(status).toLowerCase().replaceAll("_","-");
+}
+
+function statusText(status){
+    return normalizeStatus(status).replaceAll("_"," ");
+}
+
+function getStageIndex(status){
+    const normalized = normalizeStatus(status);
+
+    if(normalized === "DECLINED" || normalized === "CANCELLED") return -1;
+
+    if(normalized === "ACCEPTED") return 1;
+    if(normalized === "PROCESSING") return 2;
+    if(normalized === "SHIPPED") return 3;
+    if(normalized === "IN_TRANSIT") return 4;
+    if(normalized === "DELIVERED") return 5;
+
+    return 0;
+}
+
+function locationText(location){
+    if(!location) return "Location unavailable";
+
+    return [
+        location.address,
+        location.city,
+        location.state,
+        location.pincode || location.pin || location.postal_code
+    ].filter(Boolean).join(", ") || "Location unavailable";
+}
+
+function getCoordinates(location){
+    if(!location) return null;
+
+    const latitude = Number(location.latitude ?? location.lat);
+    const longitude = Number(location.longitude ?? location.lng ?? location.lon);
+
+    if(!Number.isFinite(latitude) || !Number.isFinite(longitude)){
+        return null;
+    }
+
+    return { latitude, longitude };
+}
+
+function findOrder(orders, requestedId){
+    return orders.find(order => {
+        const ids = [
+            order.order_id,
+            order.id,
+            order._id,
+            order.offer_id
+        ].filter(Boolean).map(String);
+
+        return ids.includes(String(requestedId));
+    });
+}
+
+async function loadOrder(){
+    const requestedId = getOrderId();
+
+    if(!requestedId){
+        throw new Error("No order ID was provided. Open this page from My Orders.");
+    }
+
+    const data = await apiGet("/orders/buyer");
+    const orders = data.orders || data.items || data.results || [];
+
+    const order = findOrder(orders, requestedId);
+
+    if(!order){
+        throw new Error("This order could not be found in your buyer account.");
+    }
+
+    return order;
+}
+
+async function loadLogistics(orderId){
+    try{
+        return await apiGet(`/logistics/order/${encodeURIComponent(orderId)}`);
+    }catch(error){
+        console.warn("Logistics information unavailable:", error);
+        return {};
+    }
+}
+
+async function loadDelivery(orderId){
+    /*
+     * Preferred: buyer-safe delivery endpoint.
+     * Fallback: legacy /deliveries endpoint, because some existing
+     * backend versions already expose the delivery document there.
+     */
+    try{
+        const data = await apiGet(
+            `/logistics/deliveries/order/${encodeURIComponent(orderId)}`
+        );
+
+        if(data && data.delivery){
+            return data.delivery;
+        }
+    }catch(error){
+        console.warn("Buyer delivery endpoint unavailable:", error);
+    }
+
+    try{
+        const data = await apiGet("/deliveries");
+        const deliveries = data.deliveries || data.data || [];
+
+        return deliveries.find(item =>
+            String(item.order_id || item.delivery_id || "") === String(orderId)
+        ) || null;
+    }catch(error){
+        console.warn("Legacy delivery lookup unavailable:", error);
+        return null;
+    }
+}
+
+function mergeOrderData(order, logistics, delivery){
+    return {
+        ...order,
+        ...(logistics || {}),
+        ...(delivery || {}),
+
+        pickup_location:
+            delivery?.pickup_location ||
+            logistics?.pickup_location ||
+            order.pickup_location ||
+            null,
+
+        destination:
+            delivery?.destination ||
+            logistics?.destination ||
+            order.destination ||
+            null,
+
+        logistics_assigned:
+            Boolean(
+                delivery &&
+                (
+                    delivery.driver_id ||
+                    delivery.driver_name ||
+                    delivery.vehicle_number
+                )
+            )
+    };
+}
+
+function buildTimeline(status, order){
+    const currentIndex = getStageIndex(status);
+
+    if(currentIndex < 0){
+        return `
+            <div class="error">
+                This shipment is marked <strong>${escapeHtml(statusText(status))}</strong>.
+                Delivery tracking is not active for this order.
+            </div>
+        `;
+    }
+
+    return stages.map((stage,index) => {
+        const done = index < currentIndex;
+        const current = index === currentIndex;
+
+        let timestamp = "";
+
+        if(index === 0){
+            timestamp = formatDate(order.created_at);
+        }
+
+        if(index === 1 && order.accepted_at){
+            timestamp = formatDate(order.accepted_at);
+        }
+
+        if(index === 2 && order.processing_at){
+            timestamp = formatDate(order.processing_at);
+        }
+
+        if(index === 3 && (order.shipped_at || order.dispatched_at)){
+            timestamp = formatDate(order.shipped_at || order.dispatched_at);
+        }
+
+        if(index === 4 && order.in_transit_at){
+            timestamp = formatDate(order.in_transit_at);
+        }
+
+        if(index === 5 && order.delivered_at){
+            timestamp = formatDate(order.delivered_at);
+        }
+
+        const description = {
+            PENDING: "Your order has been placed and is awaiting confirmation.",
+            ACCEPTED: "The farmer accepted the offer and the order is confirmed.",
+            PROCESSING: "The order is being prepared for dispatch.",
+            SHIPPED: "The shipment has been dispatched from the farm.",
+            IN_TRANSIT: "The shipment is travelling towards the delivery destination.",
+            DELIVERED: "The shipment has reached the delivery destination."
+        }[stage.key];
+
+        return `
+            <div class="timeline-item ${done ? "done" : ""} ${current ? "current" : ""}">
+                <div class="timeline-dot">${stage.icon}</div>
+                <div class="timeline-content">
+                    <strong>${escapeHtml(stage.label)}</strong>
+                    <span>${escapeHtml(description)}</span>
+                    ${timestamp && timestamp !== "—" ? `<span>${escapeHtml(timestamp)}</span>` : ""}
+                    ${current ? `<span class="timeline-current">CURRENT STAGE</span>` : ""}
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+function renderPage(order){
+    const status = normalizeStatus(order.status || order.order_status);
+    const stageIndex = getStageIndex(status);
+
+    const produce =
+        order.produce_name ||
+        order.product_name ||
+        order.crop_name ||
+        order.crop ||
+        "Produce";
+
+    const quantity =
+        order.quantity ??
+        order.order_quantity ??
+        "—";
+
+    const unit = order.unit || "kg";
+
+    const total =
+        order.total_amount ??
+        order.total ??
+        order.order_total;
+
+    const expectedDelivery =
+        order.expected_delivery ||
+        order.estimated_delivery ||
+        order.delivery_date ||
+        order.eta_date;
+
+    const trackingId =
+        order.tracking_id ||
+        order.delivery_id ||
+        order.shipment_id ||
+        currentDelivery?.tracking_id ||
+        currentDelivery?.delivery_id;
+
+    const driverName =
+        order.driver_name ||
+        currentDelivery?.driver_name;
+
+    const vehicle =
+        order.vehicle_number ||
+        currentDelivery?.vehicle_number;
+
+    const routeChoice =
+        order.route_choice ||
+        currentDelivery?.route_choice;
+
+    const pickup = order.pickup_location;
+    const destination = order.destination;
+
+    document.getElementById("pageDescription").textContent =
+        `Shipment details for ${order.order_id || order.id || "your order"}`;
+
+    const progressWidth =
+        stageIndex < 0 ? 0 : (stageIndex / (stages.length - 1)) * 84;
+
+    document.getElementById("mainContent").innerHTML = `
+        <div class="top-grid">
+
+            <div class="summary-card">
+                <div class="summary-top">
+                    <div>
+                        <div class="order-id">
+                            ${escapeHtml(order.order_id || order.id || "Order")}
+                        </div>
+                        <div class="order-date">
+                            Placed ${escapeHtml(formatDate(order.created_at))}
+                        </div>
+                    </div>
+
+                    <span class="status-badge ${statusClass(status)}">
+                        ${escapeHtml(statusText(status))}
+                    </span>
+                </div>
+
+                <div class="summary-product">
+                    <div class="product-icon">🌾</div>
+                    <div>
+                        <strong>${escapeHtml(produce)}</strong>
+                        <span>${escapeHtml(quantity)} ${escapeHtml(unit)} · From ${escapeHtml(order.farmer_name || order.seller_name || "Farmer")}</span>
+                    </div>
+                </div>
+
+                <div class="summary-rows">
+                    <div class="summary-row">
+                        <span>Total Amount</span>
+                        <strong>${money(total)}</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Expected Delivery</span>
+                        <strong>${escapeHtml(expectedDelivery ? formatDate(expectedDelivery) : "Not available yet")}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card">
+                <div class="current-status">
+                    <div class="status-label">Current Delivery Status</div>
+                    <h3>${escapeHtml(statusText(status))}</h3>
+                    <p>${escapeHtml(getStatusDescription(status))}</p>
+
+                    <div class="eta-box">
+                        <span>Estimated Arrival</span>
+                        <strong>${escapeHtml(expectedDelivery ? formatDate(expectedDelivery) : "Not available yet")}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="height:16px"></div>
+
+        <div class="status-card">
+            <div class="section-head" style="margin:-18px -18px 18px;padding:15px 18px">
+                <div>
+                    <h2>Delivery Progress</h2>
+                    <p>Your shipment's current stage</p>
+                </div>
+            </div>
+
+            <div class="progress-wrap">
+                <div class="progress-track">
+                    <div class="progress-line"></div>
+                    <div class="progress-fill" style="width:${progressWidth}%"></div>
+
+                    ${stages.map((stage,index) => {
+                        const done = stageIndex >= 0 && index < stageIndex;
+                        const current = stageIndex === index;
+
+                        return `
+                            <div class="stage ${done ? "completed" : ""} ${current ? "current" : ""}">
+                                <div class="stage-dot">${stage.icon}</div>
+                                <span>${escapeHtml(stage.label)}</span>
+                            </div>
+                        `;
+                    }).join("")}
+                </div>
+            </div>
+        </div>
+
+        <div style="height:16px"></div>
+
+        <div class="details-grid">
+
+            <div class="info-card">
+                <div class="icon">🚚</div>
+                <div class="label">Assigned Driver</div>
+                <strong>${escapeHtml(driverName || "Driver not assigned")}</strong>
+                <small>${escapeHtml(vehicle || "Vehicle will appear after assignment")}</small>
+            </div>
+
+            <div class="info-card">
+                <div class="icon">🛻</div>
+                <div class="label">Vehicle</div>
+                <strong>${escapeHtml(
+                    currentDelivery?.vehicle_type ||
+                    currentDelivery?.driver?.vehicle_type ||
+                    "Vehicle details unavailable"
+                )}</strong>
+                <small>${escapeHtml(vehicle || "—")}</small>
+            </div>
+
+            <div class="info-card">
+                <div class="icon">🛣️</div>
+                <div class="label">Selected Route</div>
+                <strong>${escapeHtml(routeChoice || "Route will be calculated")}</strong>
+                <small>${currentDelivery?.distance_km != null ? escapeHtml(Number(currentDelivery.distance_km).toFixed(1)) + " km" : "Planned pickup → destination route"}</small>
+            </div>
+
+            <div class="info-card">
+                <div class="icon">⏱️</div>
+                <div class="label">Estimated Time</div>
+                <strong>${currentDelivery?.eta_hours != null ? escapeHtml(Number(currentDelivery.eta_hours).toFixed(1)) + " hrs" : "—"}</strong>
+                <small>Based on the planned route</small>
+            </div>
+
+            <div class="info-card">
+                <div class="icon">🔖</div>
+                <div class="label">Delivery Reference</div>
+                <strong>${escapeHtml(trackingId || "Not assigned yet")}</strong>
+                <small>Shipment reference</small>
+            </div>
+
+            <div class="info-card">
+                <div class="icon">⭐</div>
+                <div class="label">Driver Rating</div>
+                <strong>${currentDelivery?.driver?.rating != null ? escapeHtml(String(currentDelivery.driver.rating)) + " / 5" : "—"}</strong>
+                <small>${escapeHtml(currentDelivery?.driver?.status || "Driver status unavailable")}</small>
+            </div>
+
+            <div class="info-card">
+                <div class="icon">🚜</div>
+                <div class="label">Pickup</div>
+                <strong>${escapeHtml(locationText(pickup))}</strong>
+                <small>Farmer / FPO pickup location</small>
+            </div>
+
+            <div class="info-card">
+                <div class="icon">📍</div>
+                <div class="label">Destination</div>
+                <strong>${escapeHtml(locationText(destination))}</strong>
+                <small>Buyer delivery destination</small>
+            </div>
+
+            <div class="info-card">
+                <div class="icon">👨‍🌾</div>
+                <div class="label">Farmer</div>
+                <strong>${escapeHtml(order.farmer_name || order.seller_name || "Farmer")}</strong>
+                <small>Produce supplier</small>
+            </div>
+        </div>
+
+        <div style="height:16px"></div>
+
+        <div class="top-grid">
+
+            <div class="timeline-card">
+                <div class="section-head" style="margin:-18px -18px 18px;padding:15px 18px">
+                    <div>
+                        <h2>Shipment Timeline</h2>
+                        <p>Status history for this order</p>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    ${buildTimeline(status, order)}
+                </div>
+            </div>
+
+            <div class="timeline-card">
+                <div class="section-head" style="margin:-18px -18px 18px;padding:15px 18px">
+                    <div>
+                        <h2>Delivery Address</h2>
+                        <p>Where the order is being delivered</p>
+                    </div>
+                </div>
+
+                <div style="padding:5px 0">
+                    <div style="font-size:28px;margin-bottom:12px">📍</div>
+                    <strong style="font-size:14px;color:#fff">
+                        ${escapeHtml(order.buyer_name || "Buyer")}
+                    </strong>
+                    <p style="margin-top:8px;color:var(--muted);font-size:11px;line-height:1.7">
+                        ${escapeHtml(locationText(destination))}
+                    </p>
+
+                    ${order.delivery_address ? `
+                        <p style="margin-top:12px;color:#d8dee8;font-size:11px;line-height:1.6">
+                            ${escapeHtml(order.delivery_address)}
+                        </p>
+                    ` : ""}
+                </div>
+            </div>
+        </div>
+
+        <div style="height:16px"></div>
+
+        <div class="timeline-card">
+            <div class="section-head" style="margin:-18px -18px 18px;padding:15px 18px">
+                <div>
+                    <h2>Planned Delivery Route</h2>
+                    <p>
+                        ${routeChoice
+                            ? `Farmer-selected route · ${escapeHtml(routeChoice)}`
+                            : "Pickup → destination route · driver assignment not required to view the journey"}
+                    </p>
+                </div>
+            </div>
+
+            <div id="deliveryMap" class="map">
+                <div class="map-placeholder">Loading planned route...</div>
+            </div>
+
+            <div class="map-note">
+                📍 The map always shows the planned journey. If a driver is assigned, the farmer-selected route and transit points are shown. If no driver is assigned, the system shows the available pickup → destination route. No live GPS is used.
+            </div>
+
+            <div id="routeJourney"></div>
+        </div>
+    `;
+
+    initializeDeliveryMap(order);
+}
+
+function getStatusDescription(status){
+    const descriptions = {
+        PENDING: "Your order has been placed and is waiting for confirmation.",
+        ACCEPTED: "The farmer accepted your offer. The order is confirmed.",
+        PROCESSING: "The farmer is preparing the produce for dispatch.",
+        SHIPPED: "The shipment has been dispatched from the farm.",
+        IN_TRANSIT: "The shipment is currently travelling towards the destination.",
+        DELIVERED: "The shipment has been delivered successfully.",
+        DECLINED: "The farmer declined the offer. No active delivery is available.",
+        CANCELLED: "This order has been cancelled."
+    };
+
+    return descriptions[normalizeStatus(status)] || "Shipment status information is available above.";
+}
+
+async function geocodeAddress(address){
+    if(!address) return null;
+
+    try{
+        const response = await fetch(
+            "https://nominatim.openstreetmap.org/search?" +
+            new URLSearchParams({
+                q: address,
+                format: "json",
+                limit: 1
+            }),
+            {headers:{"Accept":"application/json"}}
+        );
+
+        if(!response.ok) return null;
+
+        const results = await response.json();
+
+        if(!results.length) return null;
+
+        return {
+            latitude:Number(results[0].lat),
+            longitude:Number(results[0].lon)
+        };
+    }catch(error){
+        console.warn("Geocoding failed:",error);
+        return null;
+    }
+}
+
+async function resolveLocationCoordinates(location){
+    const saved = getCoordinates(location);
+    if(saved) return saved;
+    if(!location) return null;
+
+    const query = [
+        location.address,
+        location.city,
+        location.state,
+        location.pincode || location.pin || location.postal_code,
+        location.country || "India"
+    ].filter(Boolean).join(", ");
+
+    if(!query) return null;
+
+    return await geocodeAddress(query);
+}
+
+async function initializeDeliveryMap(order){
+
+    const mapElement =
+        document.getElementById("deliveryMap");
+
+    const journeyElement =
+        document.getElementById("routeJourney");
+
+    if(!mapElement) return;
+
+    if(trackingMap){
+        trackingMap.remove();
+        trackingMap = null;
+    }
+
+    mapElement.innerHTML = `
+        <div class="map-placeholder">
+            📍 Preparing map from shipment locations...
+        </div>
+    `;
+
+    /*
+     * Existing orders may not have saved coordinates.
+     * Try saved coordinates first, then geocode the address.
+     * This is the same fallback used by Farmer Logistics.
+     */
+    let pickup =
+        await resolveLocationCoordinates(
+            order.pickup_location
+        );
+
+    let destination =
+        await resolveLocationCoordinates(
+            order.destination
+        );
+
+    /*
+     * Keep resolved coordinates in the current order for
+     * the remainder of this page session.
+     */
+    if(pickup && order.pickup_location){
+        order.pickup_location.latitude =
+            pickup.latitude;
+        order.pickup_location.longitude =
+            pickup.longitude;
+    }
+
+    if(destination && order.destination){
+        order.destination.latitude =
+            destination.latitude;
+        order.destination.longitude =
+            destination.longitude;
+    }
+
+    /*
+     * ---------------------------------------------------------
+     * We ALWAYS try to show the map.
+     *
+     * A driver is NOT required for the map.
+     * Only pickup + destination coordinates are required.
+     * ---------------------------------------------------------
+     */
+
+    if(!pickup || !destination){
+
+        mapElement.innerHTML = `
+            <div class="map-placeholder">
+                📍 Map location could not be resolved.<br>
+                ${!pickup && !destination
+                    ? "Pickup and destination locations are unavailable."
+                    : !pickup
+                        ? "Pickup location could not be resolved."
+                        : "Destination location could not be resolved."}
+            </div>
+        `;
+
+        if(journeyElement){
+            journeyElement.innerHTML = `
+                <div class="route-journey">
+                    <div class="route-journey-head">
+                        <strong>Journey</strong>
+                        <span>Location data unavailable</span>
+                    </div>
+                    <div class="empty">
+                        Pickup or destination coordinates are not available.
+                    </div>
+                </div>
+            `;
+        }
+
+        return;
+    }
+
+    trackingMap =
+        L.map("deliveryMap");
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom:19,
+            attribution:"© OpenStreetMap contributors"
+        }
+    ).addTo(trackingMap);
+
+    /*
+     * ---------------------------------------------------------
+     * PICKUP
+     * ---------------------------------------------------------
+     */
+
+    const pickupMarker =
+        L.marker(
+            [
+                pickup.latitude,
+                pickup.longitude
+            ],
+            {
+                icon:L.divIcon({
+                    className:"",
+                    html:`
+                        <div style="
+                            width:34px;
+                            height:34px;
+                            border-radius:50%;
+                            background:#fff;
+                            border:3px solid #168a49;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:17px;
+                            box-shadow:0 2px 8px rgba(0,0,0,.3)
+                        ">🚜</div>
+                    `,
+                    iconSize:[34,34],
+                    iconAnchor:[17,17]
+                })
+            }
+        )
+        .addTo(trackingMap);
+
+    pickupMarker.bindPopup(
+        `<strong>🚜 Pickup</strong><br>${escapeHtml(
+            locationText(order.pickup_location)
+        )}`
+    );
+
+    /*
+     * ---------------------------------------------------------
+     * DESTINATION
+     * ---------------------------------------------------------
+     */
+
+    const destinationMarker =
+        L.marker(
+            [
+                destination.latitude,
+                destination.longitude
+            ],
+            {
+                icon:L.divIcon({
+                    className:"",
+                    html:`
+                        <div style="
+                            width:34px;
+                            height:34px;
+                            border-radius:50%;
+                            background:#fff;
+                            border:3px solid #d62828;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:17px;
+                            box-shadow:0 2px 8px rgba(0,0,0,.3)
+                        ">📍</div>
+                    `,
+                    iconSize:[34,34],
+                    iconAnchor:[17,17]
+                })
+            }
+        )
+        .addTo(trackingMap);
+
+    destinationMarker.bindPopup(
+        `<strong>📍 Destination</strong><br>${escapeHtml(
+            locationText(order.destination)
+        )}`
+    );
+
+    /*
+     * ---------------------------------------------------------
+     * DETERMINE WHETHER FARMER ASSIGNED A DRIVER
+     * ---------------------------------------------------------
+     */
+
+    const driverAssigned =
+        Boolean(
+            order.driver_id ||
+            order.driver_name ||
+            currentDelivery?.driver_id ||
+            currentDelivery?.driver_name ||
+            currentDelivery?.driver?.name
+        );
+
+    /*
+     * ---------------------------------------------------------
+     * GET ROUTE
+     *
+     * If driver assigned:
+     *     use the farmer-selected route_choice.
+     *
+     * If driver not assigned:
+     *     use AI Recommended first, then Fastest.
+     *
+     * Either way the buyer gets a route on the map.
+     * ---------------------------------------------------------
+     */
+
+    let route = null;
+    let selectedRouteName =
+        order.route_choice ||
+        currentDelivery?.route_choice ||
+        "";
+
+    try{
+
+        const routeData =
+            await apiPost(
+                "/routes",
+                {
+                    pickup:{
+                        latitude:
+                            pickup.latitude,
+                        longitude:
+                            pickup.longitude
+                    },
+                    destination:{
+                        latitude:
+                            destination.latitude,
+                        longitude:
+                            destination.longitude
+                    }
+                }
+            );
+
+        const routes =
+            routeData.routes || {};
+
+        if(driverAssigned){
+
+            route =
+                routes[selectedRouteName] ||
+                routes["AI Recommended"] ||
+                routes["Fastest"] ||
+                null;
+
+            if(!selectedRouteName && route){
+                selectedRouteName =
+                    route === routes["Fastest"]
+                        ? "Fastest"
+                        : "AI Recommended";
+            }
+
+        }else{
+
+            route =
+                routes["AI Recommended"] ||
+                routes["Fastest"] ||
+                routes["Shortest Distance"] ||
+                routes["Lowest Cost"] ||
+                null;
+
+            if(route){
+                selectedRouteName =
+                    "AI Recommended" in routes
+                        ? "AI Recommended"
+                        : "Fastest";
+            }
+        }
+
+    }catch(error){
+
+        console.warn(
+            "Route calculation unavailable:",
+            error
+        );
+
+    }
+
+    /*
+     * ---------------------------------------------------------
+     * DRAW ROUTE
+     *
+     * If routing API fails, still draw pickup → destination.
+     * ---------------------------------------------------------
+     */
+
+    let routeLayer = null;
+
+    if(route?.geometry){
+
+        routeLayer =
+            L.geoJSON(
+                route.geometry,
+                {
+                    style:{
+                        color:"#159447",
+                        weight:6,
+                        opacity:.85
+                    }
+                }
+            ).addTo(trackingMap);
+
+    }else{
+
+        routeLayer =
+            L.polyline(
+                [
+                    [
+                        pickup.latitude,
+                        pickup.longitude
+                    ],
+                    [
+                        destination.latitude,
+                        destination.longitude
+                    ]
+                ],
+                {
+                    color:"#159447",
+                    weight:5,
+                    dashArray:"8,8"
+                }
+            ).addTo(trackingMap);
+
+    }
+
+    /*
+     * ---------------------------------------------------------
+     * TRANSIT POINTS
+     *
+     * Same logic as Farmer Logistics:
+     * 1. Prefer route.transitCities
+     * 2. Otherwise derive representative points from route.steps
+     * ---------------------------------------------------------
+     */
+
+    let transitPoints = [];
+
+    if(route?.transitCities?.length){
+
+        transitPoints =
+            route.transitCities
+                .filter(point =>
+                    Number.isFinite(
+                        Number(point.latitude)
+                    ) &&
+                    Number.isFinite(
+                        Number(point.longitude)
+                    )
+                )
+                .slice(0,8);
+
+    }else if(route?.steps?.length){
+
+        const seen =
+            new Set();
+
+        route.steps.forEach(step => {
+
+            const name =
+                step.name?.trim();
+
+            const lng =
+                Number(
+                    step.location?.[0]
+                );
+
+            const lat =
+                Number(
+                    step.location?.[1]
+                );
+
+            if(
+                name &&
+                Number.isFinite(lat) &&
+                Number.isFinite(lng) &&
+                !seen.has(name)
+            ){
+
+                seen.add(name);
+
+                transitPoints.push({
+                    name:name,
+                    latitude:lat,
+                    longitude:lng
+                });
+            }
+
+        });
+
+        /*
+         * Keep map readable.
+         */
+        if(transitPoints.length > 5){
+
+            const sampled = [];
+
+            for(
+                let i = 0;
+                i < 5;
+                i++
+            ){
+
+                const index =
+                    Math.round(
+                        i *
+                        (
+                            transitPoints.length - 1
+                        ) /
+                        4
+                    );
+
+                sampled.push(
+                    transitPoints[index]
+                );
+            }
+
+            transitPoints = sampled;
+        }
+    }
+
+    /*
+     * ---------------------------------------------------------
+     * TRANSIT MARKERS
+     * ---------------------------------------------------------
+     */
+
+    transitPoints.forEach(
+        (point,index) => {
+
+            const marker =
+                L.marker(
+                    [
+                        Number(point.latitude),
+                        Number(point.longitude)
+                    ],
+                    {
+                        icon:L.divIcon({
+                            className:"",
+                            html:`
+                                <div class="tracking-transit-marker">
+                                    ${index + 1}
+                                </div>
+                            `,
+                            iconSize:[25,25],
+                            iconAnchor:[12.5,12.5]
+                        })
+                    }
+                ).addTo(trackingMap);
+
+            marker.bindTooltip(
+                `<strong>${index + 1}. ${
+                    escapeHtml(
+                        point.name ||
+                        "Transit point"
+                    )
+                }</strong>`,
+                {
+                    direction:"top",
+                    offset:[0,-10]
+                }
+            );
+        }
+    );
+
+    /*
+     * ---------------------------------------------------------
+     * JOURNEY LIST BELOW MAP
+     * ---------------------------------------------------------
+     */
+
+    if(journeyElement){
+
+        const journey = [];
+
+        journey.push({
+            type:"start",
+            icon:"🚜",
+            name:"Pickup",
+            description:
+                locationText(
+                    order.pickup_location
+                )
+        });
+
+        transitPoints.forEach(
+            (point,index) => {
+
+                journey.push({
+                    type:"transit",
+                    icon:String(index + 1),
+                    name:
+                        point.name ||
+                        "Transit point",
+                    description:
+                        "Transit point"
+                });
+            }
+        );
+
+        journey.push({
+            type:"destination",
+            icon:"📍",
+            name:"Destination",
+            description:
+                locationText(
+                    order.destination
+                )
+        });
+
+        const journeyLabel =
+            driverAssigned
+                ? `Farmer-selected route · ${
+                    escapeHtml(
+                        selectedRouteName ||
+                        "Selected route"
+                    )
+                  }`
+                : `Planned pickup → destination route · ${
+                    escapeHtml(
+                        selectedRouteName ||
+                        "Available route"
+                    )
+                  }`;
+
+        journeyElement.innerHTML = `
+            <div class="route-journey">
+                <div class="route-journey-head">
+                    <strong>🛣️ Journey</strong>
+                    <span>${journeyLabel}</span>
+                </div>
+
+                <div class="journey-list">
+                    ${journey.map(item => `
+                        <div class="journey-item ${item.type}">
+                            <div class="journey-dot">
+                                ${escapeHtml(item.icon)}
+                            </div>
+
+                            <div class="journey-content">
+                                <strong>
+                                    ${escapeHtml(item.name)}
+                                </strong>
+
+                                <span>
+                                    ${escapeHtml(item.description)}
+                                </span>
+                            </div>
+                        </div>
+                    `).join("")}
+                </div>
+            </div>
+        `;
+    }
+
+    /*
+     * ---------------------------------------------------------
+     * FIT MAP
+     * ---------------------------------------------------------
+     */
+
+    if(routeLayer){
+
+        trackingMap.fitBounds(
+            routeLayer.getBounds(),
+            {
+                padding:[35,35]
+            }
+        );
+
+    }else{
+
+        trackingMap.fitBounds(
+            [
+                [
+                    pickup.latitude,
+                    pickup.longitude
+                ],
+                [
+                    destination.latitude,
+                    destination.longitude
+                ]
+            ],
+            {
+                padding:[35,35]
+            }
+        );
+    }
+
+    setTimeout(() => {
+
+        if(trackingMap){
+            trackingMap.invalidateSize();
+        }
+
+    },200);
+}
+
+async function loadPage(){
+    const button = document.getElementById("refreshBtn");
+    button.disabled = true;
+    button.textContent = "Loading...";
+
+    try{
+        if(!getToken()){
+            location.href = "login.html";
+            return;
+        }
+
+        currentOrder = await loadOrder();
+
+        const orderId =
+            currentOrder.order_id ||
+            currentOrder.id;
+
+        const [logistics,delivery] = await Promise.all([
+            loadLogistics(orderId),
+            loadDelivery(orderId)
+        ]);
+
+        currentDelivery = delivery;
+
+        currentOrder = mergeOrderData(
+            currentOrder,
+            logistics,
+            delivery
+        );
+
+        renderPage(currentOrder);
+
+    }catch(error){
+        console.error("Buyer logistics loading error:",error);
+
+        document.getElementById("pageDescription").textContent =
+            "Unable to load this shipment.";
+
+        document.getElementById("mainContent").innerHTML = `
+            <div class="error">
+                ${escapeHtml(error.message)}
+            </div>
+            <div style="height:14px"></div>
+            <div class="actions">
+                <button class="btn btn-secondary" onclick="goBack()">← Back to My Orders</button>
+            </div>
+        `;
+    }finally{
+        button.disabled = false;
+        button.textContent = "↻ Refresh";
+    }
+}
+
+function goBack(){
+    location.href = "buyer-orders.html";
+}
+
+function initializeSidebar(){
+    const sidebar = document.getElementById("sidebar");
+    const mainArea = document.getElementById("mainArea");
+    const toggle = document.getElementById("sidebarToggle");
+
+    toggle.addEventListener("click",()=>{
+        if(window.innerWidth <= 768){
+            sidebar.classList.toggle("open");
+        }else{
+            sidebar.classList.toggle("collapsed");
+            mainArea.classList.toggle("expanded");
+        }
+    });
+
+    document.addEventListener("click",(event)=>{
+        if(
+            window.innerWidth <= 768 &&
+            !sidebar.contains(event.target) &&
+            !toggle.contains(event.target)
+        ){
+            sidebar.classList.remove("open");
+        }
+    });
+}
+
+document.getElementById("subForm").addEventListener("submit",(event)=>{
+    event.preventDefault();
+
+    const email = document.getElementById("subEmail").value.trim();
+
+    if(!email) return;
+
+    alert("Subscribed successfully.");
+    document.getElementById("subEmail").value = "";
+});
+
+window.addEventListener("beforeunload",()=>{
+    if(trackingMap){
+        trackingMap.remove();
+        trackingMap = null;
+    }
+});
+
+document.addEventListener("DOMContentLoaded",()=>{
+    initializeSidebar();
+    loadPage();
+});
+</script>
+</body>
+</html>

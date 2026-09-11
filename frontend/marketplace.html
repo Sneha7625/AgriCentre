@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Marketplace | AgriCentre</title>
+<style>
+:root{--brand:#2f9e5c;--brand-dark:#1f7a44;--brand-light:#5cc98a;--bg:#0d0e10;--bg2:#14161a;--bg3:#1c1f25;--surface:#22262e;--border:#2e3340;--text:#e8eaf0;--muted:#8b909e;--green:#22c55e;--yellow:#f59e0b;--blue:#3b82f6;--sidebar-w:258px;--nav-h:64px;--tr:.22s cubic-bezier(.4,0,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}a{text-decoration:none;color:inherit}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 12px #0005}.nav-toggle{background:none;border:0;color:#fff;font-size:20px;padding:6px 8px;cursor:pointer}.nav-brand{display:flex;align-items:center;gap:10px;color:#fff}.logo{width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--brand);border-radius:8px;font-size:20px}.brand-text{display:flex;flex-direction:column}.brand-name{font:700 32px Rajdhani,sans-serif;line-height:1}.brand-nameX{color:var(--brand)}.brand-subtitle{font-size:11px;color:#ddd;letter-spacing:1px;text-transform:uppercase}.nav-links{margin-left:auto;display:flex;gap:5px}.nav-links a{color:#9aa7bb;padding:9px 11px;border-radius:7px;font-size:13px}.nav-links a:hover{color:#fff;background:#ffffff0f}.nav-links a.active{color:#fff;background:#2f9e5c33}.nav-right{display:flex;gap:7px;margin-left:8px}.nav-btn{width:38px;height:38px;border:0;border-radius:8px;background:var(--surface);color:#fff;cursor:pointer;position:relative}.nav-badge{position:absolute;top:-5px;right:-4px;background:var(--brand);font-size:9px;min-width:16px;height:16px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.layout{display:flex;margin-top:var(--nav-h);min-height:calc(100vh - var(--nav-h))}.sidebar{width:var(--sidebar-w);background:var(--bg2);position:fixed;top:var(--nav-h);bottom:0;left:0;overflow-y:auto;z-index:900;transition:width var(--tr),transform var(--tr)}.sidebar.collapsed{width:62px}.sb-section{padding:6px 0}.sb-label{padding:6px 18px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#4a5a74}.sidebar.collapsed .sb-label{opacity:0}.sb-link{display:flex;align-items:center;gap:11px;padding:9px 18px;color:#7a90aa;font-size:13px;border-left:3px solid transparent;white-space:nowrap}.sb-link:hover{color:#fff;background:#2f9e5c1f}.sb-link.active{color:var(--brand-light);border-left-color:var(--brand);background:#2f9e5c26}.si{width:20px;text-align:center;flex-shrink:0}.sl{overflow:hidden}.sidebar.collapsed .sl{opacity:0;width:0}.sb-badge{margin-left:auto;background:var(--brand);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px}.sidebar.collapsed .sb-badge{display:none}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;display:flex;flex-direction:column;transition:margin-left var(--tr)}.main.expanded{margin-left:62px}.page-header{padding:32px 48px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:20px}.page-title{font:700 28px Rajdhani,sans-serif;color:#fff}.page-sub{font-size:13px;color:var(--muted);margin-top:4px}.refresh-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}.refresh-btn:hover{border-color:var(--brand);color:var(--brand-light)}.section{padding:30px 48px}.section-title{font:700 19px Rajdhani,sans-serif;margin-bottom:18px}
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.quick-action{display:flex;align-items:center;gap:13px;padding:17px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;transition:.2s}.quick-action:hover{border-color:var(--brand);background:#2f9e5c14;transform:translateY(-2px)}.quick-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:#2f9e5c1f;border-radius:9px;font-size:20px;flex-shrink:0}.quick-action strong{display:block;font-size:13px;margin-bottom:4px}.quick-action small{display:block;color:var(--muted);font-size:10px;line-height:1.4}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:21px;position:relative;overflow:hidden}.kpi-card:after{content:"";position:absolute;top:0;left:0;right:0;height:3px}.green:after{background:var(--green)}.blue:after{background:var(--blue)}.yellow:after{background:var(--yellow)}.orange:after{background:var(--brand)}.kpi-icon{font-size:20px;margin-bottom:11px}.kpi-value{font:700 32px Rajdhani,sans-serif;color:#fff}.kpi-label{font-size:12px;color:var(--muted);margin-top:6px}.kpi-delta{font-size:10px;color:var(--muted);margin-top:6px}.up{color:var(--green)}.warn{color:var(--yellow)}
+.dashboard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.dashboard-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:22px}.card-heading{display:flex;justify-content:space-between;gap:12px;margin-bottom:18px}.card-heading h3{font-size:14px}.card-heading a{color:var(--brand-light);font-size:11px}.empty-state{text-align:center;padding:28px 12px;color:var(--muted)}.empty-icon{font-size:28px;margin-bottom:9px}.empty-state strong{display:block;color:var(--text);font-size:13px;margin-bottom:5px}.empty-state p{font-size:11px;line-height:1.5}.placeholder-box{padding:20px;border:1px dashed var(--border);border-radius:9px;text-align:center;color:var(--muted);font-size:11px}.quality-placeholder{display:flex;align-items:center;gap:15px;padding:15px;background:var(--surface);border-radius:9px}.quality-score{width:58px;height:58px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font:700 22px Rajdhani;color:var(--muted);flex-shrink:0}.quality-placeholder strong{display:block;font-size:12px;margin-bottom:4px}.quality-placeholder p{color:var(--muted);font-size:10px;line-height:1.5}
+.ai-summary{background:#2f9e5c0f;border:1px solid #2f9e5c33;border-radius:12px;padding:22px}.ai-summary-label{font-size:11px;font-weight:700;color:var(--brand-light);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}.ai-bullet{display:flex;gap:10px;margin-bottom:9px;font-size:13px;line-height:1.5}.ai-bullet:before{content:"▸";color:var(--brand)}.dashboard-loading{text-align:center;padding:60px 30px;color:var(--muted)}.dashboard-error{margin:30px 48px;padding:18px;border:1px solid #ef44444d;background:#ef44440f;border-radius:10px;color:#fca5a5;display:none}
+footer{background:var(--bg2);color:#8fa0b8;padding:44px 40px 0;margin-top:auto}.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:36px;padding-bottom:32px;border-bottom:1px solid #ffffff14}.ft-brand{font:700 1.4rem Rajdhani,sans-serif;color:#fff;margin-bottom:9px}.ft-brand span{color:var(--brand)}.ft-desc{font-size:13px;line-height:1.7;max-width:300px}.ft-col h4{color:#fff;font-size:12px;margin-bottom:13px;text-transform:uppercase}.ft-col a{display:block;font-size:13px;margin-bottom:8px;color:#8fa0b8}.ft-col a:hover{color:var(--brand-light)}.sub-box{display:flex;flex-direction:column;gap:9px}.sub-box p{font-size:12px}.sub-form{display:flex;gap:7px}.sub-input{flex:1;min-width:0;padding:8px 12px;border-radius:8px;border:1px solid #ffffff1f;background:#ffffff0f;color:#fff;outline:none}.sub-btn{padding:8px 16px;background:var(--brand);color:#fff;border:0;border-radius:8px;font-weight:600;cursor:pointer}.ft-bottom{display:flex;justify-content:space-between;padding:14px 0;font-size:11px;flex-wrap:wrap;gap:8px}.ft-links{display:flex;gap:14px}
+@media(max-width:1100px){.quick-actions{grid-template-columns:repeat(2,1fr)}.kpi-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:768px){.sidebar{transform:translateX(-100%);width:258px}.sidebar.open{transform:translateX(0)}.main,.main.expanded{margin-left:0}.nav-links{display:none}.page-header{padding:25px 20px}.section{padding:24px 20px}.quick-actions,.kpi-grid,.dashboard-grid{grid-template-columns:1fr}.ft-grid{grid-template-columns:1fr}footer{padding:35px 20px 0}}
+/* ============================================================
+   DYNAMIC DASHBOARD ACTIVITY LISTS
+   ============================================================ */
+
+   .activity-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.activity-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    text-align: left;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item > div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-item strong {
+    display: block;
+    color: #ffffff;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.activity-item p {
+    margin: 0 0 5px;
+    color: #8fa3bd;
+    font-size: 13px;
+}
+
+.activity-item small {
+    color: #71839a;
+    font-size: 12px;
+}
+
+.activity-right {
+    flex: 0 0 auto;
+    min-width: 120px;
+    text-align: right;
+}
+
+.activity-right strong {
+    margin-bottom: 6px;
+    color: #ffffff;
+    font-size: 15px;
+}
+
+
+/* Status badges */
+
+.status {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.status.confirmed,
+.status.accepted,
+.status.delivered,
+.status.completed,
+.status.paid {
+    background: rgba(34, 197, 94, 0.14);
+    color: #4ade80;
+}
+
+.status.pending,
+.status.processing,
+.status.under-review {
+    background: rgba(234, 179, 8, 0.14);
+    color: #facc15;
+}
+
+.status.shipped,
+.status.in-transit {
+    background: rgba(59, 130, 246, 0.14);
+    color: #60a5fa;
+}
+
+.status.cancelled,
+.status.rejected,
+.status.failed {
+    background: rgba(239, 68, 68, 0.14);
+    color: #f87171;
+}
+
+
+/* Mobile */
+
+@media (max-width: 650px) {
+
+    .activity-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .activity-right {
+        width: 100%;
+        text-align: left;
+    }
+}
+</style>
+
+<style>
+/* ============================================================
+   MARKETPLACE-SPECIFIC UI
+   Uses the exact AgriCentre dashboard shell, colors and spacing.
+   ============================================================ */
+
+.page-header {
+    padding: 0;
+    border-bottom: 0;
+    margin-bottom: 24px;
+}
+
+.page-header h1 {
+    font: 700 30px Rajdhani, sans-serif;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.page-header p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.eyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--brand-light);
+    margin-bottom: 7px;
+}
+
+.role-pill {
+    background: #2f9e5c1f;
+    color: var(--brand-light);
+    border: 1px solid #2f9e5c33;
+    padding: 9px 13px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.mode-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.mode-tab {
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: #9aa7bb;
+    padding: 10px 16px;
+    border-radius: 9px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--tr);
+}
+
+.mode-tab:hover {
+    color: #fff;
+    border-color: var(--brand);
+}
+
+.mode-tab.active {
+    background: var(--brand);
+    color: #fff;
+    border-color: var(--brand);
+}
+
+.toolbar {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) repeat(4, minmax(130px, 170px));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search {
+    position: relative;
+}
+
+.search input,
+.toolbar select,
+.toolbar input[type="number"] {
+    width: 100%;
+    height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 0 12px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+}
+
+.search input {
+    padding-left: 38px;
+}
+
+.search input::placeholder,
+.toolbar input::placeholder {
+    color: #747c89;
+}
+
+.search span {
+    position: absolute;
+    left: 13px;
+    top: 11px;
+    color: #8b909e;
+}
+
+.toolbar select option {
+    background: var(--bg3);
+    color: var(--text);
+}
+
+.clear-filters {
+    display: inline-block;
+    margin: -10px 0 20px;
+    padding: 8px 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.clear-filters:hover {
+    color: var(--brand-light);
+    border-color: var(--brand);
+}
+
+.distance-badge {
+    display: inline-block;
+    margin-top: 7px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #3b82f61a;
+    color: #60a5fa;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.bulk-filter {
+    display: none;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.bulk-filter.show {
+    display: block;
+}
+
+.bulk-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.bulk-row strong {
+    color: var(--text);
+    font-size: 13px;
+}
+
+.preset {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: #9aa7bb;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.preset:hover,
+.preset.active {
+    background: #2f9e5c1f;
+    border-color: var(--brand);
+    color: var(--brand-light);
+}
+
+#minQty {
+    height: 38px;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px;
+    padding: 0 9px;
+    background: var(--surface);
+    color: var(--text);
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 13px;
+}
+
+.section-head h2 {
+    font: 700 19px Rajdhani, sans-serif;
+    color: #fff;
+}
+
+.count {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: var(--tr);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    border-color: #3b4657;
+    box-shadow: 0 10px 25px #0003;
+}
+
+.photo {
+    height: 190px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+}
+
+.body {
+    padding: 17px;
+}
+
+.crop {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.category {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+}
+
+.heart {
+    border: 0;
+    background: var(--surface);
+    color: #fff;
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.heart.saved {
+    background: #ef44441f;
+}
+
+.farmer {
+    margin-top: 13px;
+    padding: 10px;
+    background: var(--surface);
+    border-radius: 9px;
+    font-size: 12px;
+}
+
+.farmer b {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 3px;
+    color: #fff;
+}
+
+.farmer span {
+    color: var(--muted);
+}
+
+.facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 13px 0;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.fact small {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    margin-bottom: 3px;
+}
+
+.fact strong {
+    color: #fff;
+    font-size: 13px;
+}
+
+.price {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--brand-light);
+}
+
+.price small {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.btn {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: #c1c8d2;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn.primary {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+}
+
+.btn:hover {
+    border-color: var(--brand);
+    color: #fff;
+}
+
+.farmer-grid {
+    display: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.farmer-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.farmer-card h3 {
+    font-size: 17px;
+    color: #fff;
+}
+
+.farmer-card .loc {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 5px 0 12px;
+}
+
+.produce-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+}
+
+.state {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 55px;
+    text-align: center;
+    grid-column: 1 / -1;
+    color: var(--muted);
+}
+
+.toast {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    background: var(--surface);
+    color: #fff;
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    border-radius: 9px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: var(--tr);
+    z-index: 2000;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: none;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: #0009;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1500;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width: min(850px, 100%);
+    max-height: 90vh;
+    overflow: auto;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    border: 0;
+    background: var(--surface);
+    color: #fff;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-info h2 {
+    font: 700 26px Rajdhani, sans-serif;
+    color: #fff;
+}
+
+.modal-info p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 10px 0 18px;
+}
+
+.modal-fact {
+    background: var(--surface);
+    padding: 12px;
+    border-radius: 9px;
+}
+
+.modal-fact small {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    margin-bottom: 4px;
+}
+
+.modal-fact strong {
+    color: #fff;
+    font-size: 13px;
+}
+
+@media (max-width: 1100px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .toolbar {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .main,
+    .main.expanded {
+        margin-left: 0;
+        padding: 24px 20px;
+    }
+
+    .grid,
+    .farmer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .toolbar {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .page-header {
+        padding: 0;
+    }
+}
+
+@media (max-width: 550px) {
+    .toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-photo {
+        height: 220px;
+    }
+}
+</style>
+
+</head>
+<body>
+<nav class="navbar">
+<button class="nav-toggle" id="sidebarToggle">☰</button>
+<a href="index.html" class="nav-brand"><div class="logo">🚜</div><div class="brand-text"><span class="brand-name">Agri<span class="brand-nameX">Centre</span></span><span class="brand-subtitle">Smart India Hackathon 2026</span></div></a>
+<div class="nav-links">
+<a href="index.html">Home</a><a href="about.html">About</a><a href="features.html">Features</a><a href="dashboard.html">Dashboard</a><a href="team.html">Team</a><a href="contact.html">Contact</a><a href="profile.html" id="profileLink">Profile</a><a href="#" id="logoutLink" onclick="logout();return false">Logout</a>
+</div>
+<div class="nav-right"><button class="nav-btn" onclick="location.href='alerts.html'">🔔<span class="nav-badge">3</span></button><button class="nav-btn" onclick="location.href='ai-assistant.html'">🤖</button></div>
+</nav>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar"></aside>
+
+<main class="main" id="mainArea">
+<section class="page-header">
+<div><div class="eyebrow">Buyer Marketplace</div><h1>Marketplace</h1><p>Browse produce from verified farmers, compare listings, and choose the right supplier.</p></div>
+<div class="role-pill" id="rolePill">Buyer</div>
+</section>
+
+<div class="mode-tabs">
+<button class="mode-tab active" id="produceTab" onclick="switchMode('produce')">🌾 Browse Produce</button>
+<button class="mode-tab" id="farmerTab" onclick="switchMode('farmer')">👨‍🌾 Find Farmers</button>
+</div>
+
+<section class="toolbar" id="toolbar">
+<div class="search"><span>🔎</span><input id="search" placeholder="Search crop, produce, farmer or location..." autocomplete="off"></div>
+<select id="category"><option value="ALL">All Crops</option></select>
+<select id="location"><option value="ALL">All Locations</option></select>
+<input id="minPrice" type="number" min="0" placeholder="Min ₹ / unit">
+<input id="maxPrice" type="number" min="0" placeholder="Max ₹ / unit">
+<select id="sort"><option value="newest">Newest</option><option value="price_low">Price: Low → High</option><option value="price_high">Price: High → Low</option><option value="quantity">Highest Quantity</option><option value="nearest">📍 Nearest Farmer</option></select>
+</section>
+
+<button
+    id="clearFilters"
+    class="clear-filters"
+    type="button"
+>
+    Reset Filters
+</button>
+
+<section class="bulk-filter" id="bulkFilter">
+<div class="bulk-row"><strong>🏭 Bulk Buying Requirement:</strong><button class="preset" data-q="100">100+ KG</button><button class="preset" data-q="500">500+ KG</button><button class="preset" data-q="1000">1,000+ KG</button><button class="preset" data-q="5000">5,000+ KG</button><input id="minQty" type="number" min="0" placeholder="Custom min quantity" style="height:38px;border:1px solid #dce4dc;border-radius:8px;padding:0 9px"></div>
+</section>
+
+<div class="section-head"><h2 id="resultsTitle">Available Produce</h2><span class="count" id="resultCount">Loading...</span></div>
+<section class="grid" id="grid"><div class="state">⏳ Loading marketplace...</div></section>
+<section class="farmer-grid" id="farmerGrid"></section>
+
+<footer><div class="ft-grid">
+<div><div class="ft-brand">Agri<span>Centre</span></div><p class="ft-desc">A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.</p></div>
+<div class="ft-col"><h4>Platform</h4><a href="dashboard.html">Dashboard</a><a href="add-produce.html">Marketplace</a><a href="orders.html">Orders</a><a href="quality.html">Quality &amp; Certification</a></div>
+<div class="ft-col"><h4>AI &amp; Tools</h4><a href="demand-forecasting.html">AI Market Insights</a><a href="ai-assistant.html">AI Assistant</a><a href="reports.html">Reports Center</a></div>
+<div class="ft-col"><h4>Stay Updated</h4><div class="sub-box"><p>Get alerts and platform updates via email.</p><form class="sub-form" id="subForm"><input class="sub-input" id="subEmail" type="email" placeholder="Your email address" required><button class="sub-btn" type="submit">Subscribe</button></form></div></div>
+</div><div class="ft-bottom"><span>© 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution</span><div class="ft-links"><a href="privacy.html">Privacy &amp; Terms</a><a href="contact.html">Contact</a></div></div></footer>
+</main>
+
+            
+
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="modal-box"><button class="close" onclick="closeModal()">×</button><div id="modalContent"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE="http://127.0.0.1:5000";
+let currentUser=null, listings=[], favoriteIds=new Set(), mode="produce";
+
+function token(){return localStorage.getItem("token")}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function fmt(v){const n=Number(v);return Number.isFinite(n)?n.toLocaleString("en-IN",{maximumFractionDigits:2}):"0"}
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2800)}
+function logout(){localStorage.removeItem("token");localStorage.removeItem("user");location.href="login.html"}
+
+function renderSidebar(role){
+ const r=String(role||"").toUpperCase();
+ const farmer=`<div class="sb-section">
+                    <div class="sb-label">Main</div>
+
+                    <a class="sb-link" href="dashboard.html">
+                        <span class="si">📊</span>
+                        <span class="sl">Dashboard</span>
+                    </a>
+
+                    <div style="display:none"></div>
+                    <a class="sb-link" href="dashboard.html"><span class="si">📊</span><span class="sl">Dashboard</span></a></div>`;
+ const vendor = `
+                <div class="sb-section">
+                    <div class="sb-label">Main</div>
+
+                    <a class="sb-link" href="dashboard.html">
+                        <span class="si">📊</span>
+                        <span class="sl">Dashboard</span>
+                    </a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Shopping</div>
+
+                    <a class="sb-link active" href="marketplace.html">
+                        <span class="si">🛒</span>
+                        <span class="sl">Marketplace</span>
+                    </a>
+
+                    <a class="sb-link" href="cart.html">
+                        <span class="si">🛍️</span>
+                        <span class="sl">My Cart</span>
+                    </a>
+
+                    <a class="sb-link" href="favorites.html">
+                        <span class="si">❤️</span>
+                        <span class="sl">Favorites</span>
+                    </a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Orders & Delivery</div>
+
+                    <a class="sb-link" href="buyer-orders.html">
+                        <span class="si">📦</span>
+                        <span class="sl">My Orders</span>
+                    </a>
+
+                    <a class="sb-link" href="buyer-logistics.html">
+                        <span class="si">🚚</span>
+                        <span class="sl">Delivery Tracking</span>
+                    </a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Communication</div>
+
+                    <a class="sb-link" href="meeting.html">
+                        <span class="si">🎥</span>
+                        <span class="sl">Meeting Centre</span>
+                    </a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">AI & Insights</div>
+
+                    <a class="sb-link" href="dashboard.html#aiInsights">
+                        <span class="si">🤖</span>
+                        <span class="sl">AI Insights</span>
+                    </a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Account</div>
+
+                    <a class="sb-link" href="profile.html">
+                        <span class="si">👤</span>
+                        <span class="sl">Profile</span>
+                    </a>
+
+                    <a class="sb-link" href="alerts.html">
+                        <span class="si">🔔</span>
+                        <span class="sl">Notifications</span>
+                    </a>
+
+                    <a class="sb-link" href="#" onclick="logout(); return false;">
+                        <span class="si">🚪</span>
+                        <span class="sl">Logout</span>
+                    </a>
+                </div>
+            `
+ const bulk=`
+                <div class="sb-section">
+                    <div class="sb-label">Main</div>
+
+                    <a class="sb-link" href="dashboard.html">
+                        <span class="si">📊</span>
+                        <span class="sl">Dashboard</span>
+                    </a>
+                </div>
+
+                <div class="sb-section"><div class="sb-label">Bulk Buying</div><a class="sb-link active" href="marketplace.html"><span class="si">🛒</span><span class="sl">Marketplace</span></a><a class="sb-link" href="wholesaler-offers.html"><span class="si">🤝</span><span class="sl">My Offers</span></a><a class="sb-link" href="cart.html"><span class="si">🛍️</span><span class="sl">Bulk Cart</span></a></div>
+ <div class="sb-section"><div class="sb-label">Orders</div><a class="sb-link" href="buyer-orders.html"><span class="si">📦</span><span class="sl">Bulk Orders</span></a><a class="sb-link" href="buyer-logistics.html"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a><a class="sb-link" href="payments.html"><span class="si">💳</span><span class="sl">Payments & Invoices</span></a></div>
+ <div class="sb-section"><div class="sb-label">Communication</div><a class="sb-link" href="meeting.html"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a></div>
+ <div class="sb-section"><div class="sb-label">AI & Insights</div><a class="sb-link" href="dashboard.html#aiInsights"><span class="si">🤖</span><span class="sl">AI Insights</span></a></div>
+ <div class="sb-section"><div class="sb-label">Account</div><a class="sb-link" href="profile.html"><span class="si">🏢</span><span class="sl">Business Profile</span></a><a class="sb-link" href="alerts.html"><span class="si">🔔</span><span class="sl">Notifications</span></a><a class="sb-link" href="#" onclick="logout();return false"><span class="si">🚪</span><span class="sl">Logout</span></a></div>`;
+ document.getElementById("sidebar").innerHTML=r==="WHOLESALER"||r==="BULK_BUYER"||r==="BULK BUYER"?bulk:vendor;
+ document.getElementById("rolePill").textContent=r==="WHOLESALER"||r==="BULK_BUYER"||r==="BULK BUYER"?"🏭 Bulk Buyer":"🛒 Buyer";
+ document.getElementById("bulkFilter").classList.toggle("show",r==="WHOLESALER"||r==="BULK_BUYER"||r==="BULK BUYER");
+}
+
+async function api(url,opts={}){
+ const res=await fetch(API_BASE+url,{...opts,headers:{"Authorization":"Bearer "+token(),"Content-Type":"application/json",...(opts.headers||{})}});
+ const data=await res.json().catch(()=>({}));
+ if(res.status===401){logout();return null}
+ if(!res.ok||!data.success)throw new Error(data.message||"Request failed");
+ return data;
+}
+
+async function init(){
+ if(!token()){location.href="login.html";return}
+ try{
+  const p=await api("/api/auth/profile"); currentUser=p.user; localStorage.setItem("user",JSON.stringify(currentUser));
+  const role=String(currentUser.role||"").toUpperCase();
+  if(!["VENDOR","WHOLESALER","BULK_BUYER","BULK BUYER"].includes(role)){alert("Marketplace is available only to Buyer and Bulk Buyer accounts.");location.href="dashboard.html";return}
+  renderSidebar(role); await loadFavorites(); await loadMarketplace();
+ }catch(e){document.getElementById("grid").innerHTML=`<div class="state">⚠️ ${esc(e.message)}</div>`}
+}
+
+async function loadFavorites(){try{const d=await api("/api/marketplace/favorites");favoriteIds=new Set((d.listings||[]).map(x=>x.id))}catch(e){}}
+
+function params() {
+    const p = new URLSearchParams();
+
+    const search =
+        document
+            .getElementById("search")
+            .value
+            .trim();
+
+    if (search) {
+        p.set("search", search);
+    }
+
+    const category =
+        document
+            .getElementById("category")
+            .value;
+
+    if (category && category !== "ALL") {
+        p.set("category", category);
+    }
+
+    const location =
+        document
+            .getElementById("location")
+            .value;
+
+    if (location && location !== "ALL") {
+        p.set("location", location);
+    }
+
+    const minPrice =
+        document
+            .getElementById("minPrice")
+            .value
+            .trim();
+
+    if (minPrice) {
+        p.set("min_price", minPrice);
+    }
+
+    const maxPrice =
+        document
+            .getElementById("maxPrice")
+            .value
+            .trim();
+
+    if (maxPrice) {
+        p.set("max_price", maxPrice);
+    }
+
+    const sort =
+        document
+            .getElementById("sort")
+            .value;
+
+    if (sort) {
+        p.set("sort", sort);
+    }
+
+    const minQty =
+        document
+            .getElementById("minQty")
+            .value
+            .trim();
+
+    if (minQty) {
+        p.set("min_quantity", minQty);
+    }
+
+    return p.toString();
+}
+async function loadMarketplace() {
+    if (mode !== "produce") {
+        return;
+    }
+
+    try {
+        const query = params();
+
+        const data =
+            await api(
+                "/api/marketplace" +
+                (query ? "?" + query : "")
+            );
+
+        listings =
+            data.listings || [];
+
+        const categories =
+            data.filters?.categories || [];
+
+        const locations =
+            data.filters?.locations || [];
+
+        const categorySelect =
+            document.getElementById("category");
+
+        const locationSelect =
+            document.getElementById("location");
+
+        const currentCategory =
+            categorySelect.value;
+
+        const currentLocation =
+            locationSelect.value;
+
+        categorySelect.innerHTML =
+            '<option value="ALL">All Crops</option>' +
+            categories
+                .map(
+                    category =>
+                        `<option value="${esc(category)}">${esc(category)}</option>`
+                )
+                .join("");
+
+        locationSelect.innerHTML =
+            '<option value="ALL">All Locations</option>' +
+            locations
+                .map(
+                    location =>
+                        `<option value="${esc(location.value)}">${esc(location.label)}</option>`
+                )
+                .join("");
+
+        if (
+            categories.includes(
+                currentCategory
+            )
+        ) {
+            categorySelect.value =
+                currentCategory;
+        } else {
+            categorySelect.value =
+                "ALL";
+        }
+
+        if (
+            locations.some(
+                location =>
+                    location.value === currentLocation
+            )
+        ) {
+            locationSelect.value =
+                currentLocation;
+        } else {
+            locationSelect.value =
+                "ALL";
+        }
+
+        document.getElementById(
+            "resultCount"
+        ).textContent =
+            `${listings.length} listing${listings.length === 1 ? "" : "s"}`;
+
+        renderListings();
+
+    } catch (error) {
+        document.getElementById(
+            "grid"
+        ).innerHTML =
+            `<div class="state">⚠️ ${esc(error.message)}</div>`;
+    }
+}
+
+function renderListings(){
+ const grid=document.getElementById("grid");
+ if(!listings.length){grid.innerHTML='<div class="state">🌱<br><br>No matching produce found.</div>';return}
+ grid.innerHTML=listings.map(x=>{
+  const img=x.image_url?(x.image_url.startsWith("/")?API_BASE+x.image_url:x.image_url):"";
+  return `<article class="card"><div class="photo">${img?`<img src="${esc(img)}" onerror="this.parentElement.innerHTML='🌾'">`:"🌾"}</div><div class="body">
+  <div class="top"><div><div class="crop">${esc(x.produce_name||"Produce")}</div><div class="category">${esc(x.category||"Other")}</div></div></div>
+  <div class="farmer">
+      <b>👨‍🌾 ${esc(x.farmer_name)}</b>
+      <span>📍 ${esc(x.location || x.state || "Location not specified")}</span>
+      ${Number.isFinite(Number(x.distance_km)) ? `<span class="distance-badge">📍 ${fmt(x.distance_km)} km away</span>` : ""}
+  </div>
+  <div class="facts"><div class="fact"><small>AVAILABLE</small><strong>${fmt(x.available_quantity)} ${esc(x.unit)}</strong></div><div class="fact"><small>MIN. ORDER</small><strong>${fmt(x.minimum_order_quantity)} ${esc(x.unit)}</strong></div></div>
+  <div class="price">₹${fmt(x.price_per_unit)} <small>/ ${esc(x.unit)}</small></div>
+  <div class="actions"><button class="btn primary" onclick="viewDetails('${esc(x.id)}')">View Details</button></div>
+  </div></article>`}).join("");
+}
+
+async function toggleFavorite(id,btn){
+ try{
+  if(favoriteIds.has(id)){await api("/api/marketplace/favorites/"+encodeURIComponent(id),{method:"DELETE"});favoriteIds.delete(id);btn.textContent="♡";btn.classList.remove("saved");toast("Removed from favorites")}
+  else{await api("/api/marketplace/favorites",{method:"POST",body:JSON.stringify({listing_id:id})});favoriteIds.add(id);btn.textContent="❤️";btn.classList.add("saved");toast("Added to favorites")}
+ }catch(e){toast(e.message)}
+}
+
+async function addCart(id){
+ const x=listings.find(v=>v.id===id);if(!x)return;
+ const qty=prompt(`Enter quantity (${x.unit}). Minimum: ${x.minimum_order_quantity}`,x.minimum_order_quantity||1);
+ if(qty===null)return;
+ try{await api("/api/marketplace/cart",{method:"POST",body:JSON.stringify({listing_id:id,quantity:Number(qty)})});toast("Added to cart")}
+ catch(e){toast(e.message)}
+}
+
+function viewDetails(id){
+ const x=listings.find(v=>v.id===id);if(!x)return;
+ const img=x.image_url?(x.image_url.startsWith("/")?API_BASE+x.image_url:x.image_url):"";
+ document.getElementById("modalContent").innerHTML=`<div class="modal-grid"><div class="modal-photo">${img?`<img src="${esc(img)}" onerror="this.parentElement.innerHTML='🌾'">`:"🌾"}</div><div class="modal-info"><h2>${esc(x.produce_name)}</h2><div class="category">${esc(x.category)}</div><p><b>👨‍🌾 ${esc(x.farmer_name)}</b><br>📍 ${esc(x.location||"Location not specified")}</p><div class="modal-facts"><div class="modal-fact"><small>PRICE</small><strong>₹${fmt(x.price_per_unit)} / ${esc(x.unit)}</strong></div><div class="modal-fact"><small>AVAILABLE</small><strong>${fmt(x.available_quantity)} ${esc(x.unit)}</strong></div><div class="modal-fact"><small>MINIMUM ORDER</small><strong>${fmt(x.minimum_order_quantity)} ${esc(x.unit)}</strong></div><div class="modal-fact"><small>QUALITY</small><strong>✓ ${esc(x.quality_status)}</strong></div><div class="modal-fact"><small>STATE</small><strong>${esc(x.state||"—")}</strong></div><div class="modal-fact"><small>LISTING ID</small><strong>${esc(x.listing_id||"—")}</strong></div></div><p>${esc(x.description||"No description provided.")}</p><div class="actions"><button class="btn primary" onclick="addCart('${esc(x.id)}');closeModal()">🛒 Add to Cart</button><button class="btn" onclick="toggleFavoriteFromDetails('${esc(x.id)}')">${favoriteIds.has(x.id)?"❤️ Remove from Favorites":"♡ Add to Favorites"}</button></div></div></div>`;
+ document.getElementById("modal").classList.add("show");
+}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+async function toggleFavoriteFromDetails(id){
+ try{
+  const btnId = "detailsFavoriteBtn";
+  if(favoriteIds.has(id)){
+   await api("/api/marketplace/favorites/"+encodeURIComponent(id),{method:"DELETE"});
+   favoriteIds.delete(id);
+   toast("Removed from favorites");
+  }else{
+   await api("/api/marketplace/favorites",{method:"POST",body:JSON.stringify({listing_id:id})});
+   favoriteIds.add(id);
+   toast("Added to favorites");
+  }
+  viewDetails(id);
+ }catch(e){toast(e.message)}
+}
+
+async function switchMode(next){
+ mode=next;document.getElementById("produceTab").classList.toggle("active",next==="produce");document.getElementById("farmerTab").classList.toggle("active",next==="farmer");
+ document.getElementById("toolbar").style.display = next === "produce" ? "grid" : "none";document.getElementById("bulkFilter").style.display=next==="produce"&&(["WHOLESALER","BULK_BUYER","BULK BUYER"].includes(String(currentUser.role).toUpperCase()))?"block":"none";
+ document.getElementById("grid").style.display=next==="produce"?"grid":"none";document.getElementById("farmerGrid").style.display=next==="farmer"?"grid":"none";
+ document.getElementById("resultsTitle").textContent=next==="produce"?"Available Produce":"Farmers on AgriCentre";
+ if(next==="farmer")await loadFarmers();else await loadMarketplace();
+}
+
+async function loadFarmers(){
+ const q=document.getElementById("search").value.trim();try{const d=await api("/api/marketplace/farmers"+(q?"?search="+encodeURIComponent(q):""));const box=document.getElementById("farmerGrid");document.getElementById("resultCount").textContent=`${d.count||0} farmer${d.count===1?"":"s"}`;if(!d.farmers?.length){box.innerHTML='<div class="state">👨‍🌾<br><br>No farmers found.</div>';return}box.innerHTML=d.farmers.map(f=>`<article class="farmer-card"><h3>👨‍🌾 ${esc(f.farmer_name)}</h3><div class="loc">📍 ${esc(f.location||f.district||f.state||"Location not specified")}</div><div>${f.produce.map(p=>`<div class="produce-row"><span>${esc(p.produce_name)}</span><strong>${fmt(p.available_quantity)} ${esc(p.unit)} · ₹${fmt(p.price_per_unit)}</strong></div>`).join("")}</div><button class="btn primary" style="margin-top:13px;width:100%" onclick="browseFarmer('${esc(f.farmer_id)}')">View Farmer's Produce</button></article>`).join("")}catch(e){document.getElementById("farmerGrid").innerHTML=`<div class="state">⚠️ ${esc(e.message)}</div>`}}
+async function browseFarmer(id){mode="produce";document.getElementById("produceTab").classList.add("active");document.getElementById("farmerTab").classList.remove("active");document.getElementById("toolbar").style.display="grid";document.getElementById("farmerGrid").style.display="none";document.getElementById("grid").style.display="grid";document.getElementById("resultsTitle").textContent="Farmer's Produce";try{const d=await api("/api/marketplace?farmer_id="+encodeURIComponent(id));listings=d.listings||[];document.getElementById("resultCount").textContent=`${listings.length} listing${listings.length===1?"":"s"}`;renderListings()}catch(e){toast(e.message)}}
+
+[
+    "search",
+    "category",
+    "location",
+    "minPrice",
+    "maxPrice",
+    "sort",
+    "minQty"
+].forEach(
+    id => {
+        const element =
+            document.getElementById(id);
+
+        if (!element) {
+            return;
+        }
+
+        element.addEventListener(
+            id === "search"
+                ? "input"
+                : "change",
+            () => {
+                clearTimeout(
+                    window._timer
+                );
+
+                window._timer =
+                    setTimeout(
+                        () =>
+                            mode === "produce"
+                                ? loadMarketplace()
+                                : loadFarmers(),
+                        300
+                    );
+            }
+        );
+    }
+);
+
+document
+    .getElementById("clearFilters")
+    .addEventListener(
+        "click",
+        () => {
+            document.getElementById("search").value = "";
+            document.getElementById("category").value = "ALL";
+            document.getElementById("location").value = "ALL";
+            document.getElementById("minPrice").value = "";
+            document.getElementById("maxPrice").value = "";
+            document.getElementById("sort").value = "newest";
+            document.getElementById("minQty").value = "";
+
+            document
+                .querySelectorAll(".preset")
+                .forEach(
+                    button =>
+                        button.classList.remove("active")
+                );
+
+            loadMarketplace();
+        }
+    );
+
+document.querySelectorAll(".preset").forEach(b=>b.addEventListener("click",()=>{document.getElementById("minQty").value=b.dataset.q;document.querySelectorAll(".preset").forEach(x=>x.classList.remove("active"));b.classList.add("active");loadMarketplace()}));
+document.getElementById("sidebarToggle").addEventListener("click",()=>{const s=document.getElementById("sidebar"),m=document.getElementById("mainArea");if(window.innerWidth<=800)s.classList.toggle("open");else{s.classList.toggle("collapsed");m.classList.toggle("expanded")}});
+document.addEventListener("DOMContentLoaded",init);
+</script>
+</body>
+</html>

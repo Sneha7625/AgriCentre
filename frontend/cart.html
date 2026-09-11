@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart — AgriCentre</title>
+    <style>
+        :root {
+            --brand: #2f9e5c;
+            --brand-dark: #1f7a44;
+            --brand-light: #5cc98a;
+            --bg: #0d0e10;
+            --bg2: #14161a;
+            --bg3: #1c1f25;
+            --surface: #22262e;
+            --border: #2e3340;
+            --text: #e8eaf0;
+            --muted: #8b909e;
+            --sidebar-w: 258px;
+            --nav-h: 64px;
+            --tr: 0.22s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        /* ========================= NAVBAR ========================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: var(--nav-h);
+            background: var(--bg2);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 12px;
+            box-shadow: 0 2px 12px #0005;
+        }
+
+        .nav-toggle {
+            background: none;
+            border: 0;
+            color: #fff;
+            font-size: 20px;
+            padding: 6px 8px;
+            cursor: pointer;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand);
+            border-radius: 8px;
+            font-size: 20px;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font: 700 32px Rajdhani, sans-serif;
+            line-height: 1;
+        }
+
+        .brand-nameX {
+            color: var(--brand);
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: #ddd;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            margin-left: auto;
+            display: flex;
+            gap: 5px;
+        }
+
+        .nav-links a {
+            color: #9aa7bb;
+            padding: 9px 11px;
+            border-radius: 7px;
+            font-size: 13px;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            background: #ffffff0f;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 7px;
+            margin-left: 8px;
+        }
+
+        .nav-btn {
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--surface);
+            color: #fff;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: -5px;
+            right: -4px;
+            background: var(--brand);
+            font-size: 9px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ========================= LAYOUT ========================= */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--nav-h);
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg2);
+            position: fixed;
+            top: var(--nav-h);
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 900;
+            transition: width var(--tr), transform var(--tr);
+        }
+
+        .sidebar.collapsed {
+            width: 62px;
+        }
+
+        .sb-section {
+            padding: 6px 0;
+        }
+
+        .sb-label {
+            padding: 6px 18px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: #4a5a74;
+        }
+
+        .sb-link {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 9px 18px;
+            color: #7a90aa;
+            font-size: 13px;
+            border-left: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .sb-link:hover {
+            color: #fff;
+            background: #2f9e5c1f;
+        }
+
+        .sb-link.active {
+            color: var(--brand-light);
+            border-left-color: var(--brand);
+            background: #2f9e5c26;
+        }
+
+        .si {
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sl {
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed .sb-label,
+        .sidebar.collapsed .sl {
+            opacity: 0;
+            width: 0;
+        }
+
+        .main {
+            width: calc(100% - var(--sidebar-w));
+            min-height: calc(100vh - var(--nav-h));
+            margin-left: var(--sidebar-w);
+            display: flex;
+            flex-direction: column;
+            transition: margin-left var(--tr), width var(--tr);
+        }
+
+        .main.expanded {
+            width: calc(100% - 62px);
+            margin-left: 62px;
+        }
+
+        /* ========================= PAGE ========================= */
+        .page-content {
+            flex: 1;
+            padding: 34px 48px 42px;
+        }
+
+        .page-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .eyebrow {
+            color: var(--brand-light);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .title {
+            color: #fff;
+            font: 700 32px Rajdhani, sans-serif;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 7px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .cart-wrap {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 320px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .cart-list {
+            overflow: hidden;
+        }
+
+        .item {
+            display: grid;
+            grid-template-columns: 96px minmax(0, 1fr);
+            gap: 18px;
+            padding: 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .item:last-child {
+            border-bottom: 0;
+        }
+
+        .thumb {
+            width: 96px;
+            height: 82px;
+            border-radius: 10px;
+            background: var(--bg3);
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            font-size: 34px;
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .name {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+            margin-top: 6px;
+        }
+
+        .price {
+            color: var(--brand-light);
+            font-weight: 800;
+            margin-top: 7px;
+            font-size: 13px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .qty {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .qty button {
+            width: 30px;
+            height: 30px;
+            border: 0;
+            background: var(--bg3);
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .qty span {
+            min-width: 58px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .remove {
+            border: 0;
+            background: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .remove:hover {
+            color: #f87171;
+        }
+
+        .summary {
+            padding: 20px;
+            position: sticky;
+            top: 84px;
+        }
+
+        .summary h3 {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            color: var(--muted);
+            font-size: 13px;
+            margin: 13px 0;
+        }
+
+        .row.total {
+            color: var(--text);
+            font-size: 17px;
+            font-weight: 800;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+
+        .offer-btn,
+        .primary {
+            display: inline-block;
+            border: 0;
+            border-radius: 8px;
+            background: var(--brand);
+            color: #fff;
+            padding: 10px 15px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .offer-btn {
+            width: 100%;
+            margin-top: 14px;
+            padding: 12px;
+        }
+
+        .offer-btn:hover,
+        .primary:hover {
+            background: var(--brand-dark);
+        }
+
+        .note {
+            color: var(--muted);
+            background: var(--bg3);
+            border-radius: 8px;
+            padding: 11px;
+            margin-top: 12px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 70px 20px;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .empty h3 {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+
+        .empty p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .loading {
+            color: var(--muted);
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        /* ========================= FOOTER ========================= */
+        footer {
+            width: 100%;
+            flex-shrink: 0;
+            background: var(--bg2);
+            color: #8fa0b8;
+            padding: 44px 40px 0;
+            margin-top: 0;
+        }
+
+        .ft-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 36px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #ffffff14;
+        }
+
+        .ft-brand {
+            color: #fff;
+            font: 700 1.4rem Rajdhani, sans-serif;
+            margin-bottom: 9px;
+        }
+
+        .ft-brand span {
+            color: var(--brand);
+        }
+
+        .ft-desc {
+            max-width: 330px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .ft-col h4 {
+            color: #fff;
+            font-size: 12px;
+            margin-bottom: 13px;
+            text-transform: uppercase;
+        }
+
+        .ft-col a {
+            display: block;
+            color: #8fa0b8;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .ft-col a:hover {
+            color: var(--brand-light);
+        }
+
+        .sub-box {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .sub-box p {
+            font-size: 12px;
+        }
+
+        .sub-form {
+            display: flex;
+            gap: 7px;
+        }
+
+        .sub-input {
+            flex: 1;
+            min-width: 0;
+            padding: 9px 12px;
+            border: 1px solid #ffffff1f;
+            border-radius: 8px;
+            background: #ffffff0f;
+            color: #fff;
+            outline: none;
+        }
+
+        .sub-input:focus {
+            border-color: var(--brand);
+        }
+
+        .sub-btn {
+            padding: 9px 16px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--brand);
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .ft-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 14px 0;
+            font-size: 11px;
+        }
+
+        .ft-links {
+            display: flex;
+            gap: 14px;
+        }
+
+        /* ========================= TOAST ========================= */
+        .toast {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 2000;
+            display: none;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: var(--surface);
+            color: #fff;
+            font-size: 13px;
+            box-shadow: 0 8px 30px #0008;
+        }
+
+        /* ========================= RESPONSIVE ========================= */
+        @media (max-width: 1100px) {
+            .ft-grid {
+                grid-template-columns: 1.5fr 1fr 1fr;
+            }
+
+            .ft-grid > :last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .cart-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-w);
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main,
+            .main.expanded {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .page-content {
+                padding: 28px 20px 34px;
+            }
+
+            .page-head {
+                display: block;
+            }
+
+            .item {
+                grid-template-columns: 72px minmax(0, 1fr);
+                gap: 13px;
+                padding: 14px;
+            }
+
+            .thumb {
+                width: 72px;
+                height: 64px;
+            }
+
+            .ft-grid {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+
+            .ft-grid > :last-child {
+                grid-column: auto;
+            }
+
+            footer {
+                padding: 35px 20px 0;
+            }
+        }
+        .offer-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.offer-modal.show {
+    display: flex;
+}
+
+.offer-modal-box {
+    width: min(520px, 100%);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 25px 80px #0008;
+}
+
+.offer-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.offer-modal-header h2 {
+    color: #fff;
+    font-size: 20px;
+}
+
+.offer-close {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--bg3);
+    color: #fff;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.offer-field {
+    margin-bottom: 16px;
+}
+
+.offer-field label {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.offer-field input,
+.offer-field select,
+.offer-field textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg3);
+    color: #fff;
+    outline: none;
+}
+
+.offer-field textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.offer-total {
+    padding: 13px;
+    margin-bottom: 18px;
+    border-radius: 9px;
+    background: #2f9e5c18;
+    border: 1px solid #2f9e5c55;
+    color: var(--brand-light);
+    font-weight: 700;
+}
+
+.offer-submit {
+    width: 100%;
+    padding: 12px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--brand);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.offer-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <button class="nav-toggle" id="sidebarToggle">☰</button>
+
+        <a href="index.html" class="nav-brand">
+            <div class="logo">🚜</div>
+            <div class="brand-text">
+                <span class="brand-name">Agri<span class="brand-nameX">Centre</span></span>
+                <span class="brand-subtitle">Smart India Hackathon 2026</span>
+            </div>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="features.html">Features</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="team.html">Team</a>
+            <a href="contact.html">Contact</a>
+            <a href="profile.html">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+
+        <div class="nav-right">
+            <button class="nav-btn" onclick="location.href='alerts.html'">
+                🔔
+                <span class="nav-badge">3</span>
+            </button>
+            <button class="nav-btn" onclick="location.href='ai-assistant.html'">🤖</button>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <main class="main" id="mainArea">
+            <section class="page-content">
+                <div class="page-head">
+                    <div>
+                        <div class="eyebrow">Shopping</div>
+                        <h1 class="title">My Cart</h1>
+                        <p class="subtitle">Review your selected produce before making an offer.</p>
+                    </div>
+                </div>
+
+                <div id="content">
+                    <div class="loading">Loading your cart...</div>
+                </div>
+            </section>
+
+            <footer>
+                <div class="ft-grid">
+                    <div>
+                        <div class="ft-brand">Agri<span>Centre</span></div>
+                        <p class="ft-desc">
+                            A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.
+                        </p>
+                    </div>
+
+                    <div class="ft-col">
+                        <h4>Platform</h4>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="marketplace.html">Marketplace</a>
+                        <a href="buyer-orders.html">Orders</a>
+                        <a href="quality.html">Quality &amp; Certification</a>
+                    </div>
+
+                    <div class="ft-col">
+                        <h4>AI &amp; Tools</h4>
+                        <a href="dashboard.html#aiInsights">AI Market Insights</a>
+                        <a href="ai-assistant.html">AI Assistant</a>
+                        <a href="reports.html">Reports Center</a>
+                    </div>
+
+                    <div class="ft-col">
+                        <h4>Stay Updated</h4>
+                        <div class="sub-box">
+                            <p>Get alerts and platform updates via email.</p>
+                            <form class="sub-form" id="subForm">
+                                <input class="sub-input" id="subEmail" type="email" placeholder="Your email address" required>
+                                <button class="sub-btn" type="submit">Subscribe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ft-bottom">
+                    <span>© 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution</span>
+                    <div class="ft-links">
+                        <a href="privacy.html">Privacy &amp; Terms</a>
+                        <a href="contact.html">Contact</a>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+    <div
+    class="offer-modal"
+    id="offerModal"
+    onclick="closeOfferModal(event)"
+>
+    <div
+        class="offer-modal-box"
+        onclick="event.stopPropagation()"
+    >
+
+        <div class="offer-modal-header">
+
+            <h2>
+                Make an Offer
+            </h2>
+
+            <button
+                class="offer-close"
+                type="button"
+                onclick="closeOfferModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="offer-field">
+
+            <label for="offerListing">
+                Produce
+            </label>
+
+            <select
+                id="offerListing"
+                onchange="loadOfferItem()"
+            ></select>
+
+        </div>
+
+        <div class="offer-field">
+
+            <label for="offerQuantity">
+                Quantity
+            </label>
+
+            <input
+                type="number"
+                id="offerQuantity"
+                min="1"
+                step="1"
+                oninput="updateOfferTotal()"
+            >
+
+        </div>
+
+        <div class="offer-field">
+
+            <label for="offerPrice">
+                Your Offered Price per KG
+            </label>
+
+            <input
+                type="number"
+                id="offerPrice"
+                min="0.01"
+                step="0.01"
+                oninput="updateOfferTotal()"
+            >
+
+        </div>
+
+        <div
+            class="offer-total"
+            id="offerTotal"
+        >
+            Total offered value: ₹0
+        </div>
+
+        <div class="offer-field">
+
+            <label for="offerNotes">
+                Note to Farmer
+            </label>
+
+            <textarea
+                id="offerNotes"
+                placeholder="Optional message..."
+            ></textarea>
+
+        </div>
+
+        <button
+            class="offer-submit"
+            id="offerSubmitBtn"
+            type="button"
+            onclick="submitOffer()"
+        >
+            Submit Offer
+        </button>
+
+    </div>
+</div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const API = "http://127.0.0.1:5000/api";
+
+        function getToken() {
+            return localStorage.getItem("token");
+        }
+
+        function authHeaders(includeJson = true) {
+            const headers = {
+                "Authorization": `Bearer ${getToken()}`
+            };
+
+            if (includeJson) {
+                headers["Content-Type"] = "application/json";
+            }
+
+            return headers;
+        }
+        let user = null;
+        let items = [];
+
+        function esc(value) {
+            return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            })[char]);
+        }
+
+        function isBulk() {
+            const role = String(user?.role || "VENDOR").toUpperCase();
+            return ["WHOLESALER", "BULK_BUYER", "BULK BUYER"].includes(role);
+        }
+
+        function toast(message) {
+            const element = document.getElementById("toast");
+            element.textContent = message;
+            element.style.display = "block";
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                element.style.display = "none";
+            }, 2200);
+        }
+
+        function logout() {
+            fetch(`${API}/auth/logout`, {
+                method: "POST",
+                credentials: "include"
+            }).finally(() => {
+                location.href = "login.html";
+            });
+        }
+
+        function renderSidebar() {
+            const vendorSidebar = `
+                <div class="sb-section">
+                    <div class="sb-label">Main</div>
+                    <a class="sb-link" href="dashboard.html"><span class="si">📊</span><span class="sl">Dashboard</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Shopping</div>
+                    <a class="sb-link" href="marketplace.html"><span class="si">🛒</span><span class="sl">Marketplace</span></a>
+                    <a class="sb-link active" href="cart.html"><span class="si">🛍️</span><span class="sl">My Cart</span></a>
+                    <a class="sb-link" href="favorites.html"><span class="si">❤️</span><span class="sl">Favorites</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Orders &amp; Delivery</div>
+                    <a class="sb-link" href="buyer-orders.html"><span class="si">📦</span><span class="sl">My Orders</span></a>
+                    <a class="sb-link" href="buyer-logistics.html"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Communication</div>
+                    <a class="sb-link" href="meeting.html"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">AI &amp; Insights</div>
+                    <a class="sb-link" href="dashboard.html#aiInsights"><span class="si">🤖</span><span class="sl">AI Insights</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Account</div>
+                    <a class="sb-link" href="profile.html"><span class="si">👤</span><span class="sl">Profile</span></a>
+                    <a class="sb-link" href="alerts.html"><span class="si">🔔</span><span class="sl">Notifications</span></a>
+                    <a class="sb-link" href="#" onclick="logout(); return false;"><span class="si">🚪</span><span class="sl">Logout</span></a>
+                </div>`;
+
+            const bulkSidebar = `
+                <div class="sb-section">
+                    <div class="sb-label">Main</div>
+                    <a class="sb-link" href="dashboard.html"><span class="si">📊</span><span class="sl">Dashboard</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Bulk Buying</div>
+                    <a class="sb-link" href="marketplace.html"><span class="si">🛒</span><span class="sl">Marketplace</span></a>
+                    <a class="sb-link" href="wholesaler-offers.html"><span class="si">🤝</span><span class="sl">My Offers</span></a>
+                    <a class="sb-link active" href="cart.html"><span class="si">🛍️</span><span class="sl">Bulk Cart</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Orders</div>
+                    <a class="sb-link" href="buyer-orders.html"><span class="si">📦</span><span class="sl">Bulk Orders</span></a>
+                    <a class="sb-link" href="buyer-logistics.html"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a>
+                    <a class="sb-link" href="payments.html"><span class="si">💳</span><span class="sl">Payments &amp; Invoices</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Communication</div>
+                    <a class="sb-link" href="meeting.html"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">AI &amp; Insights</div>
+                    <a class="sb-link" href="dashboard.html#aiInsights"><span class="si">🤖</span><span class="sl">AI Insights</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Account</div>
+                    <a class="sb-link" href="profile.html"><span class="si">🏢</span><span class="sl">Business Profile</span></a>
+                    <a class="sb-link" href="alerts.html"><span class="si">🔔</span><span class="sl">Notifications</span></a>
+                    <a class="sb-link" href="#" onclick="logout(); return false;"><span class="si">🚪</span><span class="sl">Logout</span></a>
+                </div>`;
+
+            document.getElementById("sidebar").innerHTML = isBulk() ? bulkSidebar : vendorSidebar;
+        }
+
+        async function getUser() {
+    try {
+        const response = await fetch(`${API}/auth/profile`, {
+            method: "GET",
+            headers: authHeaders()
+        });
+
+        if (response.status === 401) {
+            logout();
+            return;
+        }
+
+        if (response.ok) {
+            const data = await response.json();
+
+            user = data.user || data;
+
+            localStorage.setItem(
+                "user",
+                JSON.stringify(user)
+            );
+        }
+    } catch (error) {
+        console.warn(
+            "Profile request failed:",
+            error
+        );
+    }
+
+    if (!user) {
+        try {
+            user = JSON.parse(
+                localStorage.getItem("user") || "null"
+            );
+        } catch (error) {
+            user = null;
+        }
+    }
+
+    if (!user) {
+        location.href = "login.html";
+        return;
+    }
+
+    renderSidebar();
+}
+
+async function loadCart() {
+            const container = document.getElementById("content");
+
+            try {
+                const response = await fetch(`${API}/marketplace/cart`, {
+                    method: "GET",
+                    headers: authHeaders()
+                });
+
+                const data = await response.json().catch(() => ({}));
+
+                if (response.status === 401) {
+                    logout();
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message ||
+                        data.error ||
+                        "Could not load cart"
+                    );
+                }
+
+                items = data.items || data.cart || [];
+                renderCart();
+            } catch (error) {
+                console.error(error);
+
+                container.innerHTML = `
+                    <div class="card empty">
+                        <div class="empty-icon">⚠️</div>
+                        <h3>Could not load your cart</h3>
+                        <p>${esc(error.message || "Please try again.")}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCart() {
+            const container = document.getElementById("content");
+
+            if (!items.length) {
+                container.innerHTML = `
+                    <div class="card empty">
+                        <div class="empty-icon">🧺</div>
+                        <h3>Your cart is empty</h3>
+                        <p>Add produce from the marketplace, then come back here to make an offer.</p>
+                        <a class="primary" href="marketplace.html">Browse Marketplace</a>
+                    </div>`;
+                return;
+            }
+
+            const totalValue = items.reduce((sum, item) => {
+                const price = Number(item.price_per_unit ?? item.price ?? 0);
+                const quantity = Number(item.quantity ?? 0);
+                return sum + price * quantity;
+            }, 0);
+
+            const totalQuantity = items.reduce((sum, item) => {
+                return sum + Number(item.quantity ?? 0);
+            }, 0);
+
+            container.innerHTML = `
+                <div class="cart-wrap">
+                    <div class="card cart-list">
+                        ${items.map((item, index) => renderItem(item, index)).join("")}
+                    </div>
+
+                    <aside class="card summary">
+                        <h3>Cart Summary</h3>
+                        <div class="row">
+                            <span>Items</span>
+                            <strong>${items.length}</strong>
+                        </div>
+                        <div class="row">
+                            <span>Total quantity</span>
+                            <strong>${totalQuantity.toLocaleString("en-IN")} KG</strong>
+                        </div>
+                        <div class="row total">
+                            <span>Estimated value</span>
+                            <span>₹${totalValue.toLocaleString("en-IN")}</span>
+                        </div>
+                        <button class="offer-btn" onclick="makeOffer()">Make Offer</button>
+                        <div class="note">
+                            Make an offer from your cart. The selected farmer will receive it for acceptance.
+                        </div>
+                    </aside>
+                </div>`;
+        }
+
+        function renderItem(item, index) {
+            const id = item.id;
+            const quantity = Number(item.quantity || 1);
+            const price = Number(item.price_per_unit ?? item.price ?? 0);
+            const total = quantity * price;
+            const image = item.image_url
+                ? (item.image_url.startsWith("/")
+                    ? `http://127.0.0.1:5000${item.image_url}`
+                    : item.image_url)
+                : "";
+
+            return `
+                <div class="item">
+                    <div class="thumb">
+                        ${image
+                            ? `<img src="${esc(image)}" alt="${esc(item.produce_name || "Produce")}" onerror="this.style.display='none'; this.parentElement.textContent='🌾';">`
+                            : "🌾"}
+                    </div>
+
+                    <div>
+                        <div class="name">${esc(item.produce_name || item.name || "Produce")}</div>
+                        <div class="meta">
+                            Farmer: ${esc(item.farmer_name || "Farmer")}<br>
+                            ${esc(item.location || "Location not specified")}
+                        </div>
+                        <div class="price">
+                            ₹${price.toLocaleString("en-IN")} / KG · ₹${total.toLocaleString("en-IN")} total
+                        </div>
+
+                        <div class="controls">
+                            <div class="qty">
+                                <button onclick="changeQuantity(${index}, -1)">−</button>
+                                <span>${quantity} KG</span>
+                                <button onclick="changeQuantity(${index}, 1)">+</button>
+                            </div>
+                            <button class="remove" onclick="removeItem('${esc(id)}')">Remove</button>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        async function changeQuantity(index, delta) {
+    const item = items[index];
+
+    if (!item) {
+        return;
+    }
+
+    let quantity =
+        Number(item.quantity || 1) + delta;
+
+    if (isBulk()) {
+        quantity = Math.max(100, quantity);
+    } else {
+        quantity = Math.max(1, quantity);
+    }
+
+    const id =item.id;
+
+    try {
+        const response = await fetch(
+            `${API}/marketplace/cart`,
+            {
+                method: "POST",
+                headers: authHeaders(),
+                body: JSON.stringify({
+                    listing_id: id,
+                    quantity: quantity
+                })
+            }
+        );
+
+        const data =
+            await response.json().catch(
+                () => ({})
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                "Could not update quantity"
+            );
+        }
+
+        item.quantity = quantity;
+
+        renderCart();
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+async function removeItem(id) {
+    try {
+        const response = await fetch(
+            `${API}/marketplace/cart/${encodeURIComponent(id)}`,
+            {
+                method: "DELETE",
+                headers: authHeaders(false)
+            }
+        );
+
+        const data = await response.json().catch(
+            () => ({})
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                "Could not remove item"
+            );
+        }
+
+        items = items.filter(
+            (item) =>
+                String(
+                    item.listing_id || item.id
+                ) !== String(id)
+        );
+
+        renderCart();
+
+        toast("Removed from cart");
+
+    } catch (error) {
+        console.error(
+            "Remove cart error:",
+            error
+        );
+
+        toast(error.message);
+    }
+}
+
+function makeOffer() {
+
+if (!items.length) {
+    toast("Your cart is empty.");
+    return;
+}
+
+const select =
+    document.getElementById(
+        "offerListing"
+    );
+
+select.innerHTML =
+    items.map(
+        (item, index) => `
+            <option value="${index}">
+                ${esc(
+                    item.produce_name ||
+                    item.name ||
+                    "Produce"
+                )}
+                — ${Number(
+                    item.quantity || 0
+                ).toLocaleString("en-IN")} KG
+            </option>
+        `
+    ).join("");
+
+loadOfferItem();
+
+document
+    .getElementById("offerModal")
+    .classList.add("show");
+}
+function loadOfferItem() {
+
+const index =
+    Number(
+        document.getElementById(
+            "offerListing"
+        ).value
+    );
+
+const item =
+    items[index];
+
+if (!item) {
+    return;
+}
+
+const quantity =
+    Number(
+        item.quantity || 1
+    );
+
+const listedPrice =
+    Number(
+        item.price_per_unit ??
+        item.price ??
+        0
+    );
+
+document.getElementById(
+    "offerQuantity"
+).value = quantity;
+
+document.getElementById(
+    "offerQuantity"
+).min = isBulk()
+    ? 100
+    : 1;
+
+document.getElementById(
+    "offerPrice"
+).value =
+    listedPrice;
+
+updateOfferTotal();
+}
+
+
+function updateOfferTotal() {
+
+const quantity =
+    Number(
+        document.getElementById(
+            "offerQuantity"
+        ).value || 0
+    );
+
+const price =
+    Number(
+        document.getElementById(
+            "offerPrice"
+        ).value || 0
+    );
+
+const total =
+    quantity * price;
+
+document.getElementById(
+    "offerTotal"
+).textContent =
+    `Total offered value: ₹${total.toLocaleString(
+        "en-IN",
+        {
+            maximumFractionDigits: 2
+        }
+    )}`;
+}
+
+
+function closeOfferModal(event) {
+
+if (
+    event &&
+    event.target !==
+        document.getElementById(
+            "offerModal"
+        )
+) {
+    return;
+}
+
+document
+    .getElementById("offerModal")
+    .classList.remove("show");
+}
+async function submitOffer() {
+
+const index =
+    Number(
+        document.getElementById(
+            "offerListing"
+        ).value
+    );
+
+const item =
+    items[index];
+
+if (!item) {
+    toast("Please select a produce item.");
+    return;
+}
+
+const quantity =
+    Number(
+        document.getElementById(
+            "offerQuantity"
+        ).value
+    );
+
+const offeredPrice =
+    Number(
+        document.getElementById(
+            "offerPrice"
+        ).value
+    );
+
+const notes =
+    document.getElementById(
+        "offerNotes"
+    ).value.trim();
+
+if (!Number.isFinite(quantity) || quantity <= 0) {
+    toast("Enter a valid quantity.");
+    return;
+}
+
+if (!Number.isFinite(offeredPrice) || offeredPrice <= 0) {
+    toast("Enter a valid offered price.");
+    return;
+}
+
+if (
+    isBulk() &&
+    quantity < 100
+) {
+    toast(
+        "Bulk Buyer offers require at least 100 KG."
+    );
+    return;
+}
+
+const listingId =
+    item.id;
+
+const button =
+    document.getElementById(
+        "offerSubmitBtn"
+    );
+
+button.disabled = true;
+button.textContent =
+    "Submitting...";
+
+try {
+
+    const response =
+        await fetch(
+            `${API.replace(
+                "/marketplace",
+                ""
+            )}/offers/create`,
+            {
+                method: "POST",
+
+                headers: authHeaders(),
+
+                body: JSON.stringify({
+
+                    listing_id:
+                        listingId,
+
+                    quantity:
+                        quantity,
+
+                    offered_price:
+                        offeredPrice,
+
+                    notes:
+                        notes
+                })
+            }
+        );
+
+    const data =
+        await response
+            .json()
+            .catch(
+                () => ({})
+            );
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.message ||
+            "Unable to submit offer."
+        );
+    }
+
+    closeOfferModal();
+
+    toast(
+        "Offer submitted successfully. Farmer has been notified."
+    );
+
+    await loadCart();
+
+} catch (error) {
+
+    console.error(
+        "Offer submission error:",
+        error
+    );
+
+    toast(
+        error.message ||
+        "Unable to submit offer."
+    );
+
+} finally {
+
+    button.disabled = false;
+
+    button.textContent =
+        "Submit Offer";
+}
+// Offer was successfully created.
+// Remove the offered item from the buyer's cart.
+try {
+    await fetch(
+        `${API}/marketplace/cart/${encodeURIComponent(listingId)}`,
+        {
+            method: "DELETE",
+            headers: authHeaders(false)
+        }
+    );
+} catch (removeError) {
+    console.warn(
+        "Offer submitted, but cart removal failed:",
+        removeError
+    );
+}
+
+closeOfferModal();
+
+toast(
+    "Offer submitted successfully. The item was removed from your cart."
+);
+
+await loadCart();
+}
+
+        document.getElementById("sidebarToggle").addEventListener("click", () => {
+            const sidebar = document.getElementById("sidebar");
+            const main = document.getElementById("mainArea");
+
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle("open");
+            } else {
+                sidebar.classList.toggle("collapsed");
+                main.classList.toggle("expanded");
+            }
+        });
+
+        document.getElementById("subForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            toast("Thanks! You are subscribed.");
+            event.target.reset();
+        });
+
+        async function init() {
+            await getUser();
+            await loadCart();
+        }
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,3053 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Find Buyers | AgriCentre</title>
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<style>
+
+/* ============================================================
+   BASE
+============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0d1117;
+    --card: #151b23;
+    --card2: #1b232d;
+    --border: #29333f;
+
+    --green: #2f9e5c;
+    --green-dark: #238047;
+    --green-light: #68d891;
+
+    --white: #ffffff;
+    --text: #dce3ea;
+    --muted: #8a98a8;
+
+    --danger: #ef6464;
+
+    --radius: 12px;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--white);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 12px #0005}.nav-toggle{background:none;border:0;color:#fff;font-size:20px;padding:6px 8px;cursor:pointer}.nav-brand{display:flex;align-items:center;gap:10px;color:#fff}.logo{width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--brand);border-radius:8px;font-size:20px}.brand-text{display:flex;flex-direction:column}.brand-name{font:700 32px Rajdhani,sans-serif;line-height:1}.brand-nameX{color:var(--brand)}.brand-subtitle{font-size:11px;color:#ddd;letter-spacing:1px;text-transform:uppercase}.nav-links{margin-left:auto;display:flex;gap:5px}.nav-links a{color:#9aa7bb;padding:9px 11px;border-radius:7px;font-size:13px}.nav-links a:hover{color:#fff;background:#ffffff0f}.nav-links a.active{color:#fff;background:#2f9e5c33}.nav-right{display:flex;gap:7px;margin-left:8px}.nav-btn{width:38px;height:38px;border:0;border-radius:8px;background:var(--surface);color:#fff;cursor:pointer;position:relative}.nav-badge{position:absolute;top:-5px;right:-4px;background:var(--brand);font-size:9px;min-width:16px;height:16px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+
+
+/* ============================================================
+   LAYOUT
+============================================================ */
+
+.layout {
+    min-height: 100vh;
+}
+
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+
+.sidebar {
+    position: fixed;
+
+    left: 0;
+    top: 64px;
+    bottom: 0;
+
+    width: 250px;
+
+    padding: 24px 15px;
+
+    overflow-y: auto;
+
+    background: var(--card);
+
+    border-right:
+        1px solid var(--border);
+
+    z-index: 1500;
+
+    transition: width .25s ease,
+                transform .25s ease;
+}
+
+.sidebar.collapsed {
+    width: 76px;
+}
+
+.sidebar.collapsed .sl,
+.sidebar.collapsed .sb-label {
+    display: none;
+}
+
+.sb-section {
+    margin-bottom: 25px;
+}
+
+.sb-label {
+    color: var(--muted);
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+
+    margin:
+        0 10px
+        10px;
+}
+
+.sb-link {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 11px 12px;
+
+    margin-bottom: 4px;
+
+    border-radius: 8px;
+
+    color: var(--text);
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    transition: .2s;
+}
+
+.sb-link:hover,
+.sb-link.active {
+    background:
+        rgba(47,158,92,.13);
+
+    color: white;
+}
+
+.si {
+    width: 22px;
+
+    flex-shrink: 0;
+
+    text-align: center;
+
+    font-size: 15px;
+}
+
+
+/* ============================================================
+   MAIN
+============================================================ */
+
+.main {
+    margin-left: 250px;
+
+    padding:
+        100px 35px
+        40px;
+
+    min-height: 100vh;
+
+    transition: margin-left .25s ease;
+}
+
+.sidebar.collapsed + .main {
+    margin-left: 76px;
+}
+
+
+/* ============================================================
+   PAGE HEADER
+============================================================ */
+
+.page-head {
+    margin-bottom: 25px;
+}
+
+.eyebrow {
+    color: var(--green-light);
+
+    font-size: 11px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1.5px;
+
+    font-weight: 700;
+}
+
+.page-title {
+    margin:
+        6px 0 5px;
+
+    font-size: 32px;
+
+    font-weight: 800;
+}
+
+.page-subtitle {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   FILTERS
+============================================================ */
+
+.filter-card {
+    background: var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    padding: 18px;
+
+    margin-bottom: 20px;
+}
+
+.filter-grid {
+    display: grid;
+
+    grid-template-columns:
+        2fr
+        1fr
+        1fr
+        auto;
+
+    gap: 12px;
+}
+
+.field {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.field label {
+    color: var(--muted);
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .7px;
+}
+
+.field input,
+.field select {
+    width: 100%;
+
+    padding: 11px 12px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 8px;
+
+    background: var(--card2);
+
+    color: white;
+
+    outline: none;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: var(--green);
+}
+
+.btn {
+    border: 0;
+
+    border-radius: 8px;
+
+    padding:
+        10px 15px;
+
+    cursor: pointer;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.btn-primary {
+    background: var(--green);
+
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--green-dark);
+}
+
+.btn-outline {
+    background: transparent;
+
+    border:
+        1px solid var(--green);
+
+    color: var(--green-light);
+}
+
+.btn-outline:hover {
+    background: var(--green);
+
+    color: white;
+}
+
+
+/* ============================================================
+   CONTENT
+============================================================ */
+
+.content-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(360px, .9fr)
+        minmax(450px, 1.3fr);
+
+    gap: 20px;
+}
+
+.panel {
+    background: var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    overflow: hidden;
+}
+
+.panel-head {
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding:
+        0 18px;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.panel-head h2 {
+    margin: 0;
+
+    font-size: 16px;
+}
+
+.result-count {
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+
+/* ============================================================
+   BUYER LIST
+============================================================ */
+
+.buyer-list {
+    max-height: 650px;
+
+    overflow-y: auto;
+}
+
+.buyer-card {
+    padding: 17px;
+
+    border-bottom:
+        1px solid var(--border);
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.buyer-card:hover,
+.buyer-card.selected {
+    background:
+        rgba(47,158,92,.07);
+}
+
+.buyer-top {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.buyer-name {
+    margin-bottom: 7px;
+
+    font-size: 15px;
+
+    font-weight: 800;
+}
+
+.buyer-type {
+    display: inline-block;
+
+    padding:
+        4px 8px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(47,158,92,.13);
+
+    color: var(--green-light);
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: .5px;
+}
+
+.distance {
+    color: var(--green-light);
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+.buyer-location {
+    margin-top: 11px;
+
+    color: var(--text);
+
+    font-size: 12px;
+}
+
+.buyer-email {
+    margin-top: 5px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+.buyer-actions {
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 13px;
+}
+
+.btn-small {
+    padding:
+        7px 10px;
+
+    font-size: 10px;
+}
+
+
+/* ============================================================
+   MAP
+============================================================ */
+
+#buyerMap {
+    width: 100%;
+
+    height: 650px;
+}
+
+.map-note {
+    padding: 12px 16px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    border-top:
+        1px solid var(--border);
+}
+
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+.modal {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 3000;
+
+    background:
+        rgba(0,0,0,.72);
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width:
+        min(560px, 100%);
+
+    background: var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 15px;
+
+    padding: 25px;
+
+    position: relative;
+}
+
+.close {
+    position: absolute;
+
+    top: 10px;
+    right: 14px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    font-size: 25px;
+
+    cursor: pointer;
+}
+
+.detail-title {
+    font-size: 24px;
+
+    font-weight: 800;
+
+    margin-bottom: 5px;
+}
+
+.detail-role {
+    color: var(--green-light);
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .7px;
+
+    margin-bottom: 20px;
+}
+
+.detail-row {
+    padding:
+        12px 0;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.detail-row small {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 4px;
+}
+
+.detail-row strong {
+    color: var(--text);
+
+    font-size: 13px;
+}
+
+.modal-actions {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+/* ============================================================
+   STATES
+============================================================ */
+
+.loading-state,
+.empty-state,
+.error-state {
+    padding: 50px 20px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: 13px;
+}
+
+.error-state {
+    color: var(--danger);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media(max-width: 1000px) {
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #buyerMap {
+        height: 450px;
+    }
+
+    .filter-grid {
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+}
+#buyerMap {
+    width: 100%;
+    height: 500px;
+    min-height: 450px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+@media(max-width: 700px) {
+
+    .sidebar {
+        transform:
+            translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform:
+            translateX(0);
+    }
+
+    .main,
+    .sidebar.collapsed + .main {
+        margin-left: 0;
+
+        padding:
+            90px 15px 30px;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+
+<nav class="navbar">
+    <button class="nav-toggle" id="sidebarToggle" type="button">☰</button>
+    <a href="index.html" class="nav-brand"><div class="logo">🚜</div>
+      <div class="brand-text"><span class="brand-name">Agri<span class="brand-nameX">Centre</span></span><span class="brand-subtitle">Smart India Hackathon 2026</span></div></a>
+    <div class="nav-links">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="features.html">Features</a><a href="dashboard.html" class="active">Dashboard</a><a href="team.html">Team</a><a href="contact.html">Contact</a>
+    <a id="profile-link" href="profile.html" style="display:none">Profile</a>
+    <a id="logout-link" href="#" style="display:none" onclick="logout();return false">Logout</a>
+    <a id="login-link" href="login.html">Login</a><a id="signup-link" href="signup.html">Sign Up</a>
+    </div>
+    <div class="nav-right"><button class="nav-btn" onclick="location.href='alerts.html'" title="Alerts">🔔<span class="nav-badge">3</span></button><button class="nav-btn" onclick="location.href='ai-assistant.html'" title="AI Assistant">🤖</button></div>
+    </nav>
+
+
+<!-- ============================================================
+     LAYOUT
+============================================================ -->
+
+<div class="layout">
+
+
+<!-- ============================================================
+     SIDEBAR
+============================================================ -->
+
+<aside
+    class="sidebar"
+    id="sidebar"
+>
+
+
+    <!-- MAIN -->
+
+    <div class="sb-section">
+
+        <div class="sb-label">
+            Main
+        </div>
+
+        <a
+            href="dashboard.html"
+            class="sb-link"
+        >
+
+            <span class="si">
+                📊
+            </span>
+
+            <span class="sl">
+                Dashboard
+            </span>
+
+        </a>
+
+    </div>
+
+
+    <!-- PRODUCE -->
+
+    <div class="sb-section">
+
+        <div class="sb-label">
+            Produce
+        </div>
+
+
+        <a
+            href="add-produce.html"
+            class="sb-link"
+        >
+
+            <span class="si">
+                🌾
+            </span>
+
+            <span class="sl">
+                Add Produce
+            </span>
+
+        </a>
+
+
+        <a
+            href="my-listings.html"
+            class="sb-link"
+        >
+
+            <span class="si">
+                📋
+            </span>
+
+            <span class="sl">
+                My Listings
+            </span>
+
+        </a>
+
+
+        <a
+            href="offers.html"
+            class="sb-link"
+        >
+
+            <span class="si">
+                🤝
+            </span>
+
+            <span class="sl">
+                Offers
+            </span>
+
+        </a>
+
+
+        <a
+            href="buyers.html"
+            class="sb-link active"
+        >
+
+            <span class="si">
+                🔎
+            </span>
+
+            <span class="sl">
+                Find Buyers
+            </span>
+
+        </a>
+
+    </div>
+
+
+    <!-- ORDERS -->
+
+    <div class="sb-section">
+
+        <div class="sb-label">
+            Orders & Delivery
+        </div>
+
+
+        <a
+            href="orders.html"
+            class="sb-link"
+        >
+
+            <span class="si">
+                📦
+            </span>
+
+            <span class="sl">
+                View Orders
+            </span>
+
+        </a>
+
+
+        <a
+            href="farmer_logistics.html"
+            class="sb-link"
+        >
+
+            <span class="si">
+                🚚
+            </span>
+
+            <span class="sl">
+                Logistics
+            </span>
+
+        </a>
+        <a href="meeting.html" class="sb-link">
+            <span class="si">🎥</span>
+            <span class="sl">Meeting Centre</span>
+        </a>
+
+    </div>
+
+
+    <!-- QUALITY -->
+
+    <div class="sb-section">
+
+        <div class="sb-label">
+            Reports & Quality
+        </div>
+
+
+        <a
+            href="reports.html"
+            class="sb-link"
+        >
+
+            <span class="si">
+                📄
+            </span>
+
+            <span class="sl">
+                Reports Centre
+            </span>
+
+        </a>
+
+
+        <a
+            href="quality.html"
+            class="sb-link"
+        >
+
+            <span class="si">
+                🛡️
+            </span>
+
+            <span class="sl">
+                Quality & Certification
+            </span>
+
+        </a>
+
+    </div>
+
+
+    <!-- ACCOUNT -->
+
+    <div class="sb-section">
+
+        <div class="sb-label">
+            Account
+        </div>
+
+
+        <a
+            href="profile.html"
+            class="sb-link"
+        >
+
+            <span class="si">
+                👤
+            </span>
+
+            <span class="sl">
+                Profile
+            </span>
+
+        </a>
+
+
+        <a
+            href="#"
+            class="sb-link"
+            onclick="logout(); return false;"
+        >
+
+            <span class="si">
+                🚪
+            </span>
+
+            <span class="sl">
+                Logout
+            </span>
+
+        </a>
+
+    </div>
+
+
+</aside>
+
+
+<!-- ============================================================
+     MAIN CONTENT
+============================================================ -->
+
+<main
+    class="main"
+    id="mainArea"
+>
+
+
+    <div class="page-head">
+
+        <div class="eyebrow">
+            Farmer Marketplace
+        </div>
+
+        <h1 class="page-title">
+            Find Buyers
+        </h1>
+
+        <p class="page-subtitle">
+            Connect directly with consumers and bulk buyers
+            interested in purchasing fresh produce.
+        </p>
+
+    </div>
+
+
+    <!-- ========================================================
+         FILTERS
+    ========================================================= -->
+
+    <section class="filter-card">
+
+        <div class="filter-grid">
+
+
+            <div class="field">
+
+                <label>
+                    Search Buyers
+                </label>
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    placeholder="Search name, email, city or location..."
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Buyer Type
+                </label>
+
+                <select id="typeFilter">
+
+                    <option value="ALL">
+                        All Buyers
+                    </option>
+
+                    <option value="WHOLESALER">
+                        Bulk Buyers
+                    </option>
+
+                    <option value="VENDOR">
+                        Consumers
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Sort By
+                </label>
+
+                <select id="sortFilter">
+
+                    <option value="NEAREST">
+                        Nearest
+                    </option>
+
+                    <option value="NAME">
+                        Name
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    &nbsp;
+                </label>
+
+                <button
+                    class="btn btn-primary"
+                    id="refreshBtn"
+                    type="button"
+                >
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         BUYERS + MAP
+    ========================================================= -->
+
+    <div class="content-grid">
+
+
+        <!-- BUYER LIST -->
+
+        <section class="panel">
+
+            <div class="panel-head">
+
+                <h2>
+                    Available Buyers
+                </h2>
+
+                <span
+                    class="result-count"
+                    id="resultCount"
+                >
+                    Loading...
+                </span>
+
+            </div>
+
+
+            <div
+                class="buyer-list"
+                id="buyerList"
+            >
+
+                <div class="loading-state">
+                    Loading buyers...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAP -->
+
+        <section class="panel">
+
+            <div class="panel-head">
+
+                <h2>
+                    Buyer Locations
+                </h2>
+
+                <span class="result-count">
+                    Select a marker
+                </span>
+
+            </div>
+
+
+            <div id="buyerMap"></div>
+
+
+            <div class="map-note">
+                Buyer locations appear on the map when
+                latitude and longitude are available.
+            </div>
+
+        </section>
+
+
+    </div>
+
+
+</main>
+
+</div>
+
+
+<!-- ============================================================
+     BUYER DETAILS MODAL
+============================================================ -->
+
+<div
+    class="modal"
+    id="buyerModal"
+>
+
+    <div class="modal-box">
+
+
+        <button
+            class="close"
+            type="button"
+            onclick="closeBuyerModal()"
+        >
+            ×
+        </button>
+
+
+        <div id="buyerDetails"></div>
+
+
+    </div>
+
+</div>
+<script
+    src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+<script>
+
+    /* ============================================================
+       AGRICENTRE - FIND BUYERS
+       ============================================================ */
+    
+    const API_BASE =
+        "http://127.0.0.1:5000";
+    
+    
+    let allBuyers = [];
+    
+    let filteredBuyers = [];
+    
+    let buyerMap = null;
+    
+    let mapMarkers = [];
+    
+    
+    /* ============================================================
+       AUTH
+    ============================================================ */
+    
+    function getToken() {
+    
+        return localStorage.getItem(
+            "token"
+        );
+    }
+    
+    
+    function logout() {
+    
+        localStorage.removeItem(
+            "token"
+        );
+    
+        localStorage.removeItem(
+            "user"
+        );
+    
+        window.location.href =
+            "login.html";
+    }
+    
+    
+    /* ============================================================
+       HTML ESCAPE
+    ============================================================ */
+    
+    function escapeHTML(value) {
+    
+        return String(
+            value ?? ""
+        )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+    
+    }
+    
+    
+    /* ============================================================
+       NORMALIZE BUYER
+    ============================================================ */
+    
+    function normalizeBuyer(user) {
+    
+        const role =
+            String(
+                user.role || ""
+            )
+            .trim()
+            .toUpperCase();
+    
+    
+        let type =
+            "CONSUMER";
+    
+    
+        if (
+            role === "WHOLESALER"
+        ) {
+    
+            type =
+                "BULK BUYER";
+    
+        }
+    
+    
+        /* --------------------------------------------------------
+           LOCATION
+        -------------------------------------------------------- */
+    
+        let latitude = null;
+    
+        let longitude = null;
+    
+    
+        if (
+            user.latitude !== null &&
+            user.latitude !== undefined &&
+            user.latitude !== ""
+        ) {
+    
+            const value =
+                Number(
+                    user.latitude
+                );
+    
+            if (
+                Number.isFinite(value)
+            ) {
+    
+                latitude =
+                    value;
+    
+            }
+    
+        }
+    
+    
+        if (
+            user.longitude !== null &&
+            user.longitude !== undefined &&
+            user.longitude !== ""
+        ) {
+    
+            const value =
+                Number(
+                    user.longitude
+                );
+    
+            if (
+                Number.isFinite(value)
+            ) {
+    
+                longitude =
+                    value;
+    
+            }
+    
+        }
+    
+    
+        /* --------------------------------------------------------
+           BACKEND DISTANCE
+           
+           IMPORTANT:
+           Distance is calculated by buyer_routes.py.
+           We DO NOT calculate it again in the browser.
+        -------------------------------------------------------- */
+    
+        let distanceKm = null;
+    
+    
+        if (
+            user.distance_km !== null &&
+            user.distance_km !== undefined &&
+            user.distance_km !== ""
+        ) {
+    
+            const value =
+                Number(
+                    user.distance_km
+                );
+    
+            if (
+                Number.isFinite(value)
+            ) {
+    
+                distanceKm =
+                    value;
+    
+            }
+    
+        }
+    
+    
+        return {
+    
+            id:
+                user.id ||
+                user._id ||
+                user.user_id ||
+                "",
+    
+    
+            name:
+                user.name ||
+                user.full_name ||
+                user.business_name ||
+                "Unnamed Buyer",
+    
+    
+            email:
+                user.email ||
+                "",
+    
+    
+            phone:
+                user.phone ||
+                "",
+    
+    
+            role:
+                role,
+    
+    
+            type:
+                type,
+    
+    
+            location:
+                user.location ||
+                user.address ||
+                user.city ||
+                "Location not provided",
+    
+    
+            city:
+                user.city ||
+                "",
+    
+    
+            district:
+                user.district ||
+                "",
+    
+    
+            state:
+                user.state ||
+                "",
+    
+    
+            pincode:
+                user.pincode ||
+                "",
+    
+    
+            latitude:
+                latitude,
+    
+    
+            longitude:
+                longitude,
+    
+    
+            distance_km:
+                distanceKm,
+    
+    
+            /*
+             * distance is used by the existing
+             * filtering/rendering code.
+             */
+            distance:
+                distanceKm
+    
+        };
+    
+    }
+    
+    
+    /* ============================================================
+       LOAD BUYERS
+    ============================================================ */
+    
+    async function loadBuyers() {
+    
+        const token =
+            getToken();
+    
+    
+        if (!token) {
+    
+            window.location.href =
+                "login.html";
+    
+            return;
+    
+        }
+    
+    
+        const list =
+            document.getElementById(
+                "buyerList"
+            );
+    
+    
+        if (list) {
+    
+            list.innerHTML = `
+    
+                <div class="loading-state">
+    
+                    Loading buyers...
+    
+                </div>
+    
+            `;
+    
+        }
+    
+    
+        try {
+    
+            const response =
+                await fetch(
+                    `${API_BASE}/api/buyers`,
+                    {
+    
+                        method:
+                            "GET",
+    
+                        headers: {
+    
+                            "Authorization":
+                                `Bearer ${token}`,
+    
+                            "Content-Type":
+                                "application/json"
+    
+                        }
+    
+                    }
+                );
+    
+    
+            /* ----------------------------------------------------
+               AUTH EXPIRED
+            ---------------------------------------------------- */
+    
+            if (
+                response.status === 401
+            ) {
+    
+                logout();
+    
+                return;
+    
+            }
+    
+    
+            let data;
+    
+    
+            try {
+    
+                data =
+                    await response.json();
+    
+            }
+    
+            catch {
+    
+                throw new Error(
+                    "Invalid response received from the server."
+                );
+    
+            }
+    
+    
+            /* ----------------------------------------------------
+               BACKEND ERROR
+            ---------------------------------------------------- */
+    
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+    
+                throw new Error(
+                    data.message ||
+                    "Unable to load buyers."
+                );
+    
+            }
+    
+    
+            /* ----------------------------------------------------
+               BUYERS
+            ---------------------------------------------------- */
+    
+            if (
+                Array.isArray(
+                    data.buyers
+                )
+            ) {
+    
+                allBuyers =
+                    data.buyers.map(
+                        normalizeBuyer
+                    );
+    
+            }
+    
+            else {
+    
+                allBuyers = [];
+    
+            }
+    
+    
+            console.log(
+                "BUYERS FROM BACKEND:",
+                allBuyers
+            );
+    
+    
+            /*
+             * Helpful debugging:
+             * check whether backend is actually
+             * returning distance_km.
+             */
+    
+            if (
+                allBuyers.length > 0
+            ) {
+    
+                console.log(
+                    "FIRST BUYER:",
+                    allBuyers[0]
+                );
+    
+                console.log(
+                    "FIRST BUYER DISTANCE:",
+                    allBuyers[0].distance_km
+                );
+    
+            }
+    
+    
+            applyFilters();
+    
+    
+        }
+    
+        catch (error) {
+    
+            console.error(
+                "Buyer loading error:",
+                error
+            );
+    
+    
+            if (list) {
+    
+                list.innerHTML = `
+    
+                    <div class="error-state">
+    
+                        ${escapeHTML(
+                            error.message ||
+                            "Unable to load buyers."
+                        )}
+    
+                    </div>
+    
+                `;
+    
+            }
+    
+    
+            const resultCount =
+                document.getElementById(
+                    "resultCount"
+                );
+    
+    
+            if (resultCount) {
+    
+                resultCount.textContent =
+                    "Unable to load";
+    
+            }
+    
+        }
+    
+    }
+    
+    
+    /* ============================================================
+       APPLY FILTERS
+    ============================================================ */
+    
+    function applyFilters() {
+    
+        const searchInput =
+            document.getElementById(
+                "searchInput"
+            );
+    
+    
+        const typeFilter =
+            document.getElementById(
+                "typeFilter"
+            );
+    
+    
+        const sortFilter =
+            document.getElementById(
+                "sortFilter"
+            );
+    
+    
+        const search =
+            searchInput
+                ? searchInput.value
+                    .trim()
+                    .toLowerCase()
+                : "";
+    
+    
+        const type =
+            typeFilter
+                ? typeFilter.value
+                : "ALL";
+    
+    
+        const sort =
+            sortFilter
+                ? sortFilter.value
+                : "NAME";
+    
+    
+        /* --------------------------------------------------------
+           FILTER
+        -------------------------------------------------------- */
+    
+        filteredBuyers =
+            allBuyers.filter(
+                buyer => {
+    
+                    const searchable = [
+    
+                        buyer.name,
+    
+                        buyer.email,
+    
+                        buyer.phone,
+    
+                        buyer.location,
+    
+                        buyer.city,
+    
+                        buyer.district,
+    
+                        buyer.state,
+    
+                        buyer.pincode
+    
+                    ]
+                    .join(" ")
+                    .toLowerCase();
+    
+    
+                    const matchesSearch =
+                        !search ||
+                        searchable.includes(
+                            search
+                        );
+    
+    
+                    let matchesType =
+                        true;
+    
+    
+                    if (
+                        type ===
+                        "WHOLESALER"
+                    ) {
+    
+                        matchesType =
+                            buyer.role ===
+                            "WHOLESALER";
+    
+                    }
+    
+    
+                    if (
+                        type ===
+                        "VENDOR"
+                    ) {
+    
+                        matchesType =
+                            buyer.role ===
+                            "VENDOR";
+    
+                    }
+    
+    
+                    return (
+                        matchesSearch &&
+                        matchesType
+                    );
+    
+                }
+            );
+    
+    
+        /* --------------------------------------------------------
+           SORT
+        -------------------------------------------------------- */
+    
+        if (
+            sort ===
+            "NEAREST"
+        ) {
+    
+            filteredBuyers.sort(
+                (
+                    a,
+                    b
+                ) => {
+    
+                    const aDistance =
+                        Number(
+                            a.distance_km
+                        );
+    
+    
+                    const bDistance =
+                        Number(
+                            b.distance_km
+                        );
+    
+    
+                    const aValid =
+                        Number.isFinite(
+                            aDistance
+                        );
+    
+    
+                    const bValid =
+                        Number.isFinite(
+                            bDistance
+                        );
+    
+    
+                    if (
+                        !aValid &&
+                        !bValid
+                    ) {
+    
+                        return a.name.localeCompare(
+                            b.name
+                        );
+    
+                    }
+    
+    
+                    if (!aValid) {
+    
+                        return 1;
+    
+                    }
+    
+    
+                    if (!bValid) {
+    
+                        return -1;
+    
+                    }
+    
+    
+                    return (
+                        aDistance -
+                        bDistance
+                    );
+    
+                }
+            );
+    
+        }
+    
+        else {
+    
+            filteredBuyers.sort(
+                (
+                    a,
+                    b
+                ) =>
+                    a.name.localeCompare(
+                        b.name
+                    )
+            );
+    
+        }
+    
+    
+        renderBuyers();
+    
+        renderMap();
+    
+    }
+    
+    
+    /* ============================================================
+       RENDER BUYERS
+    ============================================================ */
+    
+    function renderBuyers() {
+    
+        const list =
+            document.getElementById(
+                "buyerList"
+            );
+    
+    
+        const resultCount =
+            document.getElementById(
+                "resultCount"
+            );
+    
+    
+        if (resultCount) {
+    
+            resultCount.textContent =
+                `${filteredBuyers.length} buyers`;
+    
+        }
+    
+    
+        if (
+            !filteredBuyers.length
+        ) {
+    
+            list.innerHTML = `
+    
+                <div class="empty-state">
+    
+                    <div
+                        style="
+                            font-size:32px;
+                            margin-bottom:10px;
+                        "
+                    >
+                        🔎
+                    </div>
+    
+                    <strong>
+                        No buyers found
+                    </strong>
+    
+                    <p>
+                        Try changing your search
+                        or filters.
+                    </p>
+    
+                </div>
+    
+            `;
+    
+            return;
+    
+        }
+    
+    
+        list.innerHTML =
+            filteredBuyers
+                .map(
+                    buyer => {
+    
+                        /* ----------------------------------------
+                           DISTANCE
+                        ---------------------------------------- */
+    
+                        let distanceText =
+                            "Distance unavailable";
+    
+    
+                        const distance =
+                            Number(
+                                buyer.distance_km
+                            );
+    
+    
+                        if (
+                            Number.isFinite(
+                                distance
+                            )
+                        ) {
+    
+                            distanceText =
+                                `${distance.toFixed(1)} km`;
+    
+                        }
+    
+    
+                        return `
+    
+                            <div
+                                class="buyer-card"
+                                data-id="${escapeHTML(
+                                    buyer.id
+                                )}"
+                                onclick="
+                                    openBuyerDetails(
+                                        '${escapeHTML(
+                                            buyer.id
+                                        )}'
+                                    )
+                                "
+                            >
+    
+                                <div class="buyer-top">
+    
+                                    <div>
+    
+                                        <div class="buyer-name">
+    
+                                            ${escapeHTML(
+                                                buyer.name
+                                            )}
+    
+                                        </div>
+    
+    
+                                        <span class="buyer-type">
+    
+                                            ${escapeHTML(
+                                                buyer.type
+                                            )}
+    
+                                        </span>
+    
+                                    </div>
+    
+    
+                                    <div class="distance">
+    
+                                        📍
+                                        ${distanceText}
+    
+                                    </div>
+    
+                                </div>
+    
+    
+                                <div class="buyer-location">
+    
+                                    📌
+                                    ${escapeHTML(
+                                        buyer.location
+                                    )}
+    
+                                </div>
+    
+    
+                                <div class="buyer-email">
+    
+                                    ✉
+                                    ${escapeHTML(
+                                        buyer.email ||
+                                        "Email unavailable"
+                                    )}
+    
+                                </div>
+    
+    
+                                <div
+                                    class="buyer-actions"
+                                    onclick="
+                                        event.stopPropagation()
+                                    "
+                                >
+    
+                                    <button
+                                        type="button"
+                                        class="btn btn-small btn-outline"
+                                        onclick="
+                                        contactBuyer(
+    '${escapeHTML(
+        buyer.id
+    )}'
+)
+                                        "
+                                    >
+    
+                                        ✉ Contact
+    
+                                    </button>
+    
+    
+                                    <button
+                                        type="button"
+                                        class="btn btn-small btn-primary"
+                                        onclick="
+                                            scheduleMeeting(
+                                                '${escapeHTML(
+                                                    buyer.id
+                                                )}'
+                                            )
+                                        "
+                                    >
+    
+                                        🎥 Meeting
+    
+                                    </button>
+    
+                                </div>
+    
+                            </div>
+    
+                        `;
+    
+                    }
+                )
+                .join("");
+    
+    }
+    
+    
+    /* ============================================================
+       MAP INITIALIZATION
+    ============================================================ */
+    
+    function initializeMap() {
+    
+        if (
+            typeof L ===
+            "undefined"
+        ) {
+    
+            console.error(
+                "Leaflet is not loaded."
+            );
+    
+            return;
+    
+        }
+    
+    
+        const mapElement =
+            document.getElementById(
+                "buyerMap"
+            );
+    
+    
+        if (!mapElement) {
+    
+            return;
+    
+        }
+    
+    
+        buyerMap =
+            L.map(
+                "buyerMap"
+            );
+    
+    
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+    
+                maxZoom:
+                    19,
+    
+                attribution:
+                    "&copy; OpenStreetMap contributors"
+    
+            }
+        )
+        .addTo(
+            buyerMap
+        );
+    
+    
+        buyerMap.setView(
+            [
+                20.5937,
+                78.9629
+            ],
+            5
+        );
+    
+    }
+    
+    
+    /* ============================================================
+       RENDER MAP
+    ============================================================ */
+    
+    function renderMap() {
+    
+        if (!buyerMap) {
+    
+            return;
+    
+        }
+    
+    
+        /* --------------------------------------------------------
+           REMOVE OLD MARKERS
+        -------------------------------------------------------- */
+    
+        mapMarkers.forEach(
+            marker => {
+    
+                buyerMap.removeLayer(
+                    marker
+                );
+    
+            }
+        );
+    
+    
+        mapMarkers = [];
+    
+    
+        /* --------------------------------------------------------
+           BUYERS WITH VALID COORDINATES
+        -------------------------------------------------------- */
+    
+        const validBuyers =
+            filteredBuyers.filter(
+                buyer => {
+    
+                    return (
+                        Number.isFinite(
+                            buyer.latitude
+                        ) &&
+                        Number.isFinite(
+                            buyer.longitude
+                        )
+                    );
+    
+                }
+            );
+    
+    
+        /* --------------------------------------------------------
+           CREATE MARKERS
+        -------------------------------------------------------- */
+    
+        validBuyers.forEach(
+            buyer => {
+    
+                const marker =
+                    L.marker(
+                        [
+                            buyer.latitude,
+                            buyer.longitude
+                        ]
+                    )
+                    .addTo(
+                        buyerMap
+                    );
+    
+    
+                const distance =
+                    Number(
+                        buyer.distance_km
+                    );
+    
+    
+                const distanceText =
+                    Number.isFinite(
+                        distance
+                    )
+                        ? `${distance.toFixed(1)} km`
+                        : "Distance unavailable";
+    
+    
+                marker.bindPopup(`
+    
+                    <div
+                        style="
+                            color:#111;
+                            min-width:180px;
+                        "
+                    >
+    
+                        <strong>
+    
+                            ${escapeHTML(
+                                buyer.name
+                            )}
+    
+                        </strong>
+    
+                        <br>
+    
+                        <small>
+    
+                            ${escapeHTML(
+                                buyer.type
+                            )}
+    
+                        </small>
+    
+                        <br>
+    
+                        <small>
+    
+                            ${escapeHTML(
+                                buyer.location
+                            )}
+    
+                        </small>
+    
+                        <br>
+    
+                        <small>
+    
+                            📍
+                            ${distanceText}
+    
+                        </small>
+    
+                        <br><br>
+    
+                        <button
+                            type="button"
+                            onclick="
+                                openBuyerDetails(
+                                    '${escapeHTML(
+                                        buyer.id
+                                    )}'
+                                )
+                            "
+                        >
+    
+                            View Details
+    
+                        </button>
+    
+                    </div>
+    
+                `);
+    
+    
+                marker.on(
+                    "click",
+                    () => {
+    
+                        highlightBuyer(
+                            buyer.id
+                        );
+    
+                    }
+                );
+    
+    
+                mapMarkers.push(
+                    marker
+                );
+    
+            }
+        );
+    
+    
+        /* --------------------------------------------------------
+           FIT MAP TO BUYERS
+        -------------------------------------------------------- */
+    
+        if (
+            validBuyers.length > 0
+        ) {
+    
+            const bounds =
+                L.latLngBounds(
+                    validBuyers.map(
+                        buyer => [
+    
+                            buyer.latitude,
+    
+                            buyer.longitude
+    
+                        ]
+                    )
+                );
+    
+    
+            buyerMap.fitBounds(
+                bounds,
+                {
+    
+                    padding:
+                        [
+                            30,
+                            30
+                        ]
+    
+                }
+            );
+    
+        }
+    
+    }
+    
+    
+    /* ============================================================
+       OPEN BUYER DETAILS
+    ============================================================ */
+    
+    function openBuyerDetails(
+        id
+    ) {
+    
+        const buyer =
+            allBuyers.find(
+                item =>
+                    String(
+                        item.id
+                    ) ===
+                    String(id)
+            );
+    
+    
+        if (!buyer) {
+    
+            return;
+    
+        }
+    
+    
+        highlightBuyer(
+            buyer.id
+        );
+    
+    
+        const distance =
+            Number(
+                buyer.distance_km
+            );
+    
+    
+        const distanceText =
+            Number.isFinite(
+                distance
+            )
+                ? `${distance.toFixed(1)} km`
+                : "Not available";
+    
+    
+        const details =
+            document.getElementById(
+                "buyerDetails"
+            );
+    
+    
+        if (!details) {
+    
+            return;
+    
+        }
+    
+    
+        details.innerHTML = `
+    
+            <div class="detail-title">
+    
+                ${escapeHTML(
+                    buyer.name
+                )}
+    
+            </div>
+    
+    
+            <div class="detail-role">
+    
+                ${escapeHTML(
+                    buyer.type
+                )}
+    
+            </div>
+    
+    
+            <div class="detail-row">
+    
+                <small>
+                    Location
+                </small>
+    
+                <strong>
+    
+                    ${escapeHTML(
+                        buyer.location
+                    )}
+    
+                </strong>
+    
+            </div>
+    
+    
+            <div class="detail-row">
+    
+                <small>
+                    Email
+                </small>
+    
+                <strong>
+    
+                    ${escapeHTML(
+                        buyer.email ||
+                        "Not available"
+                    )}
+    
+                </strong>
+    
+            </div>
+    
+    
+            <div class="detail-row">
+    
+                <small>
+                    Phone
+                </small>
+    
+                <strong>
+    
+                    ${escapeHTML(
+                        buyer.phone ||
+                        "Not available"
+                    )}
+    
+                </strong>
+    
+            </div>
+    
+    
+            <div class="detail-row">
+    
+                <small>
+                    City
+                </small>
+    
+                <strong>
+    
+                    ${escapeHTML(
+                        buyer.city ||
+                        "Not available"
+                    )}
+    
+                </strong>
+    
+            </div>
+    
+    
+            <div class="detail-row">
+    
+                <small>
+                    State
+                </small>
+    
+                <strong>
+    
+                    ${escapeHTML(
+                        buyer.state ||
+                        "Not available"
+                    )}
+    
+                </strong>
+    
+            </div>
+    
+    
+            <div class="detail-row">
+    
+                <small>
+                    Distance from you
+                </small>
+    
+                <strong>
+    
+                    ${distanceText}
+    
+                </strong>
+    
+            </div>
+    
+    
+            <div class="modal-actions">
+    
+                <button
+                    type="button"
+                    class="btn btn-outline"
+                    onclick="
+                    contactBuyer(
+    '${escapeHTML(
+        buyer.id
+    )}'
+)
+                    "
+                >
+    
+                    ✉ Contact Buyer
+    
+                </button>
+    
+    
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="
+                        scheduleMeeting(
+                            '${escapeHTML(
+                                buyer.id
+                            )}'
+                        )
+                    "
+                >
+    
+                    🎥 Schedule Meeting
+    
+                </button>
+    
+            </div>
+    
+        `;
+    
+    
+        const modal =
+            document.getElementById(
+                "buyerModal"
+            );
+    
+    
+        if (modal) {
+    
+            modal.classList.add(
+                "show"
+            );
+    
+        }
+    
+    }
+    
+    
+    /* ============================================================
+       CLOSE BUYER DETAILS
+    ============================================================ */
+    
+    function closeBuyerModal() {
+    
+        const modal =
+            document.getElementById(
+                "buyerModal"
+            );
+    
+    
+        if (modal) {
+    
+            modal.classList.remove(
+                "show"
+            );
+    
+        }
+    
+    }
+    
+    
+    /* ============================================================
+       CONTACT BUYER
+    ============================================================ */
+    
+    async function contactBuyer(buyerId) {
+
+if (!buyerId) {
+    alert("Buyer information is missing.");
+    return;
+}
+
+const message = prompt(
+    "Enter your message for the buyer:"
+);
+
+if (message === null) {
+    return;
+}
+
+if (!message.trim()) {
+    alert("Please enter a message.");
+    return;
+}
+
+const token = getToken();
+
+try {
+
+    const response = await fetch(
+        `${API_BASE}/api/buyers/contact`,
+        {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                buyer_id: buyerId,
+                message: message.trim()
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+        throw new Error(
+            data.message || "Unable to send message."
+        );
+    }
+
+    alert(
+        "✅ Message sent successfully to the buyer!"
+    );
+
+} catch (error) {
+
+    console.error(
+        "Contact buyer error:",
+        error
+    );
+
+    alert(
+        error.message ||
+        "Unable to contact buyer."
+    );
+}
+}
+    /* ============================================================
+       MEETING
+    ============================================================ */
+    
+    function scheduleMeeting(
+        buyerId
+    ) {
+    
+        if (!buyerId) {
+    
+            return;
+    
+        }
+    
+    
+        /*
+         * meeting.html will be implemented later.
+         *
+         * We already pass the selected
+         * buyer ID to it.
+         */
+    
+        window.location.href =
+            `meeting.html?buyer_id=${encodeURIComponent(
+                buyerId
+            )}`;
+    
+    }
+    
+    
+    /* ============================================================
+       HIGHLIGHT BUYER
+    ============================================================ */
+    
+    function highlightBuyer(
+        id
+    ) {
+    
+        document
+            .querySelectorAll(
+                ".buyer-card"
+            )
+            .forEach(
+                card => {
+    
+                    card.classList.toggle(
+                        "selected",
+    
+                        String(
+                            card.dataset.id
+                        ) ===
+                        String(id)
+                    );
+    
+                }
+            );
+    
+    }
+    
+    
+    /* ============================================================
+       SIDEBAR
+    ============================================================ */
+    
+    function initializeSidebar() {
+    
+        const sidebar =
+            document.getElementById(
+                "sidebar"
+            );
+    
+    
+        const toggle =
+            document.getElementById(
+                "sidebarToggle"
+            );
+    
+    
+        if (
+            !sidebar ||
+            !toggle
+        ) {
+    
+            return;
+    
+        }
+    
+    
+        toggle.addEventListener(
+            "click",
+            () => {
+    
+                if (
+                    window.innerWidth <=
+                    700
+                ) {
+    
+                    sidebar.classList.toggle(
+                        "open"
+                    );
+    
+                }
+    
+                else {
+    
+                    sidebar.classList.toggle(
+                        "collapsed"
+                    );
+    
+                }
+    
+            }
+        );
+    
+    
+        /* --------------------------------------------------------
+           MOBILE OUTSIDE CLICK
+        -------------------------------------------------------- */
+    
+        document.addEventListener(
+            "click",
+            event => {
+    
+                if (
+                    window.innerWidth <= 700 &&
+                    sidebar.classList.contains(
+                        "open"
+                    ) &&
+                    !sidebar.contains(
+                        event.target
+                    ) &&
+                    !toggle.contains(
+                        event.target
+                    )
+                ) {
+    
+                    sidebar.classList.remove(
+                        "open"
+                    );
+    
+                }
+    
+            }
+        );
+    
+    }
+    
+    
+    /* ============================================================
+       EVENT LISTENERS
+    ============================================================ */
+    
+    document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+    
+            /* -----------------------------------------------
+               SIDEBAR
+            ----------------------------------------------- */
+    
+            initializeSidebar();
+    
+    
+            /* -----------------------------------------------
+               MAP
+            ----------------------------------------------- */
+    
+            initializeMap();
+    
+    
+            /* -----------------------------------------------
+               SEARCH
+            ----------------------------------------------- */
+    
+            const searchInput =
+                document.getElementById(
+                    "searchInput"
+                );
+    
+    
+            if (searchInput) {
+    
+                searchInput.addEventListener(
+                    "input",
+                    applyFilters
+                );
+    
+            }
+    
+    
+            /* -----------------------------------------------
+               TYPE FILTER
+            ----------------------------------------------- */
+    
+            const typeFilter =
+                document.getElementById(
+                    "typeFilter"
+                );
+    
+    
+            if (typeFilter) {
+    
+                typeFilter.addEventListener(
+                    "change",
+                    applyFilters
+                );
+    
+            }
+    
+    
+            /* -----------------------------------------------
+               SORT FILTER
+            ----------------------------------------------- */
+    
+            const sortFilter =
+                document.getElementById(
+                    "sortFilter"
+                );
+    
+    
+            if (sortFilter) {
+    
+                sortFilter.addEventListener(
+                    "change",
+                    applyFilters
+                );
+    
+            }
+    
+    
+            /* -----------------------------------------------
+               REFRESH
+            ----------------------------------------------- */
+    
+            const refreshBtn =
+                document.getElementById(
+                    "refreshBtn"
+                );
+    
+    
+            if (refreshBtn) {
+    
+                refreshBtn.addEventListener(
+                    "click",
+                    loadBuyers
+                );
+    
+            }
+    
+    
+            /* -----------------------------------------------
+               MODAL OUTSIDE CLICK
+            ----------------------------------------------- */
+    
+            const buyerModal =
+                document.getElementById(
+                    "buyerModal"
+                );
+    
+    
+            if (buyerModal) {
+    
+                buyerModal.addEventListener(
+                    "click",
+                    event => {
+    
+                        if (
+                            event.target ===
+                            buyerModal
+                        ) {
+    
+                            closeBuyerModal();
+    
+                        }
+    
+                    }
+                );
+    
+            }
+    
+    
+            /* -----------------------------------------------
+               LOAD BUYERS
+            ----------------------------------------------- */
+    
+            loadBuyers();
+    
+        }
+    );
+    
+    </script>
+
+</body>
+</html>

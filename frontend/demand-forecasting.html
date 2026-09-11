@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AgriCentre – Demand Forecasting | Smart India Hackathon 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--brand:#2f9e5c;--brand-dark:#1f7a44;--brand-light:#5cc98a;--bg:#0d0e10;--bg2:#14161a;--bg3:#1c1f25;--surface:#22262e;--border:#2e3340;--text:#e8eaf0;--muted:#8b909e;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--blue:#3b82f6;--sidebar-w:258px;--nav-h:64px;--tr:.22s cubic-bezier(.4,0,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}a{text-decoration:none;color:inherit}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 12px #0005}.nav-toggle{background:none;border:0;color:#fff;font-size:20px;padding:6px 8px;cursor:pointer}.nav-brand{display:flex;align-items:center;gap:10px;color:#fff}.logo{width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--brand);border-radius:8px;font-size:20px}.brand-text{display:flex;flex-direction:column}.brand-name{font:700 32px Rajdhani,sans-serif;line-height:1}.brand-nameX{color:var(--brand)}.brand-subtitle{font-size:11px;color:#ddd;letter-spacing:1px;text-transform:uppercase}.nav-links{margin-left:auto;display:flex;gap:5px}.nav-links a{color:#9aa7bb;padding:9px 11px;border-radius:7px;font-size:13px}.nav-links a:hover{color:#fff;background:#ffffff0f}.nav-right{display:flex;gap:7px;margin-left:8px}.nav-btn{width:38px;height:38px;border:0;border-radius:8px;background:var(--surface);color:#fff;cursor:pointer;position:relative}.nav-badge{position:absolute;top:-5px;right:-4px;background:var(--brand);font-size:9px;min-width:16px;height:16px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.layout{display:flex;margin-top:var(--nav-h);min-height:calc(100vh - var(--nav-h))}.sidebar{width:var(--sidebar-w);background:var(--bg2);position:fixed;top:var(--nav-h);bottom:0;left:0;overflow-y:auto;z-index:900;transition:width var(--tr),transform var(--tr)}.sidebar.collapsed{width:62px}.sb-section{padding:6px 0}.sb-label{padding:6px 18px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#4a5a74}.sidebar.collapsed .sb-label{opacity:0}.sb-link{display:flex;align-items:center;gap:11px;padding:9px 18px;color:#7a90aa;font-size:13px;border-left:3px solid transparent;white-space:nowrap}.sb-link:hover{color:#fff;background:#2f9e5c1f}.sb-link.active{color:var(--brand-light);border-left-color:var(--brand);background:#2f9e5c26}.si{width:20px;text-align:center;flex-shrink:0}.sl{overflow:hidden}.sidebar.collapsed .sl{opacity:0;width:0}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;display:flex;flex-direction:column;transition:margin-left var(--tr)}.main.expanded{margin-left:62px}
+.page-header{padding:32px 48px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:20px}.page-title{font:700 30px Rajdhani,sans-serif;color:#fff}.page-sub{font-size:13px;color:var(--muted);margin-top:5px}.header-actions{display:flex;gap:9px}.btn{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:9px 16px;border-radius:8px;font-size:12px;cursor:pointer}.btn:hover{border-color:var(--brand);color:var(--brand-light)}.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
+.section{padding:28px 48px}.section-title{font:700 19px Rajdhani,sans-serif;margin-bottom:16px}.section-note{font-size:11px;color:var(--muted);margin-top:-8px;margin-bottom:16px}
+.hero{margin:28px 48px 0;background:linear-gradient(135deg,#2f9e5c18,#22262e);border:1px solid #2f9e5c38;border-radius:14px;padding:25px}.hero-top{display:flex;justify-content:space-between;gap:25px}.eyebrow{font-size:10px;font-weight:700;color:var(--brand-light);letter-spacing:1.4px;text-transform:uppercase;margin-bottom:8px}.hero h2{font:700 27px Rajdhani,sans-serif;color:#fff}.hero p{max-width:760px;color:#aab2c0;font-size:12px;line-height:1.7;margin-top:7px}.model-badge{min-width:150px;text-align:center;padding:14px;border:1px solid var(--border);background:#ffffff07;border-radius:10px}.model-badge strong{display:block;font:700 22px Rajdhani;color:#fff}.model-badge span{font-size:10px;color:var(--muted)}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:19px;position:relative;overflow:hidden}.kpi-card:after{content:"";position:absolute;top:0;left:0;right:0;height:3px}.green:after{background:var(--green)}.blue:after{background:var(--blue)}.yellow:after{background:var(--yellow)}.red:after{background:var(--red)}.kpi-icon{font-size:19px;margin-bottom:9px}.kpi-value{font:700 30px Rajdhani;color:#fff}.kpi-label{font-size:11px;color:var(--muted);margin-top:5px}.kpi-delta{font-size:10px;margin-top:6px;color:#9aa7bb}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.select{background:var(--surface);border:1px solid var(--border);color:#fff;padding:10px 12px;border-radius:8px;min-width:220px;outline:none}.select:focus{border-color:var(--brand)}
+.forecast-grid{display:grid;grid-template-columns:1.7fr 1fr;gap:18px}.card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:21px}.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:18px}.card-head h3{font-size:14px}.muted{color:var(--muted);font-size:11px}.chart-wrap{height:330px;position:relative}.insight-box{background:#2f9e5c0f;border:1px solid #2f9e5c30;border-radius:10px;padding:16px;margin-bottom:13px}.insight-label{font-size:10px;color:var(--brand-light);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}.insight-message{font-size:12px;line-height:1.6;color:#d5d9e0}.metric-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{background:var(--surface);border-radius:9px;padding:13px}.metric span{display:block;font-size:10px;color:var(--muted);margin-bottom:4px}.metric strong{font:700 20px Rajdhani;color:#fff}.direction{display:inline-block;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:700;text-transform:uppercase}.direction.increasing{background:#22c55e1c;color:#4ade80}.direction.stable{background:#f59e0b1c;color:#fbbf24}.direction.decreasing{background:#ef44441c;color:#f87171}
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:10px}.table{width:100%;border-collapse:collapse;min-width:760px}.table th,.table td{padding:12px 14px;text-align:left;border-bottom:1px solid #ffffff0b;font-size:11px}.table th{color:#8fa0b8;background:#17191d;font-size:10px;text-transform:uppercase;letter-spacing:.5px}.table td{color:#d9dde5}.table tr:last-child td{border-bottom:0}.crop-name{font-weight:600;color:#fff}.change-up{color:#4ade80}.change-down{color:#f87171}.change-flat{color:#fbbf24}
+.loading,.error,.empty{text-align:center;padding:50px 20px;color:var(--muted);font-size:12px}.error{display:none;border:1px solid #ef44444d;background:#ef44440f;border-radius:10px;color:#fca5a5;margin:28px 48px}
+.role-note{padding:13px 15px;background:var(--surface);border-left:3px solid var(--brand);border-radius:7px;color:#aeb6c4;font-size:11px;line-height:1.6}
+footer{background:var(--bg2);color:#8fa0b8;padding:44px 40px 0;margin-top:auto}.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:36px;padding-bottom:32px;border-bottom:1px solid #ffffff14}.ft-brand{font:700 1.4rem Rajdhani,sans-serif;color:#fff;margin-bottom:9px}.ft-brand span{color:var(--brand)}.ft-desc{font-size:13px;line-height:1.7;max-width:300px}.ft-col h4{color:#fff;font-size:12px;margin-bottom:13px;text-transform:uppercase}.ft-col a{display:block;font-size:13px;margin-bottom:8px;color:#8fa0b8}.ft-col a:hover{color:var(--brand-light)}.ft-bottom{display:flex;justify-content:space-between;padding:14px 0;font-size:11px;flex-wrap:wrap;gap:8px}.ft-links{display:flex;gap:14px}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.forecast-grid{grid-template-columns:1fr}}@media(max-width:768px){.sidebar{transform:translateX(-100%);width:258px}.sidebar.open{transform:translateX(0)}.main,.main.expanded{margin-left:0}.nav-links{display:none}.page-header{padding:25px 20px}.hero{margin:20px 20px 0}.section{padding:24px 20px}.kpi-grid{grid-template-columns:1fr}.hero-top{flex-direction:column}.model-badge{min-width:0}.ft-grid{grid-template-columns:1fr}footer{padding:35px 20px 0}}
+</style>
+</head>
+<body>
+<nav class="navbar">
+<button class="nav-toggle" id="sidebarToggle">☰</button>
+<a href="index.html" class="nav-brand"><div class="logo">🚜</div><div class="brand-text"><span class="brand-name">Agri<span class="brand-nameX">Centre</span></span><span class="brand-subtitle">Smart India Hackathon 2026</span></div></a>
+<div class="nav-links">
+<a href="index.html">Home</a><a href="about.html">About</a><a href="features.html">Features</a><a href="dashboard.html">Dashboard</a><a href="team.html">Team</a><a href="contact.html">Contact</a>
+<a id="profile-link" href="profile.html" style="display:none">Profile</a><a id="logout-link" href="#" style="display:none" onclick="logout();return false">Logout</a><a id="login-link" href="login.html">Login</a><a id="signup-link" href="signup.html">Sign Up</a>
+</div>
+<div class="nav-right"><button class="nav-btn" onclick="location.href='alerts.html'" title="Alerts">🔔<span class="nav-badge">3</span></button><button class="nav-btn" onclick="location.href='ai-assistant.html'" title="AI Assistant">🤖</button></div>
+</nav>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar"></aside>
+<main class="main" id="mainArea">
+<div class="page-header">
+<div><div class="page-title">Demand Forecasting</div><div class="page-sub">AI-powered market intelligence · <span id="roleText">Loading role...</span></div></div>
+<div class="header-actions"><button class="btn" id="refreshBtn">↻ Refresh Forecast</button></div>
+</div>
+
+<div id="errorBox" class="error"></div>
+
+<section class="hero">
+<div class="hero-top">
+<div><div class="eyebrow">AgriCentre Market Intelligence</div><h2>Demand Forecasting</h2><p id="roleDescription">Forecast expected market arrivals for the next 7 days using historical mandi activity, seasonal patterns, price signals and crop behaviour.</p></div>
+<div class="model-badge"><strong>XGBoost</strong><span>Final forecasting model</span></div>
+</div>
+</section>
+
+<section class="section">
+<div class="section-title">Forecast Overview</div>
+<div class="kpi-grid">
+<div class="kpi-card green"><div class="kpi-icon">🌾</div><div class="kpi-value" id="cropCount">—</div><div class="kpi-label">Crops Forecasted</div><div class="kpi-delta">30 supported crops</div></div>
+<div class="kpi-card blue"><div class="kpi-icon">📈</div><div class="kpi-value" id="increaseCount">—</div><div class="kpi-label">Expected Increase</div><div class="kpi-delta">Higher market activity</div></div>
+<div class="kpi-card yellow"><div class="kpi-icon">➖</div><div class="kpi-value" id="stableCount">—</div><div class="kpi-label">Expected Stable</div><div class="kpi-delta">Limited movement</div></div>
+<div class="kpi-card red"><div class="kpi-icon">📉</div><div class="kpi-value" id="decreaseCount">—</div><div class="kpi-label">Expected Decrease</div><div class="kpi-delta">Lower market activity</div></div>
+</div>
+</section>
+
+<section class="section">
+<div class="section-title">Role-specific Decision Support</div>
+<div class="role-note" id="roleNote"></div>
+</section>
+
+<section class="section">
+<div class="section-title">Crop Forecast</div>
+<div class="controls">
+<select class="select" id="cropSelect"><option value="">Select crop</option></select>
+<span class="muted" id="forecastWeek">Forecast period: —</span>
+</div>
+</section>
+
+<section class="section" style="padding-top:0">
+<div class="forecast-grid">
+<div class="card">
+<div class="card-head"><div><h3 id="chartTitle">Historical vs Forecast Market Arrivals</h3><div class="muted">Weekly market arrivals · tonnes</div></div><span class="direction stable" id="directionBadge">—</span></div>
+<div class="chart-wrap"><canvas id="forecastChart"></canvas></div>
+</div>
+<div class="card">
+<div class="card-head"><div><h3>Forecast Insight</h3><div class="muted">Model-generated decision signal</div></div></div>
+<div class="insight-box"><div class="insight-label">Market Outlook</div><div class="insight-message" id="insightMessage">Select a crop to view its forecast.</div></div>
+<div class="metric-row">
+<div class="metric"><span>Last observed</span><strong id="lastArrivals">—</strong></div>
+<div class="metric"><span>Predicted</span><strong id="predictedArrivals">—</strong></div>
+<div class="metric"><span>Expected change</span><strong id="changePercent">—</strong></div>
+<div class="metric"><span>Forecast week</span><strong id="weekShort">—</strong></div>
+</div>
+</div>
+</div>
+</section>
+
+
+<section class="section">
+<div class="section-title">🤖 AI Insights & Recommendations</div>
+<div class="section-note">Role-based recommendations generated from the crop-level demand forecast.</div>
+
+<div class="forecast-grid" id="aiInsightsGrid">
+
+<div class="card">
+<div class="card-head">
+<div><h3>📈 Top Opportunity</h3><div class="muted">Crop showing the strongest positive forecast</div></div>
+</div>
+<div class="insight-box">
+<div class="insight-label" id="opportunityCrop">—</div>
+<div class="insight-message" id="opportunityMessage">Loading recommendation...</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-head">
+<div><h3>⚠️ Crop to Watch</h3><div class="muted">Crop requiring closer attention</div></div>
+</div>
+<div class="insight-box">
+<div class="insight-label" id="watchCrop">—</div>
+<div class="insight-message" id="watchMessage">Loading recommendation...</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-head">
+<div><h3>📦 Planning Insight</h3><div class="muted" id="planningLabel">Role-based planning recommendation</div></div>
+</div>
+<div class="insight-box">
+<div class="insight-message" id="planningMessage">Loading recommendation...</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-head">
+<div><h3>💡 AI Summary</h3><div class="muted">Overall market-activity signal</div></div>
+</div>
+<div class="insight-box">
+<div class="insight-message" id="aiSummaryMessage">Loading recommendation...</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="section">
+<div class="section-title">All Crop Forecasts</div>
+<div class="section-note">Forecasts are based on the trained AgriCentre model and available historical market-arrival data.</div>
+<div class="card" style="padding:0">
+<div class="table-wrap">
+<table class="table"><thead><tr><th>Crop</th><th>Forecast Week</th><th>Last Observed</th><th>Predicted</th><th>Change</th><th>Direction</th></tr></thead><tbody id="forecastTable"><tr><td colspan="6" class="loading">Loading forecast data...</td></tr></tbody></table>
+</div>
+</div>
+</section>
+
+<footer><div class="ft-grid">
+<div><div class="ft-brand">Agri<span>Centre</span></div><p class="ft-desc">A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.</p></div>
+<div class="ft-col"><h4>Platform</h4><a href="dashboard.html">Dashboard</a><a href="marketplace.html">Marketplace</a><a href="buyer-orders.html">Orders</a><a href="quality.html">Quality &amp; Certification</a></div>
+<div class="ft-col"><h4>AI &amp; Tools</h4><a href="demand-forecasting.html">Demand Forecasting</a><a href="ai-assistant.html">AI Assistant</a><a href="reports.html">Reports Center</a></div>
+<div class="ft-col"><h4>Account</h4><a href="profile.html">Profile</a><a href="alerts.html">Notifications</a><a href="#" onclick="logout();return false">Logout</a></div>
+</div><div class="ft-bottom"><span>© 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution</span><div class="ft-links"><a href="privacy.html">Privacy &amp; Terms</a><a href="contact.html">Contact</a></div></div></footer>
+</main></div>
+
+<script>
+const API_BASE="http://127.0.0.1:5000";
+const FORECAST_API=API_BASE+"/api/demand-forecast";
+let forecastData=null, chart=null, currentUser=null;
+
+function token(){return localStorage.getItem("token")}
+function logout(){localStorage.removeItem("token");localStorage.removeItem("user");location.href="login.html"}
+function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v}
+function escapeHTML(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
+function formatTonnes(v){const n=Number(v);if(!Number.isFinite(n))return"—";return n.toLocaleString("en-IN",{maximumFractionDigits:0})+" t"}
+function formatPct(v){const n=Number(v);if(!Number.isFinite(n))return"—";return(n>=0?"+":"")+n.toFixed(1)+"%"}
+function normalizeRole(r){return String(r||"").trim().toUpperCase()}
+function roleName(r){return String(r||"User").toLowerCase().replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase())}
+
+function updateNavbar(loggedIn){
+["profile-link","logout-link","login-link","signup-link"].forEach(id=>{const e=document.getElementById(id);if(!e)return;e.style.display=loggedIn?(id==="profile-link"||id==="logout-link"?"inline-block":"none"):(id==="login-link"||id==="signup-link"?"inline-block":"none")})
+}
+
+function renderSidebar(role){
+const r=normalizeRole(role);
+let h=`<div class="sb-section"><div class="sb-label">Main</div><a href="dashboard.html" class="sb-link"><span class="si">📊</span><span class="sl">Dashboard</span></a></div>`;
+if(r==="VENDOR"){
+h+=`<div class="sb-section"><div class="sb-label">Shop</div><a href="marketplace.html" class="sb-link"><span class="si">🛒</span><span class="sl">Marketplace</span></a><a href="cart.html" class="sb-link"><span class="si">🛍️</span><span class="sl">My Cart</span></a><a href="favorites.html" class="sb-link"><span class="si">❤️</span><span class="sl">Favorites</span></a></div>
+<div class="sb-section"><div class="sb-label">Orders</div><a href="buyer-orders.html" class="sb-link"><span class="si">📦</span><span class="sl">My Orders</span></a><a href="buyer-logistics.html" class="sb-link"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a></div>
+<div class="sb-section"><div class="sb-label">Communication</div><a href="meeting.html" class="sb-link"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a></div>`;
+}else if(r==="WHOLESALER"){
+h+=`<div class="sb-section"><div class="sb-label">Bulk Buying</div><a href="marketplace.html" class="sb-link"><span class="si">🛒</span><span class="sl">Marketplace</span></a><a href="wholesaler-offers.html" class="sb-link"><span class="si">🤝</span><span class="sl">My Offers</span></a><a href="cart.html" class="sb-link"><span class="si">📦</span><span class="sl">Bulk Cart</span></a></div>
+<div class="sb-section"><div class="sb-label">Orders</div><a href="buyer-orders.html" class="sb-link"><span class="si">📋</span><span class="sl">Bulk Orders</span></a><a href="buyer-logistics.html" class="sb-link"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a><a href="payments.html" class="sb-link"><span class="si">💳</span><span class="sl">Payments & Invoices</span></a></div>
+<div class="sb-section"><div class="sb-label">Communication</div><a href="meeting.html" class="sb-link"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a></div>`;
+}else{
+h+=`<div class="sb-section"><div class="sb-label">Produce</div><a href="add-produce.html" class="sb-link"><span class="si">🌾</span><span class="sl">Add Produce</span></a><a href="my-listings.html" class="sb-link"><span class="si">📋</span><span class="sl">My Listings</span></a><a href="offers.html" class="sb-link"><span class="si">🤝</span><span class="sl">Offers</span></a><a href="buyers.html" class="sb-link"><span class="si">🔎</span><span class="sl">Find Buyers</span></a></div>
+<div class="sb-section"><div class="sb-label">Orders & Delivery</div><a href="orders.html" class="sb-link"><span class="si">📦</span><span class="sl">Orders</span></a><a href="farmer_logistics.html" class="sb-link"><span class="si">🚚</span><span class="sl">Logistics</span></a><a href="meeting.html" class="sb-link"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a></div>
+<div class="sb-section"><div class="sb-label">Reports & Quality</div><a href="reports.html" class="sb-link"><span class="si">📄</span><span class="sl">Reports Centre</span></a><a href="quality.html" class="sb-link"><span class="si">🛡️</span><span class="sl">Quality & Certification</span></a><a href="alerts.html" class="sb-link"><span class="si">🔔</span><span class="sl">Alert Center</span></a></div>`;
+}
+h+=`<div class="sb-section"><div class="sb-label">Demand Forecasting</div><a href="demand-forecasting.html" class="sb-link active"><span class="si">📈</span><span class="sl">Demand Forecasting</span></a></div>
+<div class="sb-section"><div class="sb-label">Account</div><a href="profile.html" class="sb-link"><span class="si">${r==="WHOLESALER"?"🏢":"👤"}</span><span class="sl">${r==="WHOLESALER"?"Business Profile":"Profile"}</span></a><a href="alerts.html" class="sb-link"><span class="si">🔔</span><span class="sl">Notifications</span></a><a href="#" class="sb-link" onclick="logout();return false"><span class="si">🚪</span><span class="sl">Logout</span></a></div>`;
+document.getElementById("sidebar").innerHTML=h;
+}
+
+function applyRoleContent(role){
+const r=normalizeRole(role);setText("roleText",roleName(role));
+const descriptions={
+VENDOR:"Use expected market activity to plan purchases, inventory and order timing. Focus on crops with stronger forecasted arrivals when securing supply.",
+WHOLESALER:"Use expected market arrivals to plan bulk procurement, supplier coordination and inventory. Focus on increasing or decreasing crop activity when scheduling purchases.",
+FARMER:"Use expected market activity to identify favourable selling windows and prepare supply. The same forecast is interpreted from a farmer's perspective."
+};
+const notes={
+VENDOR:"Vendor view: the forecast supports purchasing and inventory decisions. A rising forecast indicates potentially greater market availability; a falling forecast may signal tighter availability.",
+WHOLESALER:"Wholesaler view: the forecast supports bulk procurement and inventory planning. Use crop-level trends to decide when to secure supply and coordinate farmer/FPO purchases.",
+FARMER:"Farmer view: the forecast supports selling and supply planning. Use crop-level market activity trends as one input when deciding when and where to sell."
+};
+setText("roleDescription",descriptions[r]||descriptions.FARMER);
+setText("roleNote",notes[r]||notes.FARMER);
+}
+
+async function loadUser(){
+const t=token();updateNavbar(!!t);if(!t){location.href="login.html";throw new Error("Not logged in")}
+const res=await fetch(API_BASE+"/api/auth/profile",{headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"}});
+if(res.status===401){logout();return}
+const data=await res.json();if(!res.ok||!data.success)throw new Error(data.message||"Unable to load profile");
+currentUser=data.user;renderSidebar(currentUser.role);applyRoleContent(currentUser.role);
+}
+
+function extractCrops(data){
+return data?.crops||data?.forecasts||data?.data?.crops||[];
+}
+function summaryFrom(crops,data){
+const s=data?.summary||data?.data?.summary||{};
+return {crops:s.crops_forecasted??s.total_crops??crops.length,increasing:s.increasing??crops.filter(x=>String(x.forecast_direction||"").toLowerCase()==="increasing").length,stable:s.stable??crops.filter(x=>String(x.forecast_direction||"").toLowerCase()==="stable").length,decreasing:s.decreasing??crops.filter(x=>String(x.forecast_direction||"").toLowerCase()==="decreasing").length};
+}
+function normalizeCrop(x){
+return {crop:x.crop||x.crop_name||x.commodity||"Unknown",forecast_week:x.forecast_week||x.week||x.forecast_date||"—",last:Number(x.last_observed_arrivals_tonnes??x.last_observed??x.last_arrivals_tonnes??x.last_arrivals),predicted:Number(x.predicted_arrivals_tonnes??x.predicted??x.predicted_tonnes),change:Number(x.predicted_change_percent??x.change_percent??x.change),direction:String(x.forecast_direction||x.direction||"stable").toLowerCase(),message:x.insight_message||x.insight||"Forecast indicates the expected market activity for this crop."};
+}
+
+async function loadForecast(){
+const t=token();if(!t)return;
+const btn=document.getElementById("refreshBtn");btn.disabled=true;btn.textContent="↻ Loading...";
+document.getElementById("errorBox").style.display="none";
+try{
+const res=await fetch(FORECAST_API,{headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"}});
+if(res.status===401){logout();return}
+const data=await res.json();if(!res.ok||data.success===false)throw new Error(data.message||data.error||"Demand forecast API unavailable.");
+const raw=extractCrops(data);forecastData=raw.map(normalizeCrop).filter(x=>x.crop!=="Unknown");
+const s=summaryFrom(forecastData,data);
+setText("cropCount",s.crops);setText("increaseCount",s.increasing);setText("stableCount",s.stable);setText("decreaseCount",s.decreasing);
+renderSelect();renderTable();renderAIInsights();
+if(forecastData.length){document.getElementById("cropSelect").value=forecastData[0].crop;renderCrop(forecastData[0].crop)}
+else throw new Error("The forecast API returned no crop forecasts.");
+}catch(e){console.error(e);const box=document.getElementById("errorBox");box.textContent="Unable to load demand forecasts: "+e.message;box.style.display="block";document.getElementById("forecastTable").innerHTML='<tr><td colspan="6" class="empty">No forecast data available.</td></tr>'}
+finally{btn.disabled=false;btn.textContent="↻ Refresh Forecast"}
+}
+
+function renderSelect(){const s=document.getElementById("cropSelect");s.innerHTML='<option value="">Select crop</option>'+forecastData.map(x=>`<option value="${escapeHTML(x.crop)}">${escapeHTML(x.crop)}</option>`).join("")}
+
+function recommendationForCrop(crop, role, type){
+    const name = crop.crop;
+    const change = Number(crop.change) || 0;
+    const direction = crop.direction;
+
+    if(role === "FARMER"){
+        if(type === "opportunity"){
+            return `${name} is forecast to show ${direction} market activity (${formatPct(change)}). Consider preparing supply and prioritizing buyer outreach for this crop.`;
+        }
+        return `${name} is forecast to show ${direction} market activity (${formatPct(change)}). Review your expected harvest and selling plan before committing additional supply.`;
+    }
+
+    if(role === "VENDOR"){
+        if(type === "opportunity"){
+            return `${name} is forecast to show ${direction} market activity (${formatPct(change)}). Consider maintaining adequate availability and reviewing purchasing levels against expected market activity.`;
+        }
+        return `${name} is forecast to show ${direction} market activity (${formatPct(change)}). Monitor inventory carefully and avoid overstocking until actual market conditions confirm the trend.`;
+    }
+
+    if(role === "WHOLESALER"){
+        if(type === "opportunity"){
+            return `${name} is forecast to show ${direction} market activity (${formatPct(change)}). Consider planning procurement capacity and coordinating supply with farmers/FPOs.`;
+        }
+        return `${name} is forecast to show ${direction} market activity (${formatPct(change)}). Review upcoming bulk requirements and coordinate supply early where necessary.`;
+    }
+
+    return `${name} has a ${direction} forecast of ${formatPct(change)}. Review the crop-level forecast before making supply decisions.`;
+}
+
+function renderAIInsights(){
+    if(!forecastData || !forecastData.length) return;
+
+    const role = normalizeRole(currentUser?.role || "VENDOR");
+
+    const sorted = [...forecastData].sort((a,b) => (Number(b.change)||0) - (Number(a.change)||0));
+    const opportunity = sorted[0];
+    const watch = sorted[sorted.length - 1];
+
+    setText("opportunityCrop", `${opportunity.crop} · ${formatPct(opportunity.change)}`);
+    setText("opportunityMessage", recommendationForCrop(opportunity, role, "opportunity"));
+
+    setText("watchCrop", `${watch.crop} · ${formatPct(watch.change)}`);
+    setText("watchMessage", recommendationForCrop(watch, role, "watch"));
+
+    let planningLabel = "Role-based planning recommendation";
+    let planningMessage = "";
+
+    if(role === "FARMER"){
+        planningLabel = "Selling & Supply Planning";
+        planningMessage = "Prioritize crops with stronger forecasted market activity when planning harvest availability and buyer outreach. Treat the forecast as a decision-support signal alongside actual marketplace conditions.";
+    } else if(role === "VENDOR"){
+        planningLabel = "Purchasing & Inventory Planning";
+        planningMessage = "Use increasing and decreasing crop signals to review purchase quantities and inventory exposure. Avoid treating a forecast as a guarantee; confirm the trend against actual marketplace activity.";
+    } else if(role === "WHOLESALER"){
+        planningLabel = "Bulk Procurement Planning";
+        planningMessage = "Use crop-level forecast changes to prioritize bulk procurement, supplier coordination and inventory planning. Stronger signals can guide where to focus procurement attention.";
+    }
+
+    setText("planningLabel", planningLabel);
+    setText("planningMessage", planningMessage);
+
+    const increasing = forecastData.filter(x => x.direction === "increasing").length;
+    const decreasing = forecastData.filter(x => x.direction === "decreasing").length;
+    const stable = forecastData.filter(x => x.direction === "stable").length;
+
+    let summary = "";
+    if(role === "FARMER"){
+        summary = `${increasing} crops show increasing activity, ${stable} are stable and ${decreasing} are decreasing. Focus selling and supply preparation on crop-level opportunities rather than applying the same strategy to every crop.`;
+    } else if(role === "VENDOR"){
+        summary = `${increasing} crops show increasing activity, ${stable} are stable and ${decreasing} are decreasing. Use these signals to prioritize purchasing and inventory reviews while validating actual availability.`;
+    } else {
+        summary = `${increasing} crops show increasing activity, ${stable} are stable and ${decreasing} are decreasing. Use the crop-level signals to prioritize bulk procurement and supplier coordination.`;
+    }
+
+    setText("aiSummaryMessage", summary);
+}
+
+function renderTable(){
+const body=document.getElementById("forecastTable");
+body.innerHTML=forecastData.map(x=>{const cls=x.change>1?"change-up":x.change<-1?"change-down":"change-flat";return `<tr><td class="crop-name">${escapeHTML(x.crop)}</td><td>${escapeHTML(x.forecast_week)}</td><td>${formatTonnes(x.last)}</td><td>${formatTonnes(x.predicted)}</td><td class="${cls}">${formatPct(x.change)}</td><td><span class="direction ${escapeHTML(x.direction)}">${escapeHTML(x.direction)}</span></td></tr>`}).join("");
+}
+function renderCrop(name){
+const x=forecastData.find(c=>c.crop===name);if(!x)return;
+setText("chartTitle",x.crop+" — Historical vs Forecast");
+setText("forecastWeek","Forecast period: "+x.forecast_week);
+setText("directionBadge",x.direction);document.getElementById("directionBadge").className="direction "+x.direction;
+setText("insightMessage",x.message);setText("lastArrivals",formatTonnes(x.last));setText("predictedArrivals",formatTonnes(x.predicted));setText("changePercent",formatPct(x.change));setText("weekShort",x.forecast_week);
+const labels=["Last observed","Forecast"];const values=[x.last,x.predicted];
+if(chart)chart.destroy();
+chart=new Chart(document.getElementById("forecastChart"),{type:"line",data:{labels,datasets:[{label:"Market arrivals (tonnes)",data:values,tension:.35,borderWidth:2,pointRadius:5,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#aeb6c4",font:{size:10}}}},scales:{x:{ticks:{color:"#7f8999",font:{size:10}},grid:{color:"#ffffff08"}},y:{ticks:{color:"#7f8999",font:{size:10}},grid:{color:"#ffffff08"}}}}});
+}
+document.getElementById("cropSelect").addEventListener("change",e=>renderCrop(e.target.value));
+document.getElementById("refreshBtn").addEventListener("click",loadForecast);
+document.getElementById("sidebarToggle").addEventListener("click",()=>{const sb=document.getElementById("sidebar"),m=document.getElementById("mainArea");if(innerWidth<=768)sb.classList.toggle("open");else{sb.classList.toggle("collapsed");m.classList.toggle("expanded")}});
+document.addEventListener("click",e=>{const sb=document.getElementById("sidebar"),t=document.getElementById("sidebarToggle");if(innerWidth<=768&&sb.classList.contains("open")&&!sb.contains(e.target)&&!t.contains(e.target))sb.classList.remove("open")});
+document.addEventListener("DOMContentLoaded",async()=>{try{await loadUser();await loadForecast()}catch(e){console.error(e);}});
+</script>
+</body>
+</html>

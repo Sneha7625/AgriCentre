@@ -1,0 +1,3001 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Offers | AgriCentre</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: #f4f7f2;
+            color: #26352b;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar {
+            height: 68px;
+            background: #ffffff;
+            border-bottom: 1px solid #e1e8e1;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 28px;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            color: #236b35;
+
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eaf6ec;
+            border-radius: 10px;
+
+            font-size: 21px;
+        }
+
+        .nav-right {
+            margin-left: auto;
+
+            display: flex;
+            align-items: center;
+
+            gap: 18px;
+        }
+
+        .user-chip {
+            padding: 9px 14px;
+
+            border-radius: 20px;
+
+            background: #edf7ef;
+            color: #286538;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            border: none;
+            background: transparent;
+
+            color: #68736b;
+
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            color: #c0392b;
+        }
+
+
+        /* =====================================================
+           LAYOUT
+        ===================================================== */
+
+        .layout {
+            min-height: calc(100vh - 68px);
+
+            display: flex;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            width: 245px;
+            flex-shrink: 0;
+
+            background: #ffffff;
+            border-right: 1px solid #e1e8e1;
+
+            padding: 24px 14px;
+        }
+
+        .sidebar-title {
+            padding: 0 13px 12px;
+
+            color: #89938c;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: .09em;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 12px 14px;
+            margin-bottom: 4px;
+
+            border-radius: 10px;
+
+            color: #5d6961;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: .2s;
+        }
+
+        .nav-item:hover {
+            background: #f1f7f2;
+            color: #236b35;
+        }
+
+        .nav-item.active {
+            background: #e9f5eb;
+            color: #236b35;
+        }
+
+        .nav-icon {
+            width: 23px;
+            text-align: center;
+
+            font-size: 17px;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main {
+            flex: 1;
+
+            padding: 34px;
+
+            max-width: 1500px;
+        }
+
+
+        /* =====================================================
+           PAGE HEADER
+        ===================================================== */
+
+        .page-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: flex-start;
+
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            color: #4d8b5a;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: .08em;
+
+            margin-bottom: 7px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            line-height: 1.15;
+
+            margin-bottom: 7px;
+        }
+
+        .page-header p {
+            color: #727d75;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           STATS
+        ===================================================== */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+
+            border: 1px solid #e2e9e2;
+
+            border-radius: 13px;
+
+            padding: 18px;
+        }
+
+        .stat-label {
+            color: #7b857e;
+
+            font-size: 12px;
+
+            margin-bottom: 7px;
+        }
+
+        .stat-value {
+            color: #26382b;
+
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .stat-sub {
+            color: #8b948e;
+
+            font-size: 11px;
+
+            margin-top: 4px;
+        }
+
+
+        /* =====================================================
+           TOOLBAR
+        ===================================================== */
+
+        .toolbar {
+            background: #ffffff;
+
+            border: 1px solid #e2e9e2;
+
+            border-radius: 13px;
+
+            padding: 16px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 20px;
+        }
+
+        .search {
+            position: relative;
+
+            flex: 1;
+        }
+
+        .search-icon {
+            position: absolute;
+
+            left: 13px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #89938c;
+        }
+
+        .search input {
+            width: 100%;
+
+            padding: 11px 13px 11px 38px;
+
+            border: 1px solid #dce4dc;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            background: #fbfcfb;
+        }
+
+        .search input:focus {
+            border-color: #6ba877;
+        }
+
+        .filter {
+            min-width: 160px;
+
+            padding: 11px 13px;
+
+            border: 1px solid #dce4dc;
+
+            border-radius: 9px;
+
+            background: #fbfcfb;
+
+            color: #49564d;
+
+            outline: none;
+        }
+
+
+        /* =====================================================
+           OFFERS CONTAINER
+        ===================================================== */
+
+        .offers-container {
+            background: #ffffff;
+
+            border: 1px solid #e2e9e2;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+        }
+
+        .offers-header {
+            padding: 19px 20px;
+
+            border-bottom: 1px solid #edf1ed;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .offers-header h2 {
+            font-size: 17px;
+        }
+
+        .offers-count {
+            color: #7b857e;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           OFFER CARD
+        ===================================================== */
+
+        .offer-list {
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .offer-card {
+            padding: 20px;
+
+            border-bottom: 1px solid #edf1ed;
+
+            display: grid;
+
+            grid-template-columns:
+                1.3fr
+                1fr
+                1fr
+                1fr
+                110px
+                115px;
+
+            align-items: center;
+
+            gap: 18px;
+
+            transition: .2s;
+        }
+
+        .offer-card:last-child {
+            border-bottom: none;
+        }
+
+        .offer-card:hover {
+            background: #fbfdfb;
+        }
+
+        .offer-id {
+            color: #286538;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            margin-bottom: 7px;
+        }
+
+        .produce-name {
+            color: #2e3e33;
+
+            font-size: 16px;
+            font-weight: 800;
+
+            margin-bottom: 4px;
+        }
+
+        .listing-id {
+            color: #929b95;
+
+            font-size: 11px;
+        }
+
+        .info-label {
+            color: #929b95;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #3d4d43;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .offer-price {
+            color: #2d6b39;
+
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .listed-price {
+            color: #929b95;
+
+            font-size: 11px;
+
+            margin-top: 3px;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .status {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 6px 10px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #fff4d9;
+            color: #956900;
+        }
+
+        .status-accepted {
+            background: #e5f5e8;
+            color: #28703a;
+        }
+
+        .status-declined {
+            background: #fdebea;
+            color: #ad3935;
+        }
+
+
+        /* =====================================================
+           ACTIONS
+        ===================================================== */
+
+        .offer-actions {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+        .action-btn {
+            border: none;
+
+            border-radius: 7px;
+
+            padding: 8px 10px;
+
+            cursor: pointer;
+
+            font-size: 11px;
+            font-weight: 750;
+
+            transition: .2s;
+        }
+
+        .view-btn {
+            background: #edf6ef;
+            color: #286538;
+        }
+
+        .view-btn:hover {
+            background: #dfeee2;
+        }
+
+        .accept-btn {
+            background: #2f7d3d;
+            color: #ffffff;
+        }
+
+        .accept-btn:hover {
+            background: #256632;
+        }
+
+        .decline-btn {
+            background: #fff0ef;
+            color: #a73b36;
+        }
+
+        .decline-btn:hover {
+            background: #fde1df;
+        }
+
+        .action-btn:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+
+        .empty-state {
+            display: none;
+
+            padding: 65px 20px;
+
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 46px;
+
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+
+            margin-bottom: 7px;
+        }
+
+        .empty-state p {
+            color: #7d8780;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           LOADING
+        ===================================================== */
+
+        .loading {
+            padding: 60px;
+
+            text-align: center;
+
+            color: #7b857e;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .modal-overlay {
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(22, 34, 26, .45);
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 300;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            width: 100%;
+
+            max-width: 620px;
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            background: #ffffff;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 20px 50px
+                rgba(0, 0, 0, .18);
+        }
+
+        .modal-header {
+            padding: 20px;
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            border-bottom: 1px solid #e8ede8;
+        }
+
+        .modal-header h2 {
+            font-size: 19px;
+        }
+
+        .close-btn {
+            border: none;
+
+            background: transparent;
+
+            font-size: 22px;
+
+            color: #7a857d;
+
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .detail-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+        }
+
+        .detail-item {
+            padding: 13px;
+
+            background: #f7f9f7;
+
+            border-radius: 9px;
+        }
+
+        .detail-item.full {
+            grid-column: 1 / -1;
+        }
+
+        .detail-label {
+            color: #89938c;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #35443a;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .negotiation-box {
+            margin-top: 20px;
+        }
+
+        .negotiation-title {
+            font-size: 14px;
+            font-weight: 800;
+
+            margin-bottom: 10px;
+        }
+
+        .negotiation-entry {
+            display: flex;
+
+            justify-content: space-between;
+
+            padding: 11px 13px;
+
+            background: #f7f9f7;
+
+            border-radius: 8px;
+
+            margin-bottom: 7px;
+
+            font-size: 12px;
+        }
+
+        .negotiation-actor {
+            font-weight: 800;
+            color: #35653f;
+        }
+
+        .negotiation-price {
+            font-weight: 800;
+        }
+
+        .negotiation-date {
+            color: #89938c;
+            font-size: 10px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1200px) {
+
+            .offer-card {
+                grid-template-columns:
+                    1.3fr
+                    1fr
+                    1fr
+                    1fr;
+            }
+
+            .offer-actions {
+                grid-column: 1 / -1;
+
+                flex-direction: row;
+            }
+        }
+
+        @media (max-width: 900px) {
+
+            .stats-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                padding: 22px 16px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+            .filter {
+                width: 100%;
+            }
+
+            .offer-card {
+                grid-template-columns: 1fr;
+            }
+
+            .offer-actions {
+                grid-column: auto;
+
+                flex-direction: row;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-item.full {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================================
+     NAVBAR
+========================================================== -->
+
+<nav class="navbar">
+
+    <a
+        href="dashboard.html"
+        class="brand"
+    >
+
+        <div class="brand-icon">
+            🌾
+        </div>
+
+        <span>
+            AgriCentre
+        </span>
+
+    </a>
+
+
+    <div class="nav-right">
+
+        <div
+            id="userChip"
+            class="user-chip"
+        >
+            🌾 Farmer
+        </div>
+
+        <button
+            class="logout-btn"
+            type="button"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ==========================================================
+     LAYOUT
+========================================================== -->
+
+<div class="layout">
+
+
+    <!-- ======================================================
+         SIDEBAR
+    ======================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            Farmer Portal
+        </div>
+
+
+        <a
+            href="dashboard.html"
+            class="nav-item"
+        >
+            <span class="nav-icon">
+                📊
+            </span>
+
+            Dashboard
+        </a>
+
+
+        <a
+            href="add-produce.html"
+            class="nav-item"
+        >
+            <span class="nav-icon">
+                ➕
+            </span>
+
+            Add Produce
+        </a>
+
+
+        <a
+            href="my-listings.html"
+            class="nav-item"
+        >
+            <span class="nav-icon">
+                📦
+            </span>
+
+            My Listings
+        </a>
+
+
+        <a
+            href="orders.html"
+            class="nav-item"
+        >
+            <span class="nav-icon">
+                🧾
+            </span>
+
+            Orders
+        </a>
+
+
+        <a
+            href="offers.html"
+            class="nav-item active"
+        >
+            <span class="nav-icon">
+                🤝
+            </span>
+
+            Offers
+        </a>
+
+
+        <a
+            href="market-insights.html"
+            class="nav-item"
+        >
+            <span class="nav-icon">
+                📈
+            </span>
+
+            Market Insights
+        </a>
+
+
+        <a
+            href="quality-check.html"
+            class="nav-item"
+        >
+            <span class="nav-icon">
+                🔬
+            </span>
+
+            Quality Check
+        </a>
+
+
+        <a
+            href="reports.html"
+            class="nav-item"
+        >
+            <span class="nav-icon">
+                📑
+            </span>
+
+            Reports Center
+        </a>
+
+
+        <a
+            href="profile.html"
+            class="nav-item"
+        >
+            <span class="nav-icon">
+                👤
+            </span>
+
+            Profile
+        </a>
+
+    </aside>
+
+
+
+    <!-- ======================================================
+         MAIN CONTENT
+    ======================================================= -->
+
+    <main class="main">
+
+
+        <!-- ==================================================
+             HEADER
+        =================================================== -->
+
+        <section class="page-header">
+
+            <div>
+
+                <div class="eyebrow">
+                    Farmer Portal
+                </div>
+
+                <h1>
+                    Offers
+                </h1>
+
+                <p>
+                    Review offers received for your listed produce.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==================================================
+             STATISTICS
+        =================================================== -->
+
+        <section class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Offers
+                </div>
+
+                <div
+                    id="totalOffers"
+                    class="stat-value"
+                >
+                    —
+                </div>
+
+                <div class="stat-sub">
+                    Offers received
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Pending
+                </div>
+
+                <div
+                    id="pendingOffers"
+                    class="stat-value"
+                >
+                    —
+                </div>
+
+                <div class="stat-sub">
+                    Awaiting your response
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Accepted
+                </div>
+
+                <div
+                    id="acceptedOffers"
+                    class="stat-value"
+                >
+                    —
+                </div>
+
+                <div class="stat-sub">
+                    Accepted offers
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Offered Value
+                </div>
+
+                <div
+                    id="totalValue"
+                    class="stat-value"
+                >
+                    —
+                </div>
+
+                <div class="stat-sub">
+                    Based on offered prices
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==================================================
+             SEARCH + FILTER
+        =================================================== -->
+
+        <section class="toolbar">
+
+
+            <div class="search">
+
+                <span class="search-icon">
+                    🔎
+                </span>
+
+                <input
+                    id="searchInput"
+                    type="search"
+                    placeholder="Search by offer ID, buyer or produce..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <select
+                id="statusFilter"
+                class="filter"
+            >
+
+                <option value="ALL">
+                    All Status
+                </option>
+
+                <option value="PENDING">
+                    Pending
+                </option>
+
+                <option value="ACCEPTED">
+                    Accepted
+                </option>
+
+                <option value="DECLINED">
+                    Declined
+                </option>
+
+            </select>
+
+        </section>
+
+
+
+        <!-- ==================================================
+             OFFERS
+        =================================================== -->
+
+        <section class="offers-container">
+
+
+            <div class="offers-header">
+
+                <h2>
+                    Received Offers
+                </h2>
+
+                <span
+                    id="offersCount"
+                    class="offers-count"
+                >
+                    Loading...
+                </span>
+
+            </div>
+
+
+
+            <div
+                id="loadingState"
+                class="loading"
+            >
+                Loading your offers...
+            </div>
+
+
+
+            <div
+                id="offerList"
+                class="offer-list"
+                style="display:none;"
+            >
+            </div>
+
+
+
+            <div
+                id="emptyState"
+                class="empty-state"
+            >
+
+                <div class="empty-icon">
+                    🤝
+                </div>
+
+                <h3>
+                    No offers found
+                </h3>
+
+                <p>
+                    There are no offers matching your current filters.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+
+<!-- ==========================================================
+     OFFER DETAILS MODAL
+========================================================== -->
+
+<div
+    id="modalOverlay"
+    class="modal-overlay"
+    onclick="closeModal(event)"
+>
+
+    <div
+        class="modal"
+        onclick="event.stopPropagation()"
+    >
+
+        <div class="modal-header">
+
+            <h2>
+                Offer Details
+            </h2>
+
+            <button
+                class="close-btn"
+                type="button"
+                onclick="closeModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="modalBody"
+            class="modal-body"
+        >
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+/* ============================================================
+   CONFIGURATION
+============================================================ */
+
+const API_BASE =
+    "http://127.0.0.1:5000";
+
+
+let allOffers = [];
+
+
+/* ============================================================
+   AUTHENTICATION
+============================================================ */
+
+function getToken() {
+
+    return localStorage.getItem(
+        "token"
+    );
+}
+
+
+function clearSession() {
+
+    localStorage.removeItem(
+        "token"
+    );
+
+    localStorage.removeItem(
+        "user"
+    );
+}
+
+
+function logout() {
+
+    clearSession();
+
+    window.location.href =
+        "login.html";
+}
+
+
+/* ============================================================
+   VERIFY FARMER
+============================================================ */
+
+async function verifyFarmer() {
+
+    const token =
+        getToken();
+
+
+    if (!token) {
+
+        window.location.href =
+            "login.html";
+
+        return false;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/auth/profile`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`,
+
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+
+            clearSession();
+
+            window.location.href =
+                "login.html";
+
+            return false;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to verify account."
+            );
+        }
+
+
+        const user =
+            data.user;
+
+
+        const role =
+            String(
+                user.role || ""
+            )
+            .trim()
+            .toUpperCase();
+
+
+        if (role !== "FARMER") {
+
+            alert(
+                "This page is available only to Farmer accounts."
+            );
+
+            window.location.href =
+                "dashboard.html";
+
+            return false;
+        }
+
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(user)
+        );
+
+
+        const userChip =
+            document.getElementById(
+                "userChip"
+            );
+
+
+        if (userChip) {
+
+            userChip.textContent =
+                `🌾 ${user.name || "Farmer"}`;
+        }
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Farmer verification failed:",
+            error
+        );
+
+        clearSession();
+
+        window.location.href =
+            "login.html";
+
+        return false;
+    }
+}
+
+
+/* ============================================================
+   FETCH FARMER OFFERS
+============================================================ */
+
+async function fetchOffers() {
+
+    const token =
+        getToken();
+
+
+    if (!token) {
+
+        window.location.href =
+            "login.html";
+
+        return;
+    }
+
+
+    try {
+
+        /*
+         * This endpoint will be implemented in
+         * offer_routes.py.
+         *
+         * It returns ONLY offers belonging to
+         * the currently logged-in farmer.
+         */
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/offers/farmer`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`,
+
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            clearSession();
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+
+        if (
+            response.status === 403
+        ) {
+
+            alert(
+                "Only Farmer accounts can access offers."
+            );
+
+            window.location.href =
+                "dashboard.html";
+
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load offers."
+            );
+        }
+
+
+        allOffers =
+            Array.isArray(
+                data.offers
+            )
+                ? data.offers
+                : [];
+
+
+        updateStats();
+
+        renderOffers();
+
+    } catch (error) {
+
+        console.error(
+            "Offers loading error:",
+            error
+        );
+
+
+        document.getElementById(
+            "loadingState"
+        ).innerHTML = `
+
+            <div
+                style="
+                    font-size:30px;
+                    margin-bottom:10px;
+                "
+            >
+                ⚠️
+            </div>
+
+            <strong>
+                Unable to load offers
+            </strong>
+
+            <div
+                style="
+                    margin-top:7px;
+                "
+            >
+                ${escapeHtml(
+                    error.message ||
+                    "Please try again."
+                )}
+            </div>
+        `;
+    }
+}
+
+
+/* ============================================================
+   UPDATE STATISTICS
+============================================================ */
+
+function updateStats() {
+
+    const total =
+        allOffers.length;
+
+
+    const pending =
+        allOffers.filter(
+            offer =>
+                normalizeStatus(
+                    offer.status
+                ) === "PENDING"
+        ).length;
+
+
+    const accepted =
+        allOffers.filter(
+            offer =>
+                normalizeStatus(
+                    offer.status
+                ) === "ACCEPTED"
+        ).length;
+
+
+    const totalValue =
+        allOffers.reduce(
+            (
+                sum,
+                offer
+            ) => {
+
+                const price =
+                    Number(
+                        offer.offered_price
+                    );
+
+
+                const quantity =
+                    Number(
+                        offer.quantity
+                    );
+
+
+                if (
+                    !Number.isFinite(
+                        price
+                    ) ||
+                    !Number.isFinite(
+                        quantity
+                    )
+                ) {
+
+                    return sum;
+                }
+
+
+                return sum +
+                    (
+                        price *
+                        quantity
+                    );
+            },
+            0
+        );
+
+
+    document.getElementById(
+        "totalOffers"
+    ).textContent =
+        total;
+
+
+    document.getElementById(
+        "pendingOffers"
+    ).textContent =
+        pending;
+
+
+    document.getElementById(
+        "acceptedOffers"
+    ).textContent =
+        accepted;
+
+
+    document.getElementById(
+        "totalValue"
+    ).textContent =
+        formatCurrency(
+            totalValue
+        );
+}
+
+
+/* ============================================================
+   FILTER
+============================================================ */
+
+function getFilteredOffers() {
+
+    const search =
+        document
+            .getElementById(
+                "searchInput"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const status =
+        document
+            .getElementById(
+                "statusFilter"
+            )
+            .value;
+
+
+    return allOffers.filter(
+        offer => {
+
+            const offerId =
+                String(
+                    offer.offer_id || ""
+                ).toLowerCase();
+
+
+            const buyer =
+                String(
+                    offer.buyer_name ||
+                    offer.buyer_id ||
+                    ""
+                ).toLowerCase();
+
+
+            const produce =
+                String(
+                    offer.produce_name ||
+                    ""
+                ).toLowerCase();
+
+
+            const matchesSearch =
+                !search ||
+                offerId.includes(
+                    search
+                ) ||
+                buyer.includes(
+                    search
+                ) ||
+                produce.includes(
+                    search
+                );
+
+
+            const matchesStatus =
+                status === "ALL" ||
+                normalizeStatus(
+                    offer.status
+                ) === status;
+
+
+            return (
+                matchesSearch &&
+                matchesStatus
+            );
+        }
+    );
+}
+
+
+/* ============================================================
+   RENDER
+============================================================ */
+
+function renderOffers() {
+
+    const offers =
+        getFilteredOffers();
+
+
+    const loading =
+        document.getElementById(
+            "loadingState"
+        );
+
+
+    const list =
+        document.getElementById(
+            "offerList"
+        );
+
+
+    const empty =
+        document.getElementById(
+            "emptyState"
+        );
+
+
+    loading.style.display =
+        "none";
+
+
+    document.getElementById(
+        "offersCount"
+    ).textContent =
+        `${offers.length} offer${offers.length === 1 ? "" : "s"}`;
+
+
+    if (!offers.length) {
+
+        list.style.display =
+            "none";
+
+        empty.style.display =
+            "block";
+
+        return;
+    }
+
+
+    empty.style.display =
+        "none";
+
+    list.style.display =
+        "flex";
+
+
+    list.innerHTML =
+        offers
+            .map(
+                offer =>
+                    createOfferCard(
+                        offer
+                    )
+            )
+            .join("");
+}
+
+
+/* ============================================================
+   CREATE OFFER CARD
+============================================================ */
+
+function createOfferCard(
+    offer
+) {
+
+    const status =
+        normalizeStatus(
+            offer.status
+        );
+
+
+    const isPending =
+        status === "PENDING";
+
+
+    return `
+
+        <div class="offer-card">
+
+            <div>
+
+                <div class="offer-id">
+                    ${escapeHtml(
+                        offer.offer_id ||
+                        "—"
+                    )}
+                </div>
+
+                <div class="produce-name">
+                    ${escapeHtml(
+                        offer.produce_name ||
+                        "Unknown Produce"
+                    )}
+                </div>
+
+                <div class="listing-id">
+                    Listing:
+                    ${escapeHtml(
+                        offer.listing_id ||
+                        "—"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <div class="info-label">
+                    Buyer
+                </div>
+
+                <div class="info-value">
+                    ${escapeHtml(
+                        offer.buyer_name ||
+                        "Buyer"
+                    )}
+                </div>
+
+                <div
+                    style="
+                        color:#929b95;
+                        font-size:10px;
+                        margin-top:3px;
+                    "
+                >
+                    ${escapeHtml(
+                        offer.buyer_role ||
+                        ""
+                    )}
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <div class="info-label">
+                    Quantity
+                </div>
+
+                <div class="info-value">
+
+                    ${formatNumber(
+                        offer.quantity
+                    )}
+
+                    ${escapeHtml(
+                        offer.unit ||
+                        ""
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <div class="info-label">
+                    Offered Price
+                </div>
+
+                <div class="offer-price">
+
+                    ${formatCurrency(
+                        offer.offered_price
+                    )}
+
+                </div>
+
+                <div class="listed-price">
+
+                    Listed:
+                    ${formatCurrency(
+                        offer.listed_price
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <span
+                    class="status ${getStatusClass(status)}"
+                >
+                    ${escapeHtml(status)}
+                </span>
+
+            </div>
+
+
+            <div class="offer-actions">
+
+                <button
+                    type="button"
+                    class="action-btn view-btn"
+                    onclick="viewOffer('${escapeAttribute(
+                        offer.offer_id || ""
+                    )}')"
+                >
+                    View
+                </button>
+
+                ${
+                    isPending
+                        ? `
+
+                            <button
+                                type="button"
+                                class="action-btn accept-btn"
+                                onclick="acceptOffer('${escapeAttribute(
+                                    offer.offer_id || ""
+                                )}')"
+                            >
+                                Accept
+                            </button>
+
+                            <button
+                                type="button"
+                                class="action-btn decline-btn"
+                                onclick="declineOffer('${escapeAttribute(
+                                    offer.offer_id || ""
+                                )}')"
+                            >
+                                Decline
+                            </button>
+
+                        `
+                        : ""
+                }
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* ============================================================
+   VIEW OFFER
+============================================================ */
+
+function viewOffer(
+    offerId
+) {
+
+    const offer =
+        allOffers.find(
+            item =>
+                String(
+                    item.offer_id
+                ) === String(
+                    offerId
+                )
+        );
+
+
+    if (!offer) {
+
+        return;
+    }
+
+
+    const status =
+        normalizeStatus(
+            offer.status
+        );
+
+
+    let negotiationHTML =
+        "";
+
+
+    if (
+        Array.isArray(
+            offer.negotiation
+        ) &&
+        offer.negotiation.length
+    ) {
+
+        negotiationHTML = `
+
+            <div class="negotiation-box">
+
+                <div class="negotiation-title">
+                    Negotiation History
+                </div>
+
+                ${
+                    offer.negotiation
+                        .map(
+                            entry => `
+
+                                <div
+                                    class="negotiation-entry"
+                                >
+
+                                    <div>
+
+                                        <div
+                                            class="negotiation-actor"
+                                        >
+                                            ${escapeHtml(
+                                                entry.actor ||
+                                                "—"
+                                            )}
+                                        </div>
+
+                                        <div
+                                            class="negotiation-date"
+                                        >
+                                            ${escapeHtml(
+                                                formatDateTime(
+                                                    entry.timestamp
+                                                )
+                                            )}
+                                        </div>
+
+                                    </div>
+
+                                    <div
+                                        class="negotiation-price"
+                                    >
+                                        ${formatCurrency(
+                                            entry.price
+                                        )}
+                                    </div>
+
+                                </div>
+
+                            `
+                        )
+                        .join("")
+                }
+
+            </div>
+        `;
+    }
+
+
+    document.getElementById(
+        "modalBody"
+    ).innerHTML = `
+
+        <div class="detail-grid">
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Offer ID
+                </div>
+
+                <div class="detail-value">
+                    ${escapeHtml(
+                        offer.offer_id ||
+                        "—"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Status
+                </div>
+
+                <div class="detail-value">
+
+                    <span
+                        class="status ${getStatusClass(status)}"
+                    >
+                        ${escapeHtml(status)}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Produce
+                </div>
+
+                <div class="detail-value">
+                    ${escapeHtml(
+                        offer.produce_name ||
+                        "—"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Listing ID
+                </div>
+
+                <div class="detail-value">
+                    ${escapeHtml(
+                        offer.listing_id ||
+                        "—"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Buyer
+                </div>
+
+                <div class="detail-value">
+                    ${escapeHtml(
+                        offer.buyer_name ||
+                        "Buyer"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Buyer Type
+                </div>
+
+                <div class="detail-value">
+                    ${escapeHtml(
+                        offer.buyer_role ||
+                        "—"
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Quantity
+                </div>
+
+                <div class="detail-value">
+
+                    ${formatNumber(
+                        offer.quantity
+                    )}
+
+                    ${escapeHtml(
+                        offer.unit ||
+                        ""
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Listed Price
+                </div>
+
+                <div class="detail-value">
+
+                    ${formatCurrency(
+                        offer.listed_price
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Offered Price
+                </div>
+
+                <div class="detail-value">
+
+                    ${formatCurrency(
+                        offer.offered_price
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Total Offered Value
+                </div>
+
+                <div class="detail-value">
+
+                    ${formatCurrency(
+                        Number(
+                            offer.offered_price
+                        ) *
+                        Number(
+                            offer.quantity
+                        )
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Created
+                </div>
+
+                <div class="detail-value">
+
+                    ${escapeHtml(
+                        formatDateTime(
+                            offer.created_at
+                        )
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-item">
+
+                <div class="detail-label">
+                    Expires
+                </div>
+
+                <div class="detail-value">
+
+                    ${escapeHtml(
+                        formatDateTime(
+                            offer.expires_at
+                        )
+                    )}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        ${negotiationHTML}
+
+
+        ${
+            status === "PENDING"
+                ? `
+
+                    <div
+                        style="
+                            display:flex;
+                            gap:10px;
+                            margin-top:20px;
+                        "
+                    >
+
+                        <button
+                            type="button"
+                            class="action-btn accept-btn"
+                            style="flex:1;"
+                            onclick="acceptOffer('${escapeAttribute(
+                                offer.offer_id
+                            )}')"
+                        >
+                            Accept Offer
+                        </button>
+
+                        <button
+                            type="button"
+                            class="action-btn decline-btn"
+                            style="flex:1;"
+                            onclick="declineOffer('${escapeAttribute(
+                                offer.offer_id
+                            )}')"
+                        >
+                            Decline Offer
+                        </button>
+
+                    </div>
+
+                `
+                : ""
+        }
+
+    `;
+
+
+    document.getElementById(
+        "modalOverlay"
+    ).classList.add(
+        "show"
+    );
+}
+
+
+/* ============================================================
+   ACCEPT OFFER
+============================================================ */
+
+async function acceptOffer(
+    offerId
+) {
+
+    const offer =
+        allOffers.find(
+            item =>
+                String(
+                    item.offer_id
+                ) === String(
+                    offerId
+                )
+        );
+
+
+    if (!offer) {
+
+        return;
+    }
+
+
+    if (
+        normalizeStatus(
+            offer.status
+        ) !== "PENDING"
+    ) {
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Accept offer ${offerId} for ${offer.produce_name}?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+    }
+
+
+    const token =
+        getToken();
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/offers/${encodeURIComponent(offerId)}/accept`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`,
+
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to accept offer."
+            );
+        }
+
+
+        alert(
+            "Offer accepted successfully. The order has been created."
+        );
+
+
+        closeModal();
+
+
+        await fetchOffers();
+
+    } catch (error) {
+
+        console.error(
+            "Accept offer error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to accept offer."
+        );
+    }
+}
+
+
+/* ============================================================
+   DECLINE OFFER
+============================================================ */
+
+async function declineOffer(
+    offerId
+) {
+
+    const offer =
+        allOffers.find(
+            item =>
+                String(
+                    item.offer_id
+                ) === String(
+                    offerId
+                )
+        );
+
+
+    if (!offer) {
+
+        return;
+    }
+
+
+    if (
+        normalizeStatus(
+            offer.status
+        ) !== "PENDING"
+    ) {
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Decline offer ${offerId}?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+    }
+
+
+    const token =
+        getToken();
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/offers/${encodeURIComponent(offerId)}/decline`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`,
+
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to decline offer."
+            );
+        }
+
+
+        alert(
+            "Offer declined."
+        );
+
+
+        closeModal();
+
+
+        await fetchOffers();
+
+    } catch (error) {
+
+        console.error(
+            "Decline offer error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to decline offer."
+        );
+    }
+}
+
+
+/* ============================================================
+   CLOSE MODAL
+============================================================ */
+
+function closeModal(
+    event
+) {
+
+    if (
+        event &&
+        event.target !==
+        document.getElementById(
+            "modalOverlay"
+        )
+    ) {
+
+        return;
+    }
+
+
+    document.getElementById(
+        "modalOverlay"
+    ).classList.remove(
+        "show"
+    );
+}
+
+
+/* ============================================================
+   STATUS
+============================================================ */
+function normalizeStatus(status) {
+
+const value =
+    String(
+        status || "PENDING"
+    )
+    .trim()
+    .toUpperCase();
+
+
+/*
+ * MongoDB demo data uses REJECTED.
+ * Farmer UI calls this DECLINED.
+ */
+
+if (value === "REJECTED") {
+    return "DECLINED";
+}
+
+
+/*
+ * Keep these statuses instead of incorrectly
+ * converting them to PENDING.
+ */
+
+if (
+    value === "COUNTERED" ||
+    value === "EXPIRED"
+) {
+    return value;
+}
+
+
+if (
+    value === "PENDING" ||
+    value === "ACCEPTED" ||
+    value === "DECLINED"
+) {
+    return value;
+}
+
+
+return value;
+}
+function getStatusClass(status) {
+
+return {
+
+    PENDING:
+        "status-pending",
+
+    ACCEPTED:
+        "status-accepted",
+
+    DECLINED:
+        "status-declined",
+
+    COUNTERED:
+        "status-pending",
+
+    EXPIRED:
+        "status-declined"
+
+}[status]
+|| "status-pending";
+}
+
+/* ============================================================
+   FORMATTING
+============================================================ */
+
+function formatNumber(
+    value
+) {
+
+    const number =
+        Number(value);
+
+
+    if (
+        !Number.isFinite(
+            number
+        )
+    ) {
+
+        return "0";
+    }
+
+
+    return number.toLocaleString(
+        "en-IN",
+        {
+            maximumFractionDigits: 2
+        }
+    );
+}
+
+
+function formatCurrency(
+    value
+) {
+
+    const number =
+        Number(value);
+
+
+    if (
+        !Number.isFinite(
+            number
+        )
+    ) {
+
+        return "₹0";
+    }
+
+
+    return number.toLocaleString(
+        "en-IN",
+        {
+            style: "currency",
+            currency: "INR",
+            maximumFractionDigits: 2
+        }
+    );
+}
+
+
+function formatDateTime(
+    value
+) {
+
+    if (!value) {
+
+        return "—";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "—";
+    }
+
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+}
+
+
+/* ============================================================
+   SECURITY / HTML ESCAPING
+============================================================ */
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+}
+
+
+function escapeAttribute(
+    value
+) {
+
+    return escapeHtml(
+        value
+    );
+}
+
+
+/* ============================================================
+   SEARCH
+============================================================ */
+
+document
+    .getElementById(
+        "searchInput"
+    )
+    .addEventListener(
+        "input",
+        renderOffers
+    );
+
+
+/* ============================================================
+   FILTER
+============================================================ */
+
+document
+    .getElementById(
+        "statusFilter"
+    )
+    .addEventListener(
+        "change",
+        renderOffers
+    );
+
+
+/* ============================================================
+   INITIALIZE
+============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+        const authorized =
+            await verifyFarmer();
+
+
+        if (!authorized) {
+
+            return;
+        }
+
+
+        await fetchOffers();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,2970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AgriCentre – Dashboard | Smart India Hackathon 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brand:#2f9e5c;--brand-dark:#1f7a44;--brand-light:#5cc98a;--bg:#0d0e10;--bg2:#14161a;--bg3:#1c1f25;--surface:#22262e;--border:#2e3340;--text:#e8eaf0;--muted:#8b909e;--green:#22c55e;--yellow:#f59e0b;--blue:#3b82f6;--sidebar-w:258px;--nav-h:64px;--tr:.22s cubic-bezier(.4,0,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}a{text-decoration:none;color:inherit}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 12px #0005}.nav-toggle{background:none;border:0;color:#fff;font-size:20px;padding:6px 8px;cursor:pointer}.nav-brand{display:flex;align-items:center;gap:10px;color:#fff}.logo{width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--brand);border-radius:8px;font-size:20px}.brand-text{display:flex;flex-direction:column}.brand-name{font:700 32px Rajdhani,sans-serif;line-height:1}.brand-nameX{color:var(--brand)}.brand-subtitle{font-size:11px;color:#ddd;letter-spacing:1px;text-transform:uppercase}.nav-links{margin-left:auto;display:flex;gap:5px}.nav-links a{color:#9aa7bb;padding:9px 11px;border-radius:7px;font-size:13px}.nav-links a:hover{color:#fff;background:#ffffff0f}.nav-links a.active{color:#fff;background:#2f9e5c33}.nav-right{display:flex;gap:7px;margin-left:8px}.nav-btn{width:38px;height:38px;border:0;border-radius:8px;background:var(--surface);color:#fff;cursor:pointer;position:relative}.nav-badge{position:absolute;top:-5px;right:-4px;background:var(--brand);font-size:9px;min-width:16px;height:16px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.layout{display:flex;margin-top:var(--nav-h);min-height:calc(100vh - var(--nav-h))}.sidebar{width:var(--sidebar-w);background:var(--bg2);position:fixed;top:var(--nav-h);bottom:0;left:0;overflow-y:auto;z-index:900;transition:width var(--tr),transform var(--tr)}.sidebar.collapsed{width:62px}.sb-section{padding:6px 0}.sb-label{padding:6px 18px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#4a5a74}.sidebar.collapsed .sb-label{opacity:0}.sb-link{display:flex;align-items:center;gap:11px;padding:9px 18px;color:#7a90aa;font-size:13px;border-left:3px solid transparent;white-space:nowrap}.sb-link:hover{color:#fff;background:#2f9e5c1f}.sb-link.active{color:var(--brand-light);border-left-color:var(--brand);background:#2f9e5c26}.si{width:20px;text-align:center;flex-shrink:0}.sl{overflow:hidden}.sidebar.collapsed .sl{opacity:0;width:0}.sb-badge{margin-left:auto;background:var(--brand);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px}.sidebar.collapsed .sb-badge{display:none}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0;display:flex;flex-direction:column;transition:margin-left var(--tr)}.main.expanded{margin-left:62px}.page-header{padding:32px 48px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:20px}.page-title{font:700 28px Rajdhani,sans-serif;color:#fff}.page-sub{font-size:13px;color:var(--muted);margin-top:4px}.refresh-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}.refresh-btn:hover{border-color:var(--brand);color:var(--brand-light)}.section{padding:30px 48px}.section-title{font:700 19px Rajdhani,sans-serif;margin-bottom:18px}
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.quick-action{display:flex;align-items:center;gap:13px;padding:17px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;transition:.2s}.quick-action:hover{border-color:var(--brand);background:#2f9e5c14;transform:translateY(-2px)}.quick-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:#2f9e5c1f;border-radius:9px;font-size:20px;flex-shrink:0}.quick-action strong{display:block;font-size:13px;margin-bottom:4px}.quick-action small{display:block;color:var(--muted);font-size:10px;line-height:1.4}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:21px;position:relative;overflow:hidden}.kpi-card:after{content:"";position:absolute;top:0;left:0;right:0;height:3px}.green:after{background:var(--green)}.blue:after{background:var(--blue)}.yellow:after{background:var(--yellow)}.orange:after{background:var(--brand)}.kpi-icon{font-size:20px;margin-bottom:11px}.kpi-value{font:700 32px Rajdhani,sans-serif;color:#fff}.kpi-label{font-size:12px;color:var(--muted);margin-top:6px}.kpi-delta{font-size:10px;color:var(--muted);margin-top:6px}.up{color:var(--green)}.warn{color:var(--yellow)}
+.dashboard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.dashboard-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:22px}.card-heading{display:flex;justify-content:space-between;gap:12px;margin-bottom:18px}.card-heading h3{font-size:14px}.card-heading a{color:var(--brand-light);font-size:11px}.empty-state{text-align:center;padding:28px 12px;color:var(--muted)}.empty-icon{font-size:28px;margin-bottom:9px}.empty-state strong{display:block;color:var(--text);font-size:13px;margin-bottom:5px}.empty-state p{font-size:11px;line-height:1.5}.placeholder-box{padding:20px;border:1px dashed var(--border);border-radius:9px;text-align:center;color:var(--muted);font-size:11px}.quality-placeholder{display:flex;align-items:center;gap:15px;padding:15px;background:var(--surface);border-radius:9px}.quality-score{width:58px;height:58px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font:700 22px Rajdhani;color:var(--muted);flex-shrink:0}.quality-placeholder strong{display:block;font-size:12px;margin-bottom:4px}.quality-placeholder p{color:var(--muted);font-size:10px;line-height:1.5}
+.ai-summary{background:#2f9e5c0f;border:1px solid #2f9e5c33;border-radius:12px;padding:22px}.ai-summary-label{font-size:11px;font-weight:700;color:var(--brand-light);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}.ai-bullet{display:flex;gap:10px;margin-bottom:9px;font-size:13px;line-height:1.5}.ai-bullet:before{content:"▸";color:var(--brand)}.dashboard-loading{text-align:center;padding:60px 30px;color:var(--muted)}.dashboard-error{margin:30px 48px;padding:18px;border:1px solid #ef44444d;background:#ef44440f;border-radius:10px;color:#fca5a5;display:none}
+footer{background:var(--bg2);color:#8fa0b8;padding:44px 40px 0;margin-top:auto}.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:36px;padding-bottom:32px;border-bottom:1px solid #ffffff14}.ft-brand{font:700 1.4rem Rajdhani,sans-serif;color:#fff;margin-bottom:9px}.ft-brand span{color:var(--brand)}.ft-desc{font-size:13px;line-height:1.7;max-width:300px}.ft-col h4{color:#fff;font-size:12px;margin-bottom:13px;text-transform:uppercase}.ft-col a{display:block;font-size:13px;margin-bottom:8px;color:#8fa0b8}.ft-col a:hover{color:var(--brand-light)}.sub-box{display:flex;flex-direction:column;gap:9px}.sub-box p{font-size:12px}.sub-form{display:flex;gap:7px}.sub-input{flex:1;min-width:0;padding:8px 12px;border-radius:8px;border:1px solid #ffffff1f;background:#ffffff0f;color:#fff;outline:none}.sub-btn{padding:8px 16px;background:var(--brand);color:#fff;border:0;border-radius:8px;font-weight:600;cursor:pointer}.ft-bottom{display:flex;justify-content:space-between;padding:14px 0;font-size:11px;flex-wrap:wrap;gap:8px}.ft-links{display:flex;gap:14px}
+@media(max-width:1100px){.quick-actions{grid-template-columns:repeat(2,1fr)}.kpi-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:768px){.sidebar{transform:translateX(-100%);width:258px}.sidebar.open{transform:translateX(0)}.main,.main.expanded{margin-left:0}.nav-links{display:none}.page-header{padding:25px 20px}.section{padding:24px 20px}.quick-actions,.kpi-grid,.dashboard-grid{grid-template-columns:1fr}.ft-grid{grid-template-columns:1fr}footer{padding:35px 20px 0}}
+/* ============================================================
+   DYNAMIC DASHBOARD ACTIVITY LISTS
+   ============================================================ */
+
+   .activity-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.activity-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    text-align: left;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item > div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-item strong {
+    display: block;
+    color: #ffffff;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.activity-item p {
+    margin: 0 0 5px;
+    color: #8fa3bd;
+    font-size: 13px;
+}
+
+.activity-item small {
+    color: #71839a;
+    font-size: 12px;
+}
+
+.activity-right {
+    flex: 0 0 auto;
+    min-width: 120px;
+    text-align: right;
+}
+
+.activity-right strong {
+    margin-bottom: 6px;
+    color: #ffffff;
+    font-size: 15px;
+}
+
+
+/* Status badges */
+
+.status {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.status.confirmed,
+.status.accepted,
+.status.delivered,
+.status.completed,
+.status.paid {
+    background: rgba(34, 197, 94, 0.14);
+    color: #4ade80;
+}
+
+.status.pending,
+.status.processing,
+.status.under-review {
+    background: rgba(234, 179, 8, 0.14);
+    color: #facc15;
+}
+
+.status.shipped,
+.status.in-transit {
+    background: rgba(59, 130, 246, 0.14);
+    color: #60a5fa;
+}
+
+.status.cancelled,
+.status.rejected,
+.status.failed {
+    background: rgba(239, 68, 68, 0.14);
+    color: #f87171;
+}
+
+
+/* Mobile */
+
+@media (max-width: 650px) {
+
+    .activity-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .activity-right {
+        width: 100%;
+        text-align: left;
+    }
+}
+.quality-info{
+    flex:1;
+}
+
+.quality-info strong{
+    display:block;
+    color:#fff;
+    font-size:13px;
+    margin-bottom:5px;
+}
+
+.quality-info p{
+    color:var(--muted);
+    font-size:10px;
+    line-height:1.5;
+    margin-bottom:4px;
+}
+
+.quality-info small{
+    color:var(--brand-light);
+    font-size:10px;
+}
+
+.market-insight-list{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+}
+
+.market-insight-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:12px 4px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.market-insight-item:last-child{
+    border-bottom:none;
+}
+
+.market-main strong{
+    display:block;
+    color:#fff;
+    font-size:13px;
+    margin-bottom:4px;
+}
+
+.market-main span{
+    color:var(--muted);
+    font-size:10px;
+}
+
+.market-price{
+    text-align:right;
+}
+
+.market-price strong{
+    display:block;
+    font-size:13px;
+    color:#fff;
+}
+
+.market-price small{
+    font-size:10px;
+    color:var(--brand-light);
+}
+
+.market-direction-up{
+    color:var(--green) !important;
+}
+
+.market-direction-down{
+    color:#f87171 !important;
+}
+
+.market-direction-stable{
+    color:var(--yellow) !important;
+}
+
+.ai-summary{
+    background:#2f9e5c0f;
+    border:1px solid #2f9e5c33;
+    border-radius:12px;
+    padding:22px;
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+<button class="nav-toggle" id="sidebarToggle" type="button">☰</button>
+<a href="index.html" class="nav-brand"><div class="logo">🚜</div>
+  <div class="brand-text"><span class="brand-name">Agri<span class="brand-nameX">Centre</span></span><span class="brand-subtitle">Smart India Hackathon 2026</span></div></a>
+<div class="nav-links">
+<a href="index.html">Home</a><a href="about.html">About</a><a href="features.html">Features</a><a href="dashboard.html" class="active">Dashboard</a><a href="team.html">Team</a><a href="contact.html">Contact</a>
+<a id="profile-link" href="profile.html" style="display:none">Profile</a>
+<a id="logout-link" href="#" style="display:none" onclick="logout();return false">Logout</a>
+<a id="login-link" href="login.html">Login</a><a id="signup-link" href="signup.html">Sign Up</a>
+</div>
+<div class="nav-right"><button class="nav-btn" onclick="location.href='alerts.html'" title="Alerts">🔔<span class="nav-badge">3</span></button><button class="nav-btn" onclick="location.href='ai-assistant.html'" title="AI Assistant">🤖</button></div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sb-section">
+            <div class="sb-label">Main</div>
+    
+            <a href="dashboard.html" class="sb-link active">
+                <span class="si">📊</span>
+                <span class="sl">Dashboard</span>
+            </a>
+        </div>
+    
+    
+        <div class="sb-section">
+            <div class="sb-label">Produce</div>
+    
+            <a href="add-produce.html" class="sb-link">
+                <span class="si">🌾</span>
+                <span class="sl">Add Produce</span>
+            </a>
+    
+            <a href="my-listings.html" class="sb-link">
+                <span class="si">📋</span>
+                <span class="sl">My Listings</span>
+            </a>
+    
+            <a href="offers.html" class="sb-link">
+                <span class="si">🤝</span>
+                <span class="sl">Offers</span>
+            </a>
+    
+            <a href="buyers.html" class="sb-link">
+                <span class="si">🔎</span>
+                <span class="sl">Find Buyers</span>
+            </a>
+        </div>
+    
+    
+        <div class="sb-section">
+            <div class="sb-label">Orders & Delivery</div>
+    
+            <a href="orders.html" class="sb-link">
+                <span class="si">📦</span>
+                <span class="sl">Orders</span>
+            </a>
+    
+            <a href="farmer_logistics.html" class="sb-link">
+                <span class="si">🚚</span>
+                <span class="sl">Logistics</span>
+            </a>
+    
+            <a href="meeting.html" class="sb-link">
+                <span class="si">🎥</span>
+                <span class="sl">Meeting Centre</span>
+            </a>
+        </div>
+    
+    
+        <div class="sb-section">
+            <div class="sb-label">Reports & Quality</div>
+    
+            <a href="reports.html" class="sb-link">
+                <span class="si">📄</span>
+                <span class="sl">Reports Centre</span>
+            </a>
+    
+            <a href="quality.html" class="sb-link">
+                <span class="si">🛡️</span>
+                <span class="sl">Quality & Certification</span>
+            </a>
+    
+            <a href="alerts.html" class="sb-link">
+                <span class="si">🔔</span>
+                <span class="sl">Alert Center</span>
+            </a>
+        </div>
+    
+    
+        <div class="sb-section">
+            <div class="sb-label">Account</div>
+    
+            <a href="profile.html" class="sb-link">
+                <span class="si">👤</span>
+                <span class="sl">Profile</span>
+            </a>
+    
+            <a href="#" class="sb-link" onclick="logout(); return false;">
+                <span class="si">🚪</span>
+                <span class="sl">Logout</span>
+            </a>
+        </div>
+    
+    </aside>
+
+<main class="main" id="mainArea">
+<div class="page-header"><div><div class="page-title">Dashboard</div><div class="page-sub">Welcome back, <span id="dashboardUser">User</span> · <span id="dashboardRole">Loading...</span></div></div><button class="refresh-btn" id="refreshBtn" type="button" onclick="refreshDashboard()">↻ Refresh</button></div>
+
+<div id="dashboardError" class="dashboard-error"></div>
+<div id="dashboardLoading" class="dashboard-loading">Loading your dashboard...</div>
+
+<div id="dashboardContent" style="display:none">
+
+<section id="farmerDashboard" class="dashboard-role" style="display:none">
+<div class="section"><div class="section-title">Quick Actions</div><div class="quick-actions">
+<a href="add-produce.html" class="quick-action"><span class="quick-icon">🌾</span><div><strong>Add Produce</strong><small>List your produce for buyers</small></div></a>
+<a href="orders.html" class="quick-action"><span class="quick-icon">📦</span><div><strong>View Orders</strong><small>Track your current orders</small></div></a>
+<a href="demand-forecasting.html" class="quick-action"><span class="quick-icon">📈</span><div><strong>Market Insights</strong><small>Check demand and price trends</small></div></a>
+<a href="quality.html" class="quick-action"><span class="quick-icon">🛡️</span><div><strong>Quality Check</strong><small>View produce quality status</small></div></a>
+</div></div>
+<div class="section"><div class="section-title">Your Marketplace Overview</div><div class="kpi-grid">
+<div class="kpi-card green"><div class="kpi-icon">🌾</div><div class="kpi-value" id="farmerListings">0</div><div class="kpi-label">Active Listings</div><div class="kpi-delta up">Your listed produce</div></div>
+<div class="kpi-card blue"><div class="kpi-icon">📦</div><div class="kpi-value" id="farmerOrders">0</div><div class="kpi-label">Orders</div><div class="kpi-delta">Current orders</div></div>
+<div class="kpi-card yellow"><div class="kpi-icon">🤝</div><div class="kpi-value" id="farmerOffers">0</div><div class="kpi-label">Offers</div><div class="kpi-delta warn">Offers received</div></div>
+<div class="kpi-card orange"><div class="kpi-icon">💰</div><div class="kpi-value" id="farmerEarnings">₹0</div><div class="kpi-label">Earnings</div><div class="kpi-delta up">Total earnings</div></div>
+</div></div>
+<div class="section"><div class="dashboard-grid">
+<div class="dashboard-card"><div class="card-heading"><h3>Recent Orders</h3><a href="orders.html">View all →</a></div><div class="empty-state"><div class="empty-icon">📦</div><strong>No orders yet</strong><p>Your recent marketplace orders will appear here.</p></div></div>
+<div class="dashboard-card"><div class="card-heading"><h3>Recent Offers</h3><a href="orders.html">View all →</a></div><div class="empty-state"><div class="empty-icon">🤝</div><strong>No offers yet</strong><p>Buyer offers for your produce will appear here.</p></div></div>
+</div></div>
+<div class="section">
+
+    <div class="section-title">Market &amp; Quality</div>
+
+    <div class="dashboard-grid">
+
+        <!-- MARKET OPPORTUNITIES -->
+        <div class="dashboard-card">
+
+            <div class="card-heading">
+                <h3>📈 Market Opportunities</h3>
+                <a href="demand-forecasting.html">View Forecast →</a>
+            </div>
+
+            <p style="color:var(--muted);font-size:12px;line-height:1.6;margin-bottom:14px;">
+                AI-powered market arrival forecasts to help you plan when and what to sell.
+            </p>
+
+            <div id="farmerMarketOpportunities">
+
+                <div class="placeholder-box">
+                    Loading market opportunities...
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUALITY STATUS -->
+        <div class="dashboard-card">
+
+            <div class="card-heading">
+                <h3>🛡️ Quality Status</h3>
+                <a href="quality.html">View Reports →</a>
+            </div>
+
+            <div class="quality-placeholder">
+
+                <div class="quality-score" id="farmerQualityScore">
+                    —
+                </div>
+
+                <div class="quality-info">
+
+                    <strong id="farmerQualityStatus">
+                        Quality verification
+                    </strong>
+
+                    <p id="farmerQualityDetails">
+                        Your produce quality status will appear here.
+                    </p>
+
+                    <small id="farmerQualityChecks">
+                        No checks recorded
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- AI SELLING RECOMMENDATION -->
+
+    <div style="margin-top:18px;">
+
+        <div class="ai-summary">
+
+            <div class="ai-summary-label">
+                🤖 AI Selling Recommendation
+            </div>
+
+            <div id="farmerAIRecommendation">
+
+                <div class="ai-bullet">
+                    Loading your latest market recommendation...
+                </div>
+
+            </div>
+
+            <div style="margin-top:18px;">
+
+                <a href="demand-forecasting.html"
+                   style="display:inline-flex;align-items:center;gap:8px;
+                          background:var(--brand);color:#fff;
+                          padding:10px 16px;border-radius:8px;
+                          font-size:12px;font-weight:600;">
+
+                    📊 Open Demand Forecasting →
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</section>
+
+<section id="wholesalerDashboard" class="dashboard-role" style="display:none">
+<div class="section"><div class="section-title">Quick Actions</div><div class="quick-actions">
+<a href="marketplace.html" class="quick-action"><span class="quick-icon">🔎</span><div><strong>Browse Produce</strong><small>Find produce from farmers</small></div></a>
+<a href="buyer-orders.html" class="quick-action"><span class="quick-icon">📦</span><div><strong>Bulk Orders</strong><small>Manage wholesale orders</small></div></a>
+<a href="demand-forecasting.html" class="quick-action"><span class="quick-icon">📈</span><div><strong>Demand Insights</strong><small>Understand market demand</small></div></a>
+<a href="profile.html" class="quick-action"><span class="quick-icon">👤</span><div><strong>Business Profile</strong><small>Manage account details</small></div></a>
+</div></div>
+<div class="section"><div class="section-title">Wholesale Overview</div><div class="kpi-grid">
+<div class="kpi-card green"><div class="kpi-icon">🛒</div><div class="kpi-value" id="wholesalerOrders">0</div><div class="kpi-label">Active Orders</div><div class="kpi-delta">Current wholesale orders</div></div>
+<div class="kpi-card blue"><div class="kpi-icon">🤝</div><div class="kpi-value" id="wholesalerOffers">0</div><div class="kpi-label">Offers Sent</div><div class="kpi-delta">Current offers</div></div>
+<div class="kpi-card yellow"><div class="kpi-icon">🚚</div><div class="kpi-value" id="wholesalerDeliveries">0</div><div class="kpi-label">Deliveries</div><div class="kpi-delta">Orders in delivery</div></div>
+<div class="kpi-card orange"><div class="kpi-icon">💳</div><div class="kpi-value" id="wholesalerPayments">₹0</div><div class="kpi-label">Payments</div><div class="kpi-delta">Total payments</div></div>
+</div></div>
+<div class="section"><div class="dashboard-card"><div class="card-heading"><h3>Recent Wholesale Activity</h3><a href="buyer-orders.html">View orders →</a></div><div class="empty-state"><div class="empty-icon">📦</div><strong>No wholesale activity yet</strong><p>Your orders and offers will appear here.</p></div></div></div>
+</section>
+
+<section id="vendorDashboard" class="dashboard-role" style="display:none">
+    <div class="section"><div class="section-title">Quick Actions</div><div class="quick-actions">
+
+        <a href="marketplace.html" class="quick-action">
+            <span class="quick-icon">🛒</span>
+            <div>
+                <strong>Marketplace</strong>
+                <small>Browse fresh produce from farmers</small>
+            </div>
+        </a>
+        
+        <a href="favorites.html" class="quick-action">
+            <span class="quick-icon">❤️</span>
+            <div>
+                <strong>Favorites</strong>
+                <small>View your saved produce</small>
+            </div>
+        </a>
+        
+        <a href="cart.html" class="quick-action">
+            <span class="quick-icon">🛍️</span>
+            <div>
+                <strong>My Cart</strong>
+                <small>Review items ready to buy</small>
+            </div>
+        </a>
+        
+        <a href="buyer-orders.html" class="quick-action">
+            <span class="quick-icon">📦</span>
+            <div>
+                <strong>My Orders</strong>
+                <small>View orders and delivery status</small>
+            </div>
+        </a>
+        
+        </div></div>
+<div class="section"><div class="section-title">Vendor Overview</div><div class="kpi-grid">
+<div class="kpi-card green"><div class="kpi-icon">🛒</div><div class="kpi-value" id="vendorOrders">0</div><div class="kpi-label">Active Orders</div><div class="kpi-delta">Current purchases</div></div>
+<div class="kpi-card blue"><div class="kpi-icon">❤️</div><div class="kpi-value" id="vendorFavorites">0</div><div class="kpi-label">Favorites</div><div class="kpi-delta">Saved produce</div></div>
+<div class="kpi-card yellow"><div class="kpi-icon">🚚</div><div class="kpi-value" id="vendorDeliveries">0</div><div class="kpi-label">Deliveries</div><div class="kpi-delta">Orders in delivery</div></div>
+<div class="kpi-card orange"><div class="kpi-icon">💳</div><div class="kpi-value" id="vendorPayments">₹0</div><div class="kpi-label">Payments</div><div class="kpi-delta">Total payments</div></div>
+</div></div>
+<div class="section"><div class="dashboard-card"><div class="card-heading"><h3>Recent Orders</h3><a href="buyer-orders.html">View all →</a></div><div class="empty-state"><div class="empty-icon">📦</div><strong>No orders yet</strong><p>Your purchases and delivery updates will appear here.</p></div></div></div>
+</section>
+
+
+<footer><div class="ft-grid">
+<div><div class="ft-brand">Agri<span>Centre</span></div><p class="ft-desc">A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.</p></div>
+<div class="ft-col"><h4>Platform</h4><a href="dashboard.html">Dashboard</a><a href="add-produce.html">Marketplace</a><a href="orders.html">Orders</a><a href="quality.html">Quality &amp; Certification</a></div>
+<div class="ft-col"><h4>AI &amp; Tools</h4><a href="demand-forecasting.html">AI Market Insights</a><a href="ai-assistant.html">AI Assistant</a><a href="reports.html">Reports Center</a></div>
+<div class="ft-col"><h4>Stay Updated</h4><div class="sub-box"><p>Get alerts and platform updates via email.</p><form class="sub-form" id="subForm"><input class="sub-input" id="subEmail" type="email" placeholder="Your email address" required><button class="sub-btn" type="submit">Subscribe</button></form></div></div>
+</div><div class="ft-bottom"><span>© 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution</span><div class="ft-links"><a href="privacy.html">Privacy &amp; Terms</a><a href="contact.html">Contact</a></div></div></footer>
+</main></div>
+<script>
+
+  /* ============================================================
+     AGRICENTRE DASHBOARD
+     ============================================================ */
+  
+  const API_BASE = "http://127.0.0.1:5000";
+  
+  let currentUser = null;
+  
+  
+  /* ============================================================
+     AUTH
+     ============================================================ */
+  
+  function token() {
+      return localStorage.getItem("token");
+  }
+  
+  
+  function logout() {
+  
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+  
+      window.location.href = "login.html";
+  }
+  
+  
+  /* ============================================================
+     NAVBAR
+     ============================================================ */
+  
+  function updateNavbar(loggedIn) {
+  
+      const ids = [
+          "profile-link",
+          "logout-link",
+          "login-link",
+          "signup-link"
+      ];
+  
+      ids.forEach(id => {
+  
+          const element =
+              document.getElementById(id);
+  
+          if (!element) return;
+  
+          if (loggedIn) {
+  
+              element.style.display =
+                  id === "profile-link" ||
+                  id === "logout-link"
+                      ? "inline-block"
+                      : "none";
+  
+          } else {
+  
+              element.style.display =
+                  id === "login-link" ||
+                  id === "signup-link"
+                      ? "inline-block"
+                      : "none";
+          }
+  
+      });
+  }
+  
+  
+  /* ============================================================
+     ROLE FORMAT
+     ============================================================ */
+  
+  function formatRole(role) {
+  
+      if (!role) {
+          return "User";
+      }
+  
+      return String(role)
+          .toLowerCase()
+          .replace(/_/g, " ")
+          .replace(/\b\w/g, char =>
+              char.toUpperCase()
+          );
+  }
+  
+  
+  /* ============================================================
+     SHOW CORRECT DASHBOARD
+     ============================================================ */
+  
+  function showRole(role) {
+  
+      const sections = [
+          "farmerDashboard",
+          "wholesalerDashboard",
+          "vendorDashboard"
+      ];
+  
+      sections.forEach(id => {
+  
+          const section =
+              document.getElementById(id);
+  
+          if (section) {
+              section.style.display = "none";
+          }
+  
+      });
+  
+  
+      const normalizedRole =
+          String(role || "")
+              .trim()
+              .toUpperCase();
+  
+  
+      const roleMap = {
+  
+          FARMER:
+              "farmerDashboard",
+  
+          WHOLESALER:
+              "wholesalerDashboard",
+  
+          VENDOR:
+              "vendorDashboard"
+      };
+  
+  
+      const sectionId =
+          roleMap[normalizedRole];
+  
+  
+      if (!sectionId) {
+  
+          throw new Error(
+              "Unknown account role: " + role
+          );
+  
+      }
+  
+  
+      const section =
+          document.getElementById(sectionId);
+  
+      if (section) {
+          section.style.display = "block";
+      }
+  }
+  
+  
+  /* ============================================================
+     HELPERS
+     ============================================================ */
+  
+  function setText(id, value) {
+  
+      const element =
+          document.getElementById(id);
+  
+      if (element) {
+          element.textContent = value;
+      }
+  }
+  
+  
+  function formatMoney(value) {
+  
+      const number =
+          Number(value || 0);
+  
+      return "₹" +
+          number.toLocaleString(
+              "en-IN",
+              {
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2
+              }
+          );
+  }
+  
+  
+  function formatDate(value) {
+  
+      if (!value) {
+          return "—";
+      }
+  
+  
+      const date =
+          new Date(value);
+  
+  
+      if (Number.isNaN(date.getTime())) {
+          return "—";
+      }
+  
+  
+      return date.toLocaleDateString(
+          "en-IN",
+          {
+              day: "numeric",
+              month: "short",
+              year: "numeric"
+          }
+      );
+  }
+  
+  
+  function statusClass(status) {
+  
+      return String(status || "PENDING")
+          .toLowerCase()
+          .replace(/\s+/g, "-");
+  }
+  
+  
+  function escapeHTML(value) {
+  
+      return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+  }
+  
+  
+  /* ============================================================
+     FARMER DASHBOARD
+     ============================================================ */
+  
+  function loadFarmerDashboard(dashboard) {
+  
+      const stats =
+          dashboard.stats || {};
+  
+  
+      /* ---------- KPI ---------- */
+  
+      setText(
+          "farmerListings",
+          stats.active_listings ?? 0
+      );
+  
+  
+      setText(
+          "farmerOrders",
+          stats.orders ?? 0
+      );
+  
+  
+      setText(
+          "farmerOffers",
+          stats.offers ?? 0
+      );
+  
+  
+      setText(
+          "farmerEarnings",
+          formatMoney(stats.earnings)
+      );
+  
+  
+      /* ---------- Activity ---------- */
+  
+      renderFarmerOrders(
+          dashboard.recent_orders || []
+      );
+  
+  
+      renderFarmerOffers(
+          dashboard.recent_offers || []
+      );
+  
+  
+      /* ---------- Quality ---------- */
+  
+      renderFarmerQuality(
+          dashboard.quality || {}
+      );
+  
+  
+
+  }
+  
+  
+  /* ============================================================
+     FARMER RECENT ORDERS
+     ============================================================ */
+  
+  function renderFarmerOrders(orders) {
+  
+      const dashboard =
+          document.getElementById(
+              "farmerDashboard"
+          );
+  
+      if (!dashboard) return;
+  
+  
+      const cards =
+          dashboard.querySelectorAll(
+              ".dashboard-card"
+          );
+  
+  
+      const card =
+          Array.from(cards).find(
+              element => {
+  
+                  const heading =
+                      element.querySelector("h3");
+  
+                  return heading &&
+                      heading.textContent
+                          .includes("Recent Orders");
+              }
+          );
+  
+  
+      if (!card) return;
+  
+  
+      const empty =
+          card.querySelector(".empty-state");
+  
+      if (!empty) return;
+  
+  
+      if (!orders.length) {
+  
+          empty.innerHTML = `
+              <div class="empty-icon">📦</div>
+  
+              <strong>No orders yet</strong>
+  
+              <p>
+                  Your recent marketplace
+                  orders will appear here.
+              </p>
+          `;
+  
+          return;
+      }
+  
+  
+      empty.innerHTML = `
+  
+          <div class="activity-list">
+  
+              ${orders.slice(0, 5).map(order => `
+  
+                  <div class="activity-item">
+  
+                      <div>
+  
+                          <strong>
+                              ${escapeHTML(
+                                  order.produce_name ||
+                                  "Produce"
+                              )}
+                          </strong>
+  
+                          <p>
+                              ${escapeHTML(
+                                  order.buyer_name ||
+                                  "Buyer"
+                              )}
+  
+                              ·
+  
+                              ${order.quantity || 0}
+                              ${escapeHTML(
+                                  order.unit || ""
+                              )}
+                          </p>
+  
+                          <small>
+                              ${formatDate(
+                                  order.created_at
+                              )}
+                          </small>
+  
+                      </div>
+  
+  
+                      <div class="activity-right">
+  
+                          <strong>
+                              ${formatMoney(
+                                  order.total_amount
+                              )}
+                          </strong>
+  
+                          <span class="status ${
+                              statusClass(
+                                  order.status
+                              )
+                          }">
+  
+                              ${escapeHTML(
+                                  order.status ||
+                                  "PENDING"
+                              )}
+  
+                          </span>
+  
+                      </div>
+  
+                  </div>
+  
+              `).join("")}
+  
+          </div>
+      `;
+  }
+  
+  
+  /* ============================================================
+     FARMER RECENT OFFERS
+     ============================================================ */
+  
+  function renderFarmerOffers(offers) {
+  
+      const dashboard =
+          document.getElementById(
+              "farmerDashboard"
+          );
+  
+      if (!dashboard) return;
+  
+  
+      const cards =
+          dashboard.querySelectorAll(
+              ".dashboard-card"
+          );
+  
+  
+      const card =
+          Array.from(cards).find(
+              element => {
+  
+                  const heading =
+                      element.querySelector("h3");
+  
+                  return heading &&
+                      heading.textContent
+                          .includes("Recent Offers");
+              }
+          );
+  
+  
+      if (!card) return;
+  
+  
+      const empty =
+          card.querySelector(".empty-state");
+  
+      if (!empty) return;
+  
+  
+      if (!offers.length) {
+  
+          empty.innerHTML = `
+              <div class="empty-icon">🤝</div>
+  
+              <strong>No offers yet</strong>
+  
+              <p>
+                  Buyer offers for your produce
+                  will appear here.
+              </p>
+          `;
+  
+          return;
+      }
+  
+  
+      empty.innerHTML = `
+  
+          <div class="activity-list">
+  
+              ${offers.slice(0, 5).map(offer => `
+  
+                  <div class="activity-item">
+  
+                      <div>
+  
+                          <strong>
+                              ${escapeHTML(
+                                  offer.produce_name ||
+                                  "Produce"
+                              )}
+                          </strong>
+  
+                          <p>
+                              Offer:
+                              ${formatMoney(
+                                  offer.offered_price
+                              )}
+  
+                              ·
+  
+                              ${offer.quantity || 0}
+                              ${escapeHTML(
+                                  offer.unit || ""
+                              )}
+                          </p>
+  
+                          <small>
+                              ${formatDate(
+                                  offer.created_at
+                              )}
+                          </small>
+  
+                      </div>
+  
+  
+                      <div class="activity-right">
+  
+                          <span class="status ${
+                              statusClass(
+                                  offer.status
+                              )
+                          }">
+  
+                              ${escapeHTML(
+                                  offer.status ||
+                                  "PENDING"
+                              )}
+  
+                          </span>
+  
+                      </div>
+  
+                  </div>
+  
+              `).join("")}
+  
+          </div>
+      `;
+  }
+  
+  
+  /* ============================================================
+     FARMER QUALITY
+     ============================================================ */
+  
+  function renderFarmerQuality(quality) {
+  
+      const dashboard =
+          document.getElementById(
+              "farmerDashboard"
+          );
+  
+      if (!dashboard) return;
+  
+  
+      const cards =
+          dashboard.querySelectorAll(
+              ".dashboard-card"
+          );
+  
+  
+      const card =
+          Array.from(cards).find(
+              element => {
+  
+                  const heading =
+                      element.querySelector("h3");
+  
+                  return heading &&
+                      heading.textContent
+                          .includes("Quality Status");
+              }
+          );
+  
+  
+      if (!card) return;
+  
+  
+      const placeholder =
+          card.querySelector(
+              ".quality-placeholder"
+          );
+  
+      if (!placeholder) return;
+  
+  
+      const total =
+          Number(quality.total || 0);
+  
+      const passed =
+          Number(quality.passed || 0);
+  
+      const review =
+          Number(quality.review || 0);
+  
+      const failed =
+          Number(quality.failed || 0);
+  
+  
+      /* ---------- No checks ---------- */
+  
+      if (total === 0) {
+  
+          placeholder.innerHTML = `
+  
+              <div class="quality-score">
+                  —
+              </div>
+  
+              <div>
+  
+                  <strong>
+                      No quality checks yet
+                  </strong>
+  
+                  <p>
+                      Quality verification results
+                      will appear after your produce
+                      is checked.
+                  </p>
+  
+              </div>
+          `;
+  
+          return;
+      }
+  
+  
+      const percentage =
+          Math.round(
+              (passed / total) * 100
+          );
+  
+  
+      let statusText =
+          "Under Review";
+  
+      let statusType =
+          "review";
+  
+  
+      if (failed > 0) {
+  
+          statusText =
+              "Review Required";
+  
+          statusType =
+              "failed";
+  
+      } else if (passed === total) {
+  
+          statusText =
+              "Verified";
+  
+          statusType =
+              "passed";
+      }
+  
+  
+      placeholder.innerHTML = `
+  
+          <div class="quality-score ${statusType}">
+              ${percentage}%
+          </div>
+  
+          <div class="quality-info">
+  
+              <strong>
+                  ${statusText}
+              </strong>
+  
+              <p>
+                  ${passed} passed ·
+                  ${review} under review ·
+                  ${failed} failed
+              </p>
+  
+              <small>
+                  ${total}
+                  quality check${total === 1 ? "" : "s"}
+                  recorded
+              </small>
+  
+          </div>
+      `;
+  }
+  
+  
+  /* ============================================================
+     FARMER MARKET INSIGHTS
+     ============================================================ */
+  
+  function renderMarketInsights(insights) {
+  
+      const dashboard =
+          document.getElementById(
+              "farmerDashboard"
+          );
+  
+      if (!dashboard) return;
+  
+  
+      const cards =
+          dashboard.querySelectorAll(
+              ".dashboard-card"
+          );
+  
+  
+      const card =
+          Array.from(cards).find(
+              element => {
+  
+                  const heading =
+                      element.querySelector("h3");
+  
+                  return heading &&
+                      heading.textContent
+                          .includes(
+                              "Demand & Price Insights"
+                          );
+              }
+          );
+  
+  
+      if (!card) return;
+  
+  
+      const placeholder =
+          card.querySelector(
+              ".placeholder-box"
+          );
+  
+      if (!placeholder) return;
+  
+  
+      if (!Array.isArray(insights) ||
+          !insights.length) {
+  
+          placeholder.innerHTML = `
+  
+              <div class="market-empty">
+  
+                  <div class="empty-icon">
+                      📊
+                  </div>
+  
+                  <strong>
+                      No market data available
+                  </strong>
+  
+                  <p>
+                      Demand and price insights
+                      will appear once marketplace
+                      data is available for your produce.
+                  </p>
+  
+              </div>
+          `;
+  
+          return;
+      }
+  
+  
+      placeholder.innerHTML = `
+  
+          <div class="market-insight-list">
+  
+              ${insights.slice(0, 5).map(item => `
+  
+                  <div class="market-insight-item">
+  
+                      <div class="market-main">
+  
+                          <strong>
+                              ${escapeHTML(
+                                  item.crop ||
+                                  "Produce"
+                              )}
+                          </strong>
+  
+                          <span>
+                              ${escapeHTML(
+                                  item.market ||
+                                  "Market"
+                              )}
+                          </span>
+  
+                      </div>
+  
+  
+                      <div class="market-price">
+  
+                          <strong>
+                              ${formatMoney(
+                                  item.price
+                              )}
+                          </strong>
+  
+                          <small>
+                              ${escapeHTML(
+                                  item.demand_level ||
+                                  "Demand data"
+                              )}
+                          </small>
+  
+                      </div>
+  
+                  </div>
+  
+              `).join("")}
+  
+          </div>
+      `;
+  }
+  /* ============================================================
+   FARMER DEMAND FORECASTING INSIGHTS
+   ============================================================ */
+
+async function loadFarmerForecastInsights() {
+
+const container =
+    document.getElementById(
+        "farmerMarketOpportunities"
+    );
+
+const recommendation =
+    document.getElementById(
+        "farmerAIRecommendation"
+    );
+
+if (!container) return;
+
+try {
+
+    const response = await fetch(
+        API_BASE +
+        "/api/demand-forecast?role=FARMER"
+    );
+
+    const data =
+        await response.json();
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.message ||
+            data.error ||
+            "Unable to load forecast."
+        );
+    }
+
+    
+    const crops =
+    data.crops ||
+    data.forecasts ||
+    data.forecast ||
+    data.results ||
+    (data.data && (
+        data.data.crops ||
+        data.data.forecasts ||
+        data.data.forecast ||
+        data.data.results
+    )) ||
+    [];
+    console.log("DEMAND FORECAST API RESPONSE:", data);
+console.log("EXTRACTED CROPS:", crops);
+
+    if (
+        !Array.isArray(crops) ||
+        !crops.length
+    ) {
+
+        container.innerHTML = `
+            <div class="placeholder-box">
+                No market forecast available.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    /* =========================================
+       FIND TOP 3 MARKET OPPORTUNITIES
+       ========================================= */
+
+    const topCrops =
+        crops
+            .slice()
+            .sort(
+                (a, b) =>
+                    Math.abs(
+                        Number(
+                            b.predicted_change_percent || 0
+                        )
+                    ) -
+                    Math.abs(
+                        Number(
+                            a.predicted_change_percent || 0
+                        )
+                    )
+            )
+            .slice(0, 3);
+
+
+    /* =========================================
+       DISPLAY MARKET OPPORTUNITIES
+       ========================================= */
+
+    container.innerHTML = `
+        <div class="market-insight-list">
+
+            ${topCrops.map(item => {
+
+                const change =
+                    Number(
+                        item.predicted_change_percent || 0
+                    );
+
+                const direction =
+                    String(
+                        item.forecast_direction ||
+                        "Stable"
+                    );
+
+                let directionClass =
+                    "market-direction-stable";
+
+                let arrow = "→";
+
+                if (change > 0) {
+
+                    directionClass =
+                        "market-direction-up";
+
+                    arrow = "↑";
+
+                }
+                else if (change < 0) {
+
+                    directionClass =
+                        "market-direction-down";
+
+                    arrow = "↓";
+                }
+
+                return `
+                    <div class="market-insight-item">
+
+                        <div class="market-main">
+
+                            <strong>
+                                ${escapeHTML(
+                                    item.crop ||
+                                    "Crop"
+                                )}
+                            </strong>
+
+                            <span>
+                                Expected market activity
+                            </span>
+
+                        </div>
+
+                        <div class="market-price">
+
+                            <strong
+                                class="${directionClass}">
+                                ${arrow}
+                                ${Math.abs(change).toFixed(1)}%
+                            </strong>
+
+                            <small
+                                class="${directionClass}">
+                                ${escapeHTML(direction)}
+                            </small>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("")}
+
+        </div>
+    `;
+
+
+    /* =========================================
+       AI SELLING RECOMMENDATION
+       ========================================= */
+
+    const best =
+        topCrops[0];
+
+    if (
+        recommendation &&
+        best
+    ) {
+
+        const change =
+            Number(
+                best.predicted_change_percent || 0
+            );
+
+        let message = "";
+
+        if (change > 2) {
+
+            message = `
+                <div class="ai-bullet">
+                    <strong>
+                        ${escapeHTML(best.crop)}
+                    </strong>
+                    is expected to see higher market
+                    activity. Consider planning your
+                    harvest and approaching buyers early.
+                </div>
+            `;
+
+        }
+        else if (change < -2) {
+
+            message = `
+                <div class="ai-bullet">
+                    <strong>
+                        ${escapeHTML(best.crop)}
+                    </strong>
+                    is expected to see lower market
+                    activity. Consider checking buyer
+                    interest and comparing available
+                    offers before selling.
+                </div>
+            `;
+
+        }
+        else {
+
+            message = `
+                <div class="ai-bullet">
+                    <strong>
+                        ${escapeHTML(best.crop)}
+                    </strong>
+                    is expected to remain relatively
+                    stable. Compare buyer offers and
+                    choose the selling time that gives
+                    you the best return.
+                </div>
+            `;
+        }
+
+        recommendation.innerHTML =
+            message;
+    }
+
+}
+catch (error) {
+
+    console.error(
+        "Farmer forecast loading error:",
+        error
+    );
+
+    container.innerHTML = `
+        <div class="placeholder-box">
+            Market forecast is currently unavailable.
+        </div>
+    `;
+
+    if (recommendation) {
+
+        recommendation.innerHTML = `
+            <div class="ai-bullet">
+                Demand forecasting data is currently
+                unavailable. Open Demand Forecasting
+                to view the detailed forecast.
+            </div>
+        `;
+    }
+}
+}
+  
+  /* ============================================================
+   BUYER OVERVIEW — USE ORIGINAL BUYER PAGE APIs
+   ============================================================ */
+
+async function loadBuyerOverviewFromPages() {
+
+const authToken = token();
+
+const headers = {
+    "Authorization": "Bearer " + authToken,
+    "Content-Type": "application/json"
+};
+
+try {
+
+    /* ====================================================
+       ORDERS
+       Same API used by buyer-orders.html
+       ==================================================== */
+
+    const ordersResponse = await fetch(
+        API_BASE + "/api/orders/buyer",
+        {
+            method: "GET",
+            headers: headers
+        }
+    );
+
+    if (ordersResponse.status === 401) {
+        logout();
+        return;
+    }
+
+    const ordersData =
+        await ordersResponse.json().catch(() => ({}));
+
+    if (!ordersResponse.ok) {
+        throw new Error(
+            ordersData.message ||
+            ordersData.error ||
+            "Unable to load buyer orders."
+        );
+    }
+
+    const orders =
+        ordersData.orders ||
+        ordersData.items ||
+        ordersData.results ||
+        [];
+
+
+    /* ====================================================
+       FAVORITES
+       Same API used by favorites.html
+       ==================================================== */
+
+    const favoritesResponse = await fetch(
+        API_BASE + "/api/marketplace/favorites",
+        {
+            method: "GET",
+            headers: headers
+        }
+    );
+
+    if (favoritesResponse.status === 401) {
+        logout();
+        return;
+    }
+
+    const favoritesData =
+        await favoritesResponse.json().catch(() => ({}));
+
+    if (!favoritesResponse.ok) {
+        throw new Error(
+            favoritesData.message ||
+            favoritesData.error ||
+            "Unable to load favorites."
+        );
+    }
+
+    const favorites =
+        favoritesData.items ||
+        favoritesData.listings ||
+        favoritesData.favorites ||
+        [];
+
+
+    /* ====================================================
+       NORMALIZE ORDER STATUS
+       Same status logic as buyer-orders.html
+       ==================================================== */
+
+    function buyerOrderStatus(order) {
+
+        return String(
+            order.status ||
+            order.order_status ||
+            "PENDING"
+        )
+            .trim()
+            .toUpperCase()
+            .replace(/ /g, "_");
+    }
+
+
+    /* ====================================================
+       ACTIVE ORDERS
+       
+       Active = everything except completed/declined/
+       cancelled orders.
+       ==================================================== */
+
+       const activeOrders =
+    orders.filter(order => {
+
+        const status =
+            buyerOrderStatus(order);
+
+        return [
+            "PENDING",
+            "CONFIRMED",
+            "ACCEPTED",
+            "PROCESSING",
+            "SHIPPED",
+            "IN_TRANSIT"
+        ].includes(status);
+
+    });
+
+
+    /* ====================================================
+       DELIVERIES
+       
+       These are the orders currently moving through
+       the delivery stages used by buyer-orders.html.
+       ==================================================== */
+
+    const deliveries =
+        orders.filter(order => {
+
+            const status =
+                buyerOrderStatus(order);
+
+            return [
+                "CONFIRMED",
+                "ACCEPTED",
+                "PROCESSING",
+                "SHIPPED",
+                "IN_TRANSIT"
+            ].includes(status);
+
+        });
+
+
+    /* ====================================================
+       UPDATE VENDOR DASHBOARD
+       ==================================================== */
+
+    setText(
+        "vendorOrders",
+        activeOrders.length
+    );
+
+    setText(
+        "vendorFavorites",
+        favorites.length
+    );
+
+    setText(
+        "vendorDeliveries",
+        deliveries.length
+    );
+
+
+    /* ====================================================
+       UPDATE WHOLESALER DASHBOARD
+       ==================================================== */
+
+    setText(
+        "wholesalerOrders",
+        activeOrders.length
+    );
+
+    setText(
+        "wholesalerDeliveries",
+        deliveries.length
+    );
+
+
+    console.log(
+        "Buyer overview loaded from buyer pages:",
+        {
+            orders: orders.length,
+            activeOrders: activeOrders.length,
+            favorites: favorites.length,
+            deliveries: deliveries.length
+        }
+    );
+
+} catch (error) {
+
+    console.error(
+        "Buyer overview loading error:",
+        error
+    );
+
+    /*
+     * Do not break the whole dashboard if one buyer
+     * overview API fails.
+     */
+
+    setText("vendorOrders", "0");
+    setText("vendorFavorites", "0");
+    setText("vendorDeliveries", "0");
+
+    setText("wholesalerOrders", "0");
+    setText("wholesalerDeliveries", "0");
+}
+}
+  /* ============================================================
+     WHOLESALER DASHBOARD
+     ============================================================ */
+  
+     function loadWholesalerDashboard(dashboard) {
+
+const stats =
+    dashboard.stats || {};
+
+/*
+ * Offers and Payments still come from dashboard data.
+ * Orders and Deliveries are loaded separately from
+ * the original buyer pages.
+ */
+
+setText(
+    "wholesalerOffers",
+    stats.offers ?? 0
+);
+
+setText(
+    "wholesalerPayments",
+    formatMoney(stats.payments)
+);
+
+renderBuyerActivity(
+    "wholesalerDashboard",
+    dashboard.recent_orders || [],
+    dashboard.recent_offers || [],
+    "No wholesale activity yet",
+    "Your orders and offers will appear here."
+);
+}
+  /* ============================================================
+     VENDOR DASHBOARD
+     ============================================================ */
+  
+     function loadVendorDashboard(dashboard) {
+
+const stats =
+    dashboard.stats || {};
+
+/*
+ * Favorites, Active Orders and Deliveries are NOT
+ * taken from /api/dashboard anymore.
+ *
+ * They are loaded from the original buyer pages'
+ * APIs by loadBuyerOverviewFromPages().
+ */
+
+setText(
+    "vendorPayments",
+    formatMoney(stats.payments)
+);
+
+renderBuyerActivity(
+    "vendorDashboard",
+    dashboard.recent_orders || [],
+    dashboard.recent_offers || [],
+    "No orders yet",
+    "Your purchases and delivery updates will appear here."
+);
+}
+  
+  
+  /* ============================================================
+     WHOLESALER / VENDOR ACTIVITY
+     ============================================================ */
+  
+  function renderBuyerActivity(
+      dashboardId,
+      orders,
+      offers,
+      emptyTitle,
+      emptyText
+  ) {
+  
+      const dashboard =
+          document.getElementById(
+              dashboardId
+          );
+  
+      if (!dashboard) return;
+  
+  
+      const cards =
+          dashboard.querySelectorAll(
+              ".dashboard-card"
+          );
+  
+  
+      const card =
+          Array.from(cards).find(
+              element => {
+  
+                  const heading =
+                      element.querySelector("h3");
+  
+                  if (!heading) {
+                      return false;
+                  }
+  
+  
+                  const text =
+                      heading.textContent;
+  
+  
+                  return (
+                      text.includes(
+                          "Recent Wholesale Activity"
+                      ) ||
+                      text.includes(
+                          "Recent Orders"
+                      )
+                  );
+              }
+          );
+  
+  
+      if (!card) return;
+  
+  
+      const empty =
+          card.querySelector(
+              ".empty-state"
+          );
+  
+      if (!empty) return;
+  
+  
+      /* ---------- Empty ---------- */
+  
+      if (
+          !orders.length &&
+          !offers.length
+      ) {
+  
+          empty.innerHTML = `
+  
+              <div class="empty-icon">
+                  📦
+              </div>
+  
+              <strong>
+                  ${escapeHTML(
+                      emptyTitle
+                  )}
+              </strong>
+  
+              <p>
+                  ${escapeHTML(
+                      emptyText
+                  )}
+              </p>
+  
+          `;
+  
+          return;
+      }
+  
+  
+      /* ---------- Combine activity ---------- */
+  
+      const activity = [];
+  
+  
+      orders.forEach(order => {
+  
+          activity.push({
+  
+              type: "ORDER",
+  
+              title:
+                  order.produce_name ||
+                  "Produce",
+  
+              detail:
+                  `${order.quantity || 0} ${
+                      order.unit || ""
+                  }`,
+  
+              amount:
+                  formatMoney(
+                      order.total_amount
+                  ),
+  
+              status:
+                  order.status ||
+                  "PENDING",
+  
+              date:
+                  order.created_at
+  
+          });
+  
+      });
+  
+  
+      offers.forEach(offer => {
+  
+          activity.push({
+  
+              type: "OFFER",
+  
+              title:
+                  offer.produce_name ||
+                  "Produce",
+  
+              detail:
+                  `Offer · ${
+                      offer.quantity || 0
+                  } ${
+                      offer.unit || ""
+                  }`,
+  
+              amount:
+                  formatMoney(
+                      offer.offered_price
+                  ),
+  
+              status:
+                  offer.status ||
+                  "PENDING",
+  
+              date:
+                  offer.created_at
+  
+          });
+  
+      });
+  
+  
+      /* ---------- Newest first ---------- */
+  
+      activity.sort(
+          (a, b) =>
+              new Date(
+                  b.date || 0
+              ) -
+              new Date(
+                  a.date || 0
+              )
+      );
+  
+  
+      empty.innerHTML = `
+  
+          <div class="activity-list">
+  
+              ${activity.slice(0, 8).map(item => `
+  
+                  <div class="activity-item">
+  
+                      <div>
+  
+                          <strong>
+                              ${escapeHTML(
+                                  item.title
+                              )}
+                          </strong>
+  
+                          <p>
+                              ${escapeHTML(
+                                  item.detail
+                              )}
+                          </p>
+  
+                          <small>
+                              ${formatDate(
+                                  item.date
+                              )}
+                          </small>
+  
+                      </div>
+  
+  
+                      <div class="activity-right">
+  
+                          <strong>
+                              ${item.amount}
+                          </strong>
+  
+                          <span class="status ${
+                              statusClass(
+                                  item.status
+                              )
+                          }">
+  
+                              ${escapeHTML(
+                                  item.status
+                              )}
+  
+                          </span>
+  
+                      </div>
+  
+                  </div>
+  
+              `).join("")}
+  
+          </div>
+      `;
+  }
+  
+  
+  /* ============================================================
+     LOAD DASHBOARD
+     ============================================================ */
+  
+  async function loadDashboard() {
+  
+      const authToken =
+          token();
+  
+  
+      updateNavbar(
+          !!authToken
+      );
+  
+  
+      /* ---------- Not logged in ---------- */
+  
+      if (!authToken) {
+  
+          window.location.href =
+              "login.html";
+  
+          return;
+      }
+  
+  
+      const loading =
+          document.getElementById(
+              "dashboardLoading"
+          );
+  
+      const content =
+          document.getElementById(
+              "dashboardContent"
+          );
+  
+      const error =
+          document.getElementById(
+              "dashboardError"
+          );
+  
+  
+      try {
+  
+          /* ====================================================
+             1. GET USER PROFILE
+             ==================================================== */
+  
+          const profileResponse =
+              await fetch(
+                  API_BASE +
+                  "/api/auth/profile",
+                  {
+                      method: "GET",
+  
+                      headers: {
+                          "Authorization":
+                              "Bearer " +
+                              authToken,
+  
+                          "Content-Type":
+                              "application/json"
+                      }
+                  }
+              );
+  
+  
+          /* ---------- Expired token ---------- */
+  
+          if (
+              profileResponse.status === 401
+          ) {
+  
+              localStorage.removeItem(
+                  "token"
+              );
+  
+              localStorage.removeItem(
+                  "user"
+              );
+  
+              window.location.href =
+                  "login.html";
+  
+              return;
+          }
+  
+  
+          const profileData =
+              await profileResponse.json();
+  
+  
+          if (
+              !profileResponse.ok ||
+              !profileData.success
+          ) {
+  
+              throw new Error(
+                  profileData.message ||
+                  "Unable to load user."
+              );
+          }
+  
+  
+          currentUser =
+              profileData.user;
+              renderSidebar(currentUser.role);
+  
+          /* ====================================================
+             2. DISPLAY USER
+             ==================================================== */
+  
+          setText(
+              "dashboardUser",
+              currentUser.name ||
+              "User"
+          );
+  
+  
+          setText(
+              "dashboardRole",
+              formatRole(
+                  currentUser.role
+              )
+          );
+  
+  
+          /* ====================================================
+             3. SHOW CORRECT ROLE
+             ==================================================== */
+  
+          showRole(
+              currentUser.role
+          );
+  
+  
+          /* ====================================================
+             4. GET DASHBOARD DATA
+             ==================================================== */
+  
+          const dashboardResponse =
+              await fetch(
+                  API_BASE +
+                  "/api/dashboard",
+                  {
+                      method: "GET",
+  
+                      headers: {
+  
+                          "Authorization":
+                              "Bearer " +
+                              authToken,
+  
+                          "X-User-ID":
+                              currentUser.id,
+  
+                          "Content-Type":
+                              "application/json"
+                      }
+                  }
+              );
+  
+  
+          /* ---------- Unauthorized ---------- */
+  
+          if (
+              dashboardResponse.status === 401
+          ) {
+  
+              localStorage.removeItem(
+                  "token"
+              );
+  
+              localStorage.removeItem(
+                  "user"
+              );
+  
+              window.location.href =
+                  "login.html";
+  
+              return;
+          }
+  
+  
+          const dashboardData =
+              await dashboardResponse.json();
+  
+  
+          if (
+              !dashboardResponse.ok ||
+              !dashboardData.success
+          ) {
+  
+              throw new Error(
+                  dashboardData.message ||
+                  "Unable to load dashboard data."
+              );
+          }
+  
+  
+          const dashboard =
+              dashboardData.dashboard ||
+              {};
+  
+  
+          /* ====================================================
+             5. LOAD ROLE-SPECIFIC DASHBOARD
+             ==================================================== */
+  
+          const role =
+              String(
+                  currentUser.role || ""
+              )
+              .trim()
+              .toUpperCase();
+  
+  
+              if (role === "FARMER") {
+
+loadFarmerDashboard(
+    dashboard
+);
+
+await loadFarmerForecastInsights();
+
+}
+
+else if (
+role === "WHOLESALER"
+) {
+
+loadWholesalerDashboard(
+    dashboard
+);
+
+/*
+ * Get Active Orders + Deliveries from
+ * the original buyer pages.
+ */
+await loadBuyerOverviewFromPages();
+
+}
+
+else if (
+role === "VENDOR"
+) {
+
+loadVendorDashboard(
+    dashboard
+);
+
+/*
+ * Get Active Orders + Favorites + Deliveries
+ * from the original buyer pages.
+ */
+await loadBuyerOverviewFromPages();
+
+}
+
+else {
+
+throw new Error(
+    "Unsupported account role: " +
+    role
+);
+
+}
+  
+          /* ====================================================
+             6. SHOW CONTENT
+             ==================================================== */
+  
+          if (loading) {
+              loading.style.display =
+                  "none";
+          }
+  
+  
+          if (error) {
+              error.style.display =
+                  "none";
+          }
+  
+  
+          if (content) {
+              content.style.display =
+                  "block";
+          }
+  
+  
+          updateNavbar(true);
+  
+  
+          console.log(
+              "Dashboard loaded:",
+              dashboardData
+          );
+  
+      }
+  
+      catch (e) {
+  
+          console.error(
+              "Dashboard loading error:",
+              e
+          );
+  
+  
+          if (loading) {
+              loading.style.display =
+                  "none";
+          }
+  
+  
+          if (content) {
+              content.style.display =
+                  "none";
+          }
+  
+  
+          if (error) {
+  
+              error.textContent =
+                  "Unable to load your dashboard: " +
+                  e.message;
+  
+              error.style.display =
+                  "block";
+          }
+  
+      }
+  }
+  
+  
+  /* ============================================================
+     REFRESH
+     ============================================================ */
+  
+  function refreshDashboard() {
+  
+      const button =
+          document.getElementById(
+              "refreshBtn"
+          );
+  
+  
+      if (button) {
+  
+          button.disabled =
+              true;
+  
+          button.textContent =
+              "↻ Loading...";
+      }
+  
+  
+      loadDashboard()
+          .finally(() => {
+  
+              if (button) {
+  
+                  button.disabled =
+                      false;
+  
+                  button.textContent =
+                      "↻ Refresh";
+              }
+  
+          });
+  }
+  
+  /* ============================================================
+   ROLE-BASED SIDEBAR
+   ============================================================ */
+
+function renderSidebar(role) {
+
+const sidebar = document.getElementById("sidebar");
+
+if (!sidebar) return;
+
+const normalizedRole =
+    String(role || "").trim().toUpperCase();
+
+let sidebarHTML = "";
+
+/* ================= FARMER ================= */
+
+if (normalizedRole === "FARMER") {
+
+    sidebarHTML = `
+        <div class="sb-section">
+            <div class="sb-label">Main</div>
+
+            <a href="dashboard.html" class="sb-link active">
+                <span class="si">📊</span>
+                <span class="sl">Dashboard</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+            <div class="sb-label">Produce</div>
+
+            <a href="add-produce.html" class="sb-link">
+                <span class="si">🌾</span>
+                <span class="sl">Add Produce</span>
+            </a>
+
+            <a href="my-listings.html" class="sb-link">
+                <span class="si">📋</span>
+                <span class="sl">My Listings</span>
+            </a>
+
+            <a href="offers.html" class="sb-link">
+                <span class="si">🤝</span>
+                <span class="sl">Offers</span>
+            </a>
+
+            <a href="buyers.html" class="sb-link">
+                <span class="si">🔎</span>
+                <span class="sl">Find Buyers</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+            <div class="sb-label">Orders & Delivery</div>
+
+            <a href="orders.html" class="sb-link">
+                <span class="si">📦</span>
+                <span class="sl">Orders</span>
+            </a>
+
+            <a href="farmer_logistics.html" class="sb-link">
+                <span class="si">🚚</span>
+                <span class="sl">Logistics</span>
+            </a>
+
+            <a href="meeting.html" class="sb-link">
+                <span class="si">🎥</span>
+                <span class="sl">Meeting Centre</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+            <div class="sb-label">Reports & Quality</div>
+
+            <a href="reports.html" class="sb-link">
+                <span class="si">📄</span>
+                <span class="sl">Reports Centre</span>
+            </a>
+
+            <a href="quality.html" class="sb-link">
+                <span class="si">🛡️</span>
+                <span class="sl">Quality & Certification</span>
+            </a>
+
+            <a href="alerts.html" class="sb-link">
+                <span class="si">🔔</span>
+                <span class="sl">Alert Center</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+            <div class="sb-label">Account</div>
+
+            <a href="profile.html" class="sb-link">
+                <span class="si">👤</span>
+                <span class="sl">Profile</span>
+            </a>
+
+            <a href="#" class="sb-link"
+               onclick="logout(); return false;">
+                <span class="si">🚪</span>
+                <span class="sl">Logout</span>
+            </a>
+        </div>
+    `;
+}
+
+
+/* ================= VENDOR ================= */
+
+else if (normalizedRole === "VENDOR") {
+
+    sidebarHTML = `
+        <div class="sb-section">
+            <div class="sb-label">Main</div>
+
+            <a href="dashboard.html" class="sb-link active">
+                <span class="si">📊</span>
+                <span class="sl">Dashboard</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+            <div class="sb-label">Shop</div>
+
+            <a href="marketplace.html" class="sb-link">
+                <span class="si">🛒</span>
+                <span class="sl">Marketplace</span>
+            </a>
+
+            <a href="cart.html" class="sb-link">
+                <span class="si">🛍️</span>
+                <span class="sl">My Cart</span>
+            </a>
+
+            <a href="favorites.html" class="sb-link">
+                <span class="si">❤️</span>
+                <span class="sl">Favorites</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+            <div class="sb-label">Orders</div>
+
+            <a href="buyer-orders.html" class="sb-link">
+                <span class="si">📦</span>
+                <span class="sl">My Orders</span>
+            </a>
+
+            <a href="buyer-logistics.html" class="sb-link">
+                <span class="si">🚚</span>
+                <span class="sl">Delivery Tracking</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+            <div class="sb-label">Communication</div>
+
+            <a href="meeting.html" class="sb-link">
+                <span class="si">🎥</span>
+                <span class="sl">Meeting Centre</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+    <div class="sb-label">Demand Forecasting</div>
+
+    <a href="demand-forecasting.html" class="sb-link">
+        <span class="si">📈</span>
+        <span class="sl">Demand Forecasting</span>
+    </a>
+</div>
+
+        <div class="sb-section">
+            <div class="sb-label">Account</div>
+
+            <a href="profile.html" class="sb-link">
+                <span class="si">👤</span>
+                <span class="sl">Profile</span>
+            </a>
+
+            <a href="alerts.html" class="sb-link">
+                <span class="si">🔔</span>
+                <span class="sl">Notifications</span>
+            </a>
+
+            <a href="#" class="sb-link"
+               onclick="logout(); return false;">
+                <span class="si">🚪</span>
+                <span class="sl">Logout</span>
+            </a>
+        </div>
+    `;
+}
+
+
+/* ================= WHOLESALER ================= */
+
+else if (normalizedRole === "WHOLESALER") {
+
+    sidebarHTML = `
+        <div class="sb-section">
+            <div class="sb-label">Main</div>
+
+            <a href="dashboard.html" class="sb-link active">
+                <span class="si">📊</span>
+                <span class="sl">Dashboard</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+            <div class="sb-label">Bulk Buying</div>
+
+            <a href="marketplace.html" class="sb-link">
+                <span class="si">🛒</span>
+                <span class="sl">Marketplace</span>
+            </a>
+
+            <a href="wholesaler-offers.html" class="sb-link">
+                <span class="si">🤝</span>
+                <span class="sl">My Offers</span>
+            </a>
+
+            <a href="cart.html" class="sb-link">
+                <span class="si">📦</span>
+                <span class="sl">Bulk Cart</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+            <div class="sb-label">Orders</div>
+
+            <a href="buyer-orders.html" class="sb-link">
+                <span class="si">📋</span>
+                <span class="sl">Bulk Orders</span>
+            </a>
+
+            <a href="buyer-logistics.html" class="sb-link">
+                <span class="si">🚚</span>
+                <span class="sl">Delivery Tracking</span>
+            </a>
+
+            <a href="payments.html" class="sb-link">
+                <span class="si">💳</span>
+                <span class="sl">Payments & Invoices</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+            <div class="sb-label">Communication</div>
+
+            <a href="meeting.html" class="sb-link">
+                <span class="si">🎥</span>
+                <span class="sl">Meeting Centre</span>
+            </a>
+        </div>
+
+        <div class="sb-section">
+    <div class="sb-label">Demand Forecasting</div>
+
+    <a href="demand-forecasting.html" class="sb-link">
+        <span class="si">📈</span>
+        <span class="sl">Demand Forecasting</span>
+    </a>
+</div>
+
+        <div class="sb-section">
+            <div class="sb-label">Account</div>
+
+            <a href="profile.html" class="sb-link">
+                <span class="si">🏢</span>
+                <span class="sl">Business Profile</span>
+            </a>
+
+            <a href="alerts.html" class="sb-link">
+                <span class="si">🔔</span>
+                <span class="sl">Notifications</span>
+            </a>
+
+            <a href="#" class="sb-link"
+               onclick="logout(); return false;">
+                <span class="si">🚪</span>
+                <span class="sl">Logout</span>
+            </a>
+        </div>
+    `;
+}
+
+sidebar.innerHTML = sidebarHTML;
+}
+  /* ============================================================
+     SIDEBAR
+     ============================================================ */
+  
+  function initializeSidebar() {
+  
+      const sidebar =
+          document.getElementById(
+              "sidebar"
+          );
+  
+      const main =
+          document.getElementById(
+              "mainArea"
+          );
+  
+      const toggle =
+          document.getElementById(
+              "sidebarToggle"
+          );
+  
+  
+      if (!sidebar || !toggle) {
+          return;
+      }
+  
+  
+      toggle.addEventListener(
+          "click",
+          () => {
+  
+              if (
+                  window.innerWidth <= 768
+              ) {
+  
+                  sidebar.classList.toggle(
+                      "open"
+                  );
+  
+              }
+  
+              else {
+  
+                  sidebar.classList.toggle(
+                      "collapsed"
+                  );
+  
+  
+                  if (main) {
+  
+                      main.classList.toggle(
+                          "expanded"
+                      );
+  
+                  }
+  
+              }
+  
+          }
+      );
+  
+  
+      document.addEventListener(
+          "click",
+          event => {
+  
+              if (
+                  window.innerWidth <= 768 &&
+                  sidebar.classList.contains(
+                      "open"
+                  ) &&
+                  !sidebar.contains(
+                      event.target
+                  ) &&
+                  !toggle.contains(
+                      event.target
+                  )
+              ) {
+  
+                  sidebar.classList.remove(
+                      "open"
+                  );
+  
+              }
+  
+          }
+      );
+  }
+  
+  
+  /* ============================================================
+     SUBSCRIBE FORM
+     ============================================================ */
+  
+  function initializeSubscribe() {
+  
+      const form =
+          document.getElementById(
+              "subForm"
+          );
+  
+  
+      if (!form) {
+          return;
+      }
+  
+  
+      form.addEventListener(
+          "submit",
+          event => {
+  
+              event.preventDefault();
+  
+  
+              const input =
+                  document.getElementById(
+                      "subEmail"
+                  );
+  
+  
+              if (
+                  input &&
+                  input.checkValidity()
+              ) {
+  
+                  alert(
+                      "Thanks! You have been subscribed to AgriCentre updates."
+                  );
+  
+  
+                  input.value = "";
+  
+              }
+  
+          }
+      );
+  }
+  
+  
+  /* ============================================================
+     INITIALIZE
+     ============================================================ */
+  
+  document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+  
+          initializeSidebar();
+  
+          initializeSubscribe();
+  
+          loadDashboard();
+  
+      }
+  );
+  
+  </script>
+
+</body>
+</html>

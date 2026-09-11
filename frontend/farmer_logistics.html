@@ -1,0 +1,10575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AgriCentre – Logistics</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <style>
+
+        /* ============================================================
+           VARIABLES
+        ============================================================ */
+
+        :root {
+
+            --brand: #2f9e5c;
+            --brand-dark: #1f7a44;
+            --brand-light: #5cc98a;
+
+            --bg: #0d0e10;
+            --bg2: #14161a;
+            --surface: #1c1f25;
+            --surface2: #22262e;
+
+            --border: #2e3340;
+
+            --text: #eef1f6;
+            --muted: #8f99ab;
+            --light: #c5cad4;
+
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+
+            --sidebar-w: 258px;
+            --nav-h: 64px;
+
+            --radius: 10px;
+            --radius-lg: 16px;
+
+            --shadow:
+                0 1px 3px rgba(0, 0, 0, 0.20),
+                0 4px 16px rgba(0, 0, 0, 0.18);
+
+            --transition:
+                0.22s cubic-bezier(0.4, 0, 0.2, 1);
+
+        }
+
+
+        /* ============================================================
+           RESET
+        ============================================================ */
+
+        *,
+        *::before,
+        *::after {
+
+            box-sizing: border-box;
+
+            margin: 0;
+            padding: 0;
+
+        }
+
+
+        html {
+
+            scroll-behavior: smooth;
+
+        }
+
+
+        body {
+
+            font-family: "Inter", sans-serif;
+
+            background: var(--bg);
+            color: var(--text);
+
+            min-height: 100vh;
+
+        }
+
+
+        a {
+
+            color: inherit;
+
+            text-decoration: none;
+
+        }
+
+
+        button,
+        input,
+        select {
+
+            font-family: inherit;
+
+        }
+
+
+        /* ============================================================
+           NAVBAR
+        ============================================================ */
+
+        .navbar {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: var(--nav-h);
+
+            z-index: 1000;
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 0 20px;
+
+            background: var(--bg2);
+
+            box-shadow:
+                0 2px 12px rgba(0, 0, 0, 0.30);
+
+        }
+
+
+        .nav-toggle {
+
+            padding: 6px 8px;
+
+            border: none;
+            border-radius: 6px;
+
+            background: transparent;
+
+            color: #ffffff;
+
+            font-size: 20px;
+
+            cursor: pointer;
+
+            transition:
+                background var(--transition);
+
+        }
+
+
+        .nav-toggle:hover {
+
+            background: rgba(255, 255, 255, 0.10);
+
+        }
+
+
+        .nav-brand {
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            font-family: "Rajdhani", sans-serif;
+
+        }
+
+
+        .logo {
+
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background: var(--brand);
+
+            font-size: 20px;
+
+        }
+
+
+        .brand-text {
+
+            display: flex;
+            flex-direction: column;
+
+        }
+
+
+        .brand-name {
+
+            color: #ffffff;
+
+            font-size: 25px;
+            font-weight: 700;
+
+            line-height: 1;
+
+        }
+
+
+        .brand-nameX {
+
+            color: var(--brand);
+
+        }
+
+
+        .brand-subtitle {
+
+            margin-top: 3px;
+
+            color: #9aa7bb;
+
+            font-family: "Inter", sans-serif;
+
+            font-size: 9px;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .nav-links {
+
+            display: flex;
+            align-items: center;
+
+            gap: 4px;
+
+            margin-left: auto;
+
+        }
+
+
+        .nav-links a {
+
+            padding: 9px 11px;
+
+            border-radius: 7px;
+
+            color: #9aa7bb;
+
+            font-size: 13px;
+
+            transition:
+                background var(--transition),
+                color var(--transition);
+
+        }
+
+
+        .nav-links a:hover {
+
+            background: rgba(255, 255, 255, 0.06);
+
+            color: #ffffff;
+
+        }
+
+
+        .nav-right {
+
+            display: flex;
+            align-items: center;
+
+            gap: 7px;
+
+            margin-left: 8px;
+
+        }
+
+
+        .nav-btn {
+
+            position: relative;
+
+            width: 38px;
+            height: 38px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: var(--surface2);
+
+            color: #ffffff;
+
+            cursor: pointer;
+
+        }
+
+
+        .nav-badge {
+
+            position: absolute;
+
+            top: -3px;
+            right: -3px;
+
+            min-width: 16px;
+            height: 16px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: var(--danger);
+
+            color: #ffffff;
+
+            font-size: 9px;
+            font-weight: 700;
+
+        }
+
+
+        /* ============================================================
+           LAYOUT
+        ============================================================ */
+
+        .layout {
+
+            display: flex;
+
+            min-height: 100vh;
+
+            padding-top: var(--nav-h);
+
+        }
+
+
+        /* ============================================================
+           SIDEBAR
+        ============================================================ */
+
+        .sidebar {
+
+            position: fixed;
+
+            top: var(--nav-h);
+            bottom: 0;
+            left: 0;
+
+            width: var(--sidebar-w);
+
+            padding: 20px 14px;
+
+            overflow-y: auto;
+
+            background: var(--bg2);
+
+            border-right:
+                1px solid var(--border);
+
+            transform: translateX(0);
+
+            transition:
+                transform var(--transition),
+                width var(--transition);
+
+            z-index: 900;
+
+        }
+
+
+        .sidebar.collapsed {
+
+            width: 76px;
+
+        }
+
+
+        .sidebar.collapsed .sb-label,
+        .sidebar.collapsed .sl {
+
+            display: none;
+
+        }
+
+
+        .sidebar.collapsed .sb-link {
+
+            justify-content: center;
+
+        }
+
+
+        .sb-section {
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .sb-label {
+
+            padding: 0 12px 8px;
+
+            color: #68758a;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .sb-link {
+
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+
+            margin-bottom: 3px;
+
+            padding: 10px 12px;
+
+            border-radius: 8px;
+
+            color: #9aa7bb;
+
+            font-size: 12px;
+
+            transition:
+                background var(--transition),
+                color var(--transition);
+
+        }
+
+
+        .sb-link:hover {
+
+            background: rgba(255, 255, 255, 0.06);
+
+            color: #ffffff;
+
+        }
+
+
+        .sb-link.active {
+
+            background: rgba(47, 158, 92, 0.18);
+
+            color: #ffffff;
+
+        }
+
+
+        .si {
+
+            width: 20px;
+
+            text-align: center;
+
+            font-size: 16px;
+
+        }
+
+
+        /* ============================================================
+           MAIN
+        ============================================================ */
+
+        .main {
+
+            width: calc(100% - var(--sidebar-w));
+
+            min-height: calc(100vh - var(--nav-h));
+
+            margin-left: var(--sidebar-w);
+
+            padding: 34px 38px 55px;
+
+            transition:
+                margin-left var(--transition),
+                width var(--transition);
+
+        }
+
+
+        .main.expanded {
+
+            width: calc(100% - 76px);
+
+            margin-left: 76px;
+
+        }
+
+
+        /* ============================================================
+           PAGE HEADER
+        ============================================================ */
+
+        .page-header {
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .page-eyebrow {
+
+            margin-bottom: 6px;
+
+            color: var(--brand-light);
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: 0.8px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .page-title {
+
+            color: #ffffff;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 36px;
+            font-weight: 700;
+
+            line-height: 1.15;
+
+        }
+
+
+        .page-sub {
+
+            max-width: 850px;
+
+            margin-top: 7px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            line-height: 1.65;
+
+        }
+
+
+        /* ============================================================
+           SECTION
+        ============================================================ */
+
+        .section {
+
+            margin-bottom: 20px;
+
+            overflow: hidden;
+
+            background: var(--bg2);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: var(--radius-lg);
+
+            box-shadow: var(--shadow);
+
+        }
+
+
+        .section-head {
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 19px 21px;
+
+            border-bottom:
+                1px solid var(--border);
+
+        }
+
+
+        .section-head h2 {
+
+            color: #ffffff;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 19px;
+
+        }
+
+
+        .section-head p {
+
+            margin-top: 4px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+        }
+
+
+        .body {
+
+            padding: 21px;
+
+        }
+
+
+        /* ============================================================
+           BUTTONS
+        ============================================================ */
+
+        .btn {
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 6px;
+
+            padding: 8px 15px;
+
+            border-radius: 8px;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                background var(--transition),
+                transform var(--transition);
+
+        }
+
+
+        .btn-primary {
+
+            border:
+                1px solid var(--brand);
+
+            background: var(--brand);
+
+            color: #ffffff;
+
+        }
+
+
+        .btn-primary:hover {
+
+            background: var(--brand-dark);
+
+            transform: translateY(-1px);
+
+        }
+
+
+        .btn-secondary {
+
+            border:
+                1px solid var(--border);
+
+            background: var(--surface2);
+
+            color: var(--light);
+
+        }
+
+
+        .btn-secondary:hover {
+
+            background: #2b3038;
+
+        }
+
+
+        /* ============================================================
+           KPI CARDS
+        ============================================================ */
+
+        .kpis {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 13px;
+
+        }
+
+
+        .kpi {
+
+            padding: 17px;
+
+            background: var(--surface);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: var(--radius);
+
+        }
+
+
+        .kpi-icon {
+
+            margin-bottom: 8px;
+
+            font-size: 21px;
+
+        }
+
+
+        .kv {
+
+            color: #ffffff;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 25px;
+            font-weight: 700;
+
+        }
+
+
+        .kl {
+
+            margin-top: 2px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+        }
+
+
+        .kpi-note {
+
+            margin-top: 7px;
+
+            color: var(--brand-light);
+
+            font-size: 10px;
+
+        }
+
+
+        /* ============================================================
+           FORM / SHIPMENT
+        ============================================================ */
+
+        .select {
+
+            width: 100%;
+
+            padding: 11px 12px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 8px;
+
+            outline: none;
+
+            background: var(--surface);
+
+            color: var(--text);
+
+            font-size: 12px;
+
+        }
+
+
+        .select:focus {
+
+            border-color: var(--brand);
+
+        }
+
+
+        .shipment-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 13px;
+
+            margin-top: 16px;
+
+        }
+
+
+        .detail {
+
+            padding: 14px;
+
+            background: var(--surface);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+        }
+
+
+        .detail-label {
+
+            margin-bottom: 6px;
+
+            color: #68758a;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            letter-spacing: 0.7px;
+
+            text-transform: uppercase;
+
+        }
+
+/* ============================================================
+   TRACKING MODAL
+============================================================ */
+
+.tracking-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+}
+
+.tracking-modal.open {
+    display: flex;
+}
+
+.tracking-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(6px);
+}
+
+.tracking-modal-box {
+    position: relative;
+    z-index: 100001;
+    width: min(1050px, 94vw);
+    max-height: 92vh;
+    overflow-y: auto;
+    background: #ffffff;
+    color: #17202a;
+    border-radius: 20px;
+    padding: 28px;
+    box-sizing: border-box;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+}
+
+.tracking-close {
+    position: absolute;
+    right: 16px;
+    top: 14px;
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    background: #f1f3f5;
+    color: #222;
+    font-size: 25px;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.tracking-header {
+    padding-right: 50px;
+    margin-bottom: 18px;
+}
+
+.tracking-header h2 {
+    margin: 0 0 4px;
+    color: #17202a;
+    font-size: 25px;
+}
+
+.tracking-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.tracking-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.tracking-info {
+    padding: 14px;
+    background: #f5f7f8;
+    border: 1px solid #e4e7eb;
+    border-radius: 12px;
+}
+
+.tracking-info strong {
+    display: block;
+    color: #17202a;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.tracking-info span {
+    color: #707781;
+    font-size: 11px;
+}
+
+.tracking-current {
+    margin-bottom: 18px;
+    padding: 16px;
+    background: #eef8f2;
+    border: 1px solid #cfe8d8;
+    border-radius: 12px;
+}
+
+.tracking-current-title {
+    color: #087f3f;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.tracking-current-main {
+    color: #17202a;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.tracking-current-sub {
+    margin-top: 4px;
+    color: #65706a;
+    font-size: 12px;
+}
+
+.tracking-layout {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 18px;
+}
+
+.tracking-map {
+    width: 100%;
+    height: 430px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e0e3e6;
+}
+
+.tracking-journey {
+    padding: 18px;
+    background: #f8f9fa;
+    border: 1px solid #e4e7eb;
+    border-radius: 14px;
+    max-height: 430px;
+    overflow-y: auto;
+}
+
+.tracking-journey-title {
+    margin-bottom: 15px;
+    color: #17202a;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.journey-item {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    padding-bottom: 18px;
+}
+
+.journey-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 11px;
+    top: 25px;
+    bottom: 0;
+    width: 2px;
+    background: #d8dde2;
+}
+
+.journey-dot {
+    position: relative;
+    z-index: 2;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e2e6e9;
+    color: #59636d;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.journey-item.completed .journey-dot {
+    background: #159447;
+    color: white;
+}
+
+.journey-item.current .journey-dot {
+    background: #0b7d3e;
+    color: white;
+    box-shadow: 0 0 0 5px rgba(21, 148, 71, 0.15);
+}
+
+.journey-content strong {
+    display: block;
+    color: #17202a;
+    font-size: 13px;
+}
+
+.journey-content span {
+    display: block;
+    margin-top: 3px;
+    color: #727a83;
+    font-size: 11px;
+}
+
+.journey-current {
+    margin-top: 5px;
+    display: inline-block;
+    padding: 3px 7px;
+    border-radius: 10px;
+    background: #dff4e7;
+    color: #087f3f !important;
+    font-size: 9px !important;
+    font-weight: 800;
+}
+
+.tracking-note {
+    margin-top: 12px;
+    color: #7a828a;
+    font-size: 10px;
+}
+
+.tracking-map-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #168a49;
+    box-shadow: 0 3px 12px rgba(0,0,0,.25);
+    font-size: 18px;
+}
+
+.tracking-transit-marker {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #555;
+    color: #333;
+    font-size: 10px;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+@media (max-width: 800px) {
+
+    .tracking-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tracking-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .tracking-map {
+        height: 350px;
+    }
+
+}
+/* ============================================================
+   DRIVER GRID
+============================================================ */
+
+#drivers {
+
+display: grid;
+
+grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+gap: 14px;
+
+margin-top: 12px;
+
+}
+
+
+.driver-card {
+
+position: relative;
+
+min-height: 175px;
+
+padding: 18px;
+
+background:
+    linear-gradient(
+        145deg,
+        #1c2027 0%,
+        #171a20 100%
+    );
+
+border:
+    1px solid #2b313b;
+
+border-radius: 14px;
+
+cursor: pointer;
+
+overflow: hidden;
+
+transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+
+}
+
+
+/* subtle green glow on the left */
+
+.driver-card::before {
+
+content: "";
+
+position: absolute;
+
+left: 0;
+
+top: 0;
+
+bottom: 0;
+
+width: 3px;
+
+background:
+    rgba(47, 158, 92, 0.35);
+
+opacity: 0;
+
+transition:
+    opacity 0.2s ease;
+
+}
+
+
+.driver-card:hover {
+
+transform:
+    translateY(-3px);
+
+border-color:
+    rgba(47, 158, 92, 0.55);
+
+box-shadow:
+    0 10px 30px
+    rgba(0, 0, 0, 0.25);
+
+}
+
+
+.driver-card:hover::before {
+
+opacity: 1;
+
+}
+
+
+.driver-card.selected {
+
+background:
+    linear-gradient(
+        145deg,
+        rgba(47, 158, 92, 0.14),
+        rgba(47, 158, 92, 0.05)
+    );
+
+border:
+    1px solid
+    rgba(47, 158, 92, 0.85);
+
+box-shadow:
+    0 0 0 1px
+    rgba(47, 158, 92, 0.12),
+    0 10px 28px
+    rgba(47, 158, 92, 0.10);
+
+}
+.driver-distance {
+
+display: inline-block;
+
+margin-left: 8px;
+
+padding: 4px 8px;
+
+border-radius: 20px;
+
+background:
+    rgba(
+        47,
+        158,
+        92,
+        0.12
+    );
+
+color:
+    #7be0a0;
+
+font-size:
+    10px;
+
+font-weight:
+    700;
+
+}
+
+
+.driver-card.selected::before {
+
+opacity: 1;
+
+background:
+    var(--brand);
+
+}
+
+
+/* ------------------------------------------------------------
+DRIVER NAME
+------------------------------------------------------------ */
+
+.driver-name {
+
+display: flex;
+
+align-items: center;
+
+gap: 9px;
+
+margin-bottom: 12px;
+
+color: #ffffff;
+
+font-size: 15px;
+
+font-weight: 800;
+
+letter-spacing: 0.1px;
+
+}
+.custom-map-marker {
+    background: transparent;
+    border: none;
+}
+
+.pickup-pin,
+.destination-pin {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    border: 3px solid;
+
+    font-size: 18px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.pickup-pin {
+    border-color: green;
+}
+
+.destination-pin {
+    border-color: red;
+}
+
+.driver-name::first-letter {
+
+font-size: 16px;
+
+}
+
+
+/* ------------------------------------------------------------
+RATING + CAPACITY
+------------------------------------------------------------ */
+
+.driver-meta {
+
+display: flex;
+
+align-items: center;
+
+flex-wrap: wrap;
+
+gap: 7px;
+
+margin-bottom: 12px;
+
+color: #d8dee8;
+
+font-size: 11px;
+
+font-weight: 600;
+
+}
+
+
+.driver-meta:first-letter {
+
+color: #f6c94c;
+
+}
+
+
+/* ------------------------------------------------------------
+VEHICLE + LOCATION
+------------------------------------------------------------ */
+
+.driver-desc {
+
+padding-top: 11px;
+
+border-top:
+    1px solid
+    rgba(255, 255, 255, 0.06);
+
+color: #8994a5;
+
+font-size: 11px;
+
+line-height: 1.8;
+
+}
+
+
+.driver-desc br {
+
+display: block;
+
+content: "";
+
+margin-top: 2px;
+
+}
+
+
+/* ------------------------------------------------------------
+AVAILABILITY
+------------------------------------------------------------ */
+
+.availability {
+
+display: inline-flex;
+
+align-items: center;
+
+gap: 5px;
+
+margin-top: 13px;
+
+padding: 5px 9px;
+
+border:
+    1px solid
+    rgba(16, 185, 129, 0.18);
+
+border-radius: 999px;
+
+background:
+    rgba(16, 185, 129, 0.10);
+
+color: #6ee7a1;
+
+font-size: 9px;
+
+font-weight: 800;
+
+letter-spacing: 0.5px;
+
+text-transform: uppercase;
+
+}
+
+
+/* green status dot */
+
+.availability::before {
+
+content: "";
+
+width: 6px;
+
+height: 6px;
+
+border-radius: 50%;
+
+background: #43d17c;
+
+box-shadow:
+    0 0 7px
+    rgba(67, 209, 124, 0.55);
+
+}
+
+
+/* ------------------------------------------------------------
+RESULT COUNT
+------------------------------------------------------------ */
+
+.driver-results-info {
+
+margin-top: 10px;
+
+margin-bottom: 4px;
+
+color: #8994a5;
+
+font-size: 11px;
+
+font-weight: 600;
+
+}
+
+
+/* ------------------------------------------------------------
+SHOW MORE
+------------------------------------------------------------ */
+
+.show-more-btn {
+
+display: block;
+
+width: 100%;
+
+margin-top: 15px;
+
+padding: 11px 16px;
+
+border:
+    1px solid
+    rgba(47, 158, 92, 0.35);
+
+border-radius: 9px;
+
+background:
+    rgba(47, 158, 92, 0.07);
+
+color: #7be0a0;
+
+font-size: 11px;
+
+font-weight: 700;
+
+cursor: pointer;
+
+transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+
+}
+
+
+.show-more-btn:hover {
+
+background:
+    rgba(47, 158, 92, 0.14);
+
+border-color:
+    rgba(47, 158, 92, 0.65);
+
+transform:
+    translateY(-1px);
+
+}
+@media (max-width: 900px) {
+
+#drivers {
+
+    grid-template-columns:
+        1fr;
+
+}
+
+}
+/* ============================================================
+   DRIVER FILTERS
+============================================================ */
+
+.driver-filters {
+
+display: grid;
+
+grid-template-columns:
+    minmax(240px, 2fr)
+    repeat(3, minmax(150px, 1fr));
+
+gap: 10px;
+
+padding: 13px;
+
+border:
+    1px solid
+    rgba(255, 255, 255, 0.06);
+
+border-radius: 12px;
+
+background:
+    rgba(255, 255, 255, 0.025);
+
+}
+
+
+.driver-filters input,
+.driver-filters select {
+
+width: 100%;
+
+min-height: 40px;
+
+padding:
+    0 12px;
+
+border:
+    1px solid
+    #303641;
+
+border-radius: 8px;
+
+outline: none;
+
+background:
+    #1b1f26;
+
+color:
+    #e8edf4;
+
+font-family: inherit;
+
+font-size: 11px;
+
+transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+
+}
+
+
+.driver-filters input::placeholder {
+
+color:
+    #687487;
+
+}
+
+
+.driver-filters input:hover,
+.driver-filters select:hover {
+
+border-color:
+    #414957;
+
+}
+
+
+.driver-filters input:focus,
+.driver-filters select:focus {
+
+border-color:
+    rgba(47, 158, 92, 0.75);
+
+background:
+    #1d2229;
+
+box-shadow:
+    0 0 0 3px
+    rgba(47, 158, 92, 0.08);
+
+}
+
+
+.driver-filters select {
+
+cursor: pointer;
+
+}
+
+
+/* dropdown options */
+
+.driver-filters select option {
+
+background:
+    #1b1f26;
+
+color:
+    #e8edf4;
+
+}
+
+
+@media (max-width: 900px) {
+
+.driver-filters {
+
+    grid-template-columns:
+        1fr 1fr;
+
+}
+
+}
+
+
+@media (max-width: 560px) {
+
+.driver-filters {
+
+    grid-template-columns:
+        1fr;
+
+}
+
+}
+
+
+        /* ============================================================
+           ROUTES
+        ============================================================ */
+
+        .routes {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 13px;
+
+        }
+
+
+        .route {
+
+            padding: 17px;
+
+            background: var(--surface);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            transition:
+                border-color var(--transition),
+                background var(--transition),
+                transform var(--transition);
+
+        }
+
+
+        .route:hover {
+
+            transform: translateY(-1px);
+
+            border-color:
+                rgba(47, 158, 92, 0.65);
+
+        }
+
+
+        .route.selected {
+
+            background:
+                rgba(47, 158, 92, 0.10);
+
+            border:
+                2px solid var(--brand);
+
+        }
+
+        .route-legend {
+    background: white;
+    padding: 12px 14px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    color: #222;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.legend-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0;
+}
+
+.legend-line {
+    width: 28px;
+    height: 4px;
+    display: inline-block;
+}
+
+.legend-line.ai {
+    background: green;
+}
+
+.legend-line.fastest {
+    background: blue;
+}
+
+.legend-line.shortest {
+    background: orange;
+}
+
+.legend-line.cost {
+    background: purple;
+}
+
+.legend-marker {
+    margin: 5px 0;
+}
+        .badge {
+
+            display: inline-block;
+
+            padding: 4px 7px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(47, 158, 92, 0.14);
+
+            color: #7be0a0;
+
+            font-size: 8px;
+            font-weight: 800;
+
+        }
+
+
+        .route h3 {
+
+            margin: 9px 0;
+
+            color: #ffffff;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 16px;
+
+        }
+
+
+        .route-distance {
+
+            color: #ffffff;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 25px;
+            font-weight: 700;
+
+        }
+
+
+        .route-distance span {
+
+            color: var(--muted);
+
+            font-family: "Inter", sans-serif;
+
+            font-size: 10px;
+            font-weight: 500;
+
+        }
+
+
+        .route-meta {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 6px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+        }
+
+
+        .desc {
+
+            margin-top: 9px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+            line-height: 1.55;
+
+        }
+
+
+        .ai {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 15px;
+
+            padding: 14px;
+
+            background:
+                rgba(47, 158, 92, 0.08);
+
+            border:
+                1px solid rgba(47, 158, 92, 0.22);
+
+            border-radius: 9px;
+
+            color: var(--light);
+
+            font-size: 11px;
+
+            line-height: 1.55;
+
+        }
+
+
+        .ai strong {
+
+            color: #ffffff;
+
+        }
+
+
+        /* ============================================================
+           MAP
+        ============================================================ */
+
+        .map {
+
+            width: 100%;
+            height: 400px;
+
+            overflow: hidden;
+
+            border-radius: 10px;
+
+            border:
+                1px solid var(--border);
+
+        }
+
+
+        /* ============================================================
+           SUMMARY
+        ============================================================ */
+
+        .summary {
+
+            padding: 14px;
+
+            background: var(--surface);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+        }
+
+
+        .summary b {
+
+            color: #ffffff;
+
+        }
+
+
+        .actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 8px;
+
+            margin-top: 15px;
+
+        }
+
+
+        .primary {
+
+            padding: 10px 17px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: var(--brand);
+
+            color: #ffffff;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+        }
+
+
+        .primary:hover {
+
+            background: var(--brand-dark);
+
+        }
+
+
+        .primary:disabled {
+
+            background: #454b54;
+
+            color: #858d9b;
+
+            cursor: not-allowed;
+
+        }
+
+
+        /* ============================================================
+           TRACKING
+        ============================================================ */
+
+        .tracking-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+
+        }
+
+
+        .ship {
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 14px;
+
+            background: var(--surface);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+        }
+
+
+        .ship-id {
+
+            margin-bottom: 5px;
+
+            color: #ffffff;
+
+            font-size: 12px;
+            font-weight: 700;
+
+        }
+
+
+        .ship-meta {
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+        }
+
+
+        .tracking-right {
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .status {
+
+            padding: 5px 8px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(59, 130, 246, 0.13);
+
+            color: #86b9ff;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .track-btn {
+
+            padding: 7px 11px;
+
+            border:
+                1px solid var(--brand);
+
+            border-radius: 7px;
+
+            background: transparent;
+
+            color: var(--brand-light);
+
+            cursor: pointer;
+
+            font-size: 10px;
+            font-weight: 700;
+
+        }
+
+
+        .empty {
+
+            padding: 25px;
+
+            color: var(--muted);
+
+            text-align: center;
+
+            font-size: 11px;
+
+        }
+
+
+        /* ============================================================
+           FOOTER
+        ============================================================ */
+
+        footer {
+
+            margin-top: 30px;
+
+            padding: 42px 40px 0;
+
+            background: var(--bg2);
+
+            color: #8fa0b8;
+
+        }
+
+
+        .ft-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                2fr 1fr 1fr 1.5fr;
+
+            gap: 36px;
+
+            padding-bottom: 30px;
+
+            border-bottom:
+                1px solid rgba(255, 255, 255, 0.08);
+
+        }
+
+
+        .ft-brand {
+
+            margin-bottom: 8px;
+
+            color: #ffffff;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 22px;
+            font-weight: 700;
+
+        }
+
+
+        .ft-brand span {
+
+            color: var(--brand);
+
+        }
+
+
+        .ft-desc {
+
+            max-width: 290px;
+
+            color: #8fa0b8;
+
+            font-size: 11px;
+
+            line-height: 1.7;
+
+        }
+
+
+        .ft-col h4 {
+
+            margin-bottom: 12px;
+
+            color: #ffffff;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.8px;
+
+        }
+
+
+        .ft-col a {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #8fa0b8;
+
+            font-size: 11px;
+
+            transition:
+                color var(--transition);
+
+        }
+
+
+        .ft-col a:hover {
+
+            color: var(--brand-light);
+
+        }
+
+
+        .sub-box {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 9px;
+
+        }
+
+
+        .sub-box p {
+
+            color: #8fa0b8;
+
+            font-size: 11px;
+
+        }
+
+
+        .sub-form {
+
+            display: flex;
+
+            gap: 7px;
+
+        }
+
+
+        .sub-input {
+
+            flex: 1;
+
+            min-width: 0;
+
+            padding: 8px 10px;
+
+            border:
+                1px solid rgba(255, 255, 255, 0.12);
+
+            border-radius: 7px;
+
+            outline: none;
+
+            background:
+                rgba(255, 255, 255, 0.05);
+
+            color: #ffffff;
+
+            font-size: 11px;
+
+        }
+
+
+        .sub-btn {
+
+            padding: 8px 12px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: var(--brand);
+
+            color: #ffffff;
+
+            cursor: pointer;
+
+            font-size: 10px;
+            font-weight: 600;
+
+        }
+
+
+        .ft-bottom {
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 12px;
+
+            padding: 14px 0;
+
+            color: #68758a;
+
+            font-size: 9px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .ft-links {
+
+            display: flex;
+
+            gap: 14px;
+
+        }
+
+
+        .ft-links a:hover {
+
+            color: var(--brand-light);
+
+        }
+
+
+        /* ============================================================
+           RESPONSIVE
+        ============================================================ */
+
+        @media (max-width: 1100px) {
+
+            .kpis {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+
+            .routes {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+
+            .grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+
+            .ft-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+        }
+
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+
+                transform:
+                    translateX(-100%);
+
+                width: var(--sidebar-w);
+
+            }
+
+
+            .sidebar.open {
+
+                transform:
+                    translateX(0);
+
+            }
+
+
+            .sidebar.collapsed {
+
+                width: var(--sidebar-w);
+
+            }
+
+
+            .sidebar.collapsed .sb-label,
+            .sidebar.collapsed .sl {
+
+                display: block;
+
+            }
+
+
+            .sidebar.collapsed .sb-link {
+
+                justify-content: flex-start;
+
+            }
+
+
+            .main,
+            .main.expanded {
+
+                width: 100%;
+
+                margin-left: 0;
+
+                padding: 27px 18px 45px;
+
+            }
+
+
+            .nav-links {
+
+                display: none;
+
+            }
+
+
+            .shipment-grid,
+            .grid,
+            .routes {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .page-title {
+
+                font-size: 31px;
+
+            }
+
+
+            .ft-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            footer {
+
+                padding:
+                    35px 20px 0;
+
+            }
+
+        }
+
+
+        @media (max-width: 520px) {
+
+            .kpis {
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+
+            .ship {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+            }
+
+            .driver-filters {
+    display: grid;
+    grid-template-columns:
+        minmax(220px, 2fr)
+        repeat(3, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.driver-filters input,
+.driver-filters select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    outline: none;
+}
+
+.driver-filters input:focus,
+.driver-filters select:focus {
+    border-color: #777;
+}
+
+.driver-results-info {
+    margin-bottom: 12px;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.show-more-btn {
+    display: block;
+    margin: 18px auto 0;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    background: #171717;
+    color: #fff;
+    cursor: pointer;
+}
+
+@media (max-width: 800px) {
+
+    .driver-filters {
+        grid-template-columns: 1fr;
+    }
+
+}
+            .tracking-right {
+
+                width: 100%;
+
+                justify-content: space-between;
+
+            }
+
+
+            .actions {
+
+                flex-direction: column;
+
+            }
+
+
+            .primary,
+            .btn {
+
+                width: 100%;
+
+            }
+
+        }
+        .summary-header {
+
+display: flex;
+
+justify-content: space-between;
+
+align-items: center;
+
+margin-bottom: 16px;
+
+font-weight: 700;
+
+}
+
+
+.summary-status {
+
+padding: 4px 9px;
+
+border-radius: 20px;
+
+font-size: 10px;
+
+font-weight: 800;
+
+}
+
+
+.summary-row {
+
+display: flex;
+
+justify-content: space-between;
+
+gap: 15px;
+
+margin-bottom: 10px;
+
+}
+
+
+.summary-row span,
+.summary-details span {
+
+opacity: 0.65;
+
+font-size: 12px;
+
+}
+
+
+.summary-row strong {
+
+text-align: right;
+
+font-size: 13px;
+
+}
+
+
+.summary-divider {
+
+height: 1px;
+
+margin: 16px 0;
+
+background:
+    rgba(255, 255, 255, 0.1);
+
+}
+
+
+.summary-driver {
+
+display: flex;
+
+align-items: center;
+
+gap: 12px;
+
+margin-bottom: 16px;
+
+}
+
+
+.summary-driver-icon {
+
+width: 42px;
+
+height: 42px;
+
+display: flex;
+
+align-items: center;
+
+justify-content: center;
+
+border-radius: 12px;
+
+background:
+    rgba(47, 158, 92, 0.14);
+
+font-size: 20px;
+
+}
+
+
+.summary-driver-info {
+
+display: flex;
+
+flex-direction: column;
+
+gap: 3px;
+
+}
+
+
+.summary-driver-info strong {
+
+font-size: 14px;
+
+}
+
+
+.summary-driver-info span {
+
+font-size: 11px;
+
+opacity: 0.65;
+
+}
+/* ============================================================
+   ROUTE MODAL
+============================================================ */
+
+.route-modal {
+
+position: fixed;
+
+inset: 0;
+
+display: none;
+
+align-items: center;
+
+justify-content: center;
+
+z-index: 99999;
+
+}
+
+.route-modal.open {
+
+display: flex;
+
+}
+
+
+.route-modal-backdrop {
+
+position: absolute;
+
+inset: 0;
+
+background:
+    rgba(
+        0,
+        0,
+        0,
+        0.65
+    );
+
+backdrop-filter:
+    blur(5px);
+
+}
+
+
+.route-modal-box {
+
+position: relative;
+
+z-index: 2;
+
+width:
+    min(
+        650px,
+        90vw
+    );
+
+max-height:
+    85vh;
+
+overflow-y:
+    auto;
+
+background:
+    #ffffff;
+
+border-radius:
+    18px;
+
+padding:
+    30px;
+
+box-shadow:
+    0 25px 80px
+    rgba(
+        0,
+        0,
+        0,
+        0.4
+    );
+
+}
+
+
+.route-modal-close {
+
+position: absolute;
+
+top:
+    12px;
+
+right:
+    16px;
+
+width:
+    36px;
+
+height:
+    36px;
+
+border:
+    none;
+
+border-radius:
+    50%;
+
+background:
+    #f0f0f0;
+
+font-size:
+    25px;
+
+cursor:
+    pointer;
+
+}
+
+
+.route-modal-title {
+
+border-left:
+    5px solid;
+
+padding-left:
+    14px;
+
+margin-bottom:
+    22px;
+
+}
+
+
+.route-modal-title span {
+
+font-size:
+    11px;
+
+font-weight:
+    700;
+
+letter-spacing:
+    1px;
+
+color:
+    #777;
+
+}
+
+
+.route-modal-title h2 {
+
+margin:
+    4px 0 0;
+
+font-size:
+    25px;
+
+color:
+    #222;
+
+}
+
+
+.route-modal-stats {
+
+display:
+    grid;
+
+grid-template-columns:
+    repeat(
+        3,
+        1fr
+    );
+
+gap:
+    12px;
+
+margin-bottom:
+    28px;
+
+}
+
+
+.route-modal-stats div {
+
+background:
+    #f5f6f7;
+
+border-radius:
+    10px;
+
+padding:
+    14px;
+
+}
+
+
+.route-modal-stats strong {
+
+display:
+    block;
+
+font-size:
+    19px;
+
+color:
+    #222;
+
+}
+
+
+.route-modal-stats span {
+
+font-size:
+    11px;
+
+color:
+    #777;
+
+}
+
+
+.route-timeline {
+
+position:
+    relative;
+
+}
+
+
+.route-endpoint {
+
+display:
+    flex;
+
+gap:
+    12px;
+
+align-items:
+    center;
+
+padding:
+    10px 0;
+
+}
+
+
+.route-endpoint-icon {
+
+width:
+    35px;
+
+height:
+    35px;
+
+display:
+    flex;
+
+align-items:
+    center;
+
+justify-content:
+    center;
+
+border-radius:
+    50%;
+
+background:
+    #eef2f3;
+
+font-size:
+    18px;
+
+}
+
+
+.route-endpoint strong {
+
+display:
+    block;
+
+color:
+    #222;
+
+}
+
+
+.route-endpoint p {
+
+margin:
+    3px 0 0;
+
+font-size:
+    12px;
+
+color:
+    #777;
+
+}
+
+
+.modal-transit-list {
+
+margin-left:
+    17px;
+
+padding-left:
+    28px;
+
+border-left:
+    2px dashed #d0d0d0;
+
+}
+
+
+.modal-transit-item {
+
+display:
+    flex;
+
+align-items:
+    center;
+
+gap:
+    12px;
+
+padding:
+    9px 0;
+
+}
+
+
+.modal-transit-number {
+
+width:
+    27px;
+
+height:
+    27px;
+
+flex-shrink:
+    0;
+
+border-radius:
+    50%;
+
+background:
+    #eef1f3;
+
+display:
+    flex;
+
+align-items:
+    center;
+
+justify-content:
+    center;
+
+font-size:
+    11px;
+
+font-weight:
+    700;
+
+}
+
+
+.modal-transit-item strong {
+
+display:
+    block;
+
+font-size:
+    13px;
+
+color:
+    #333;
+
+}
+
+
+.modal-transit-item small {
+
+display:
+    block;
+
+margin-top:
+    2px;
+
+font-size:
+    10px;
+
+color:
+    #888;
+
+}
+
+
+.modal-no-transit {
+
+padding:
+    15px 0;
+
+color:
+    #888;
+
+font-size:
+    12px;
+
+}
+
+
+/* ============================================================
+MAP TRANSIT MARKERS
+============================================================ */
+
+.transit-marker-wrapper {
+
+background:
+    transparent;
+
+border:
+    none;
+
+}
+
+
+.transit-marker {
+
+width:
+    28px;
+
+height:
+    28px;
+
+border-radius:
+    50%;
+
+background:
+    #ffffff;
+
+border:
+    3px solid #333;
+
+display:
+    flex;
+
+align-items:
+    center;
+
+justify-content:
+    center;
+
+font-size:
+    11px;
+
+font-weight:
+    800;
+
+box-shadow:
+    0 2px 8px
+    rgba(
+        0,
+        0,
+        0,
+        0.35
+    );
+
+cursor:
+    pointer;
+
+}
+
+
+@media (
+max-width: 600px
+) {
+
+.route-modal-box {
+
+    width:
+        90vw;
+
+    padding:
+        20px;
+
+}
+
+
+.route-modal-stats {
+
+    grid-template-columns:
+        1fr;
+
+}
+
+}
+
+.summary-details {
+
+display: grid;
+
+grid-template-columns:
+    1fr 1fr;
+
+gap: 12px;
+
+margin-bottom: 16px;
+
+}
+
+
+.summary-details div {
+
+display: flex;
+
+flex-direction: column;
+
+gap: 4px;
+
+}
+
+
+.summary-details strong {
+
+font-size: 12px;
+
+}
+
+
+.summary-route {
+
+display: flex;
+
+justify-content: space-between;
+
+align-items: center;
+
+padding: 11px 12px;
+
+border-radius: 10px;
+
+background:
+    rgba(255, 255, 255, 0.04);
+
+}
+
+
+.summary-route span {
+
+font-size: 11px;
+
+opacity: 0.65;
+
+}
+
+
+.summary-route strong {
+
+font-size: 11px;
+
+}
+
+
+.summary-select-driver {
+
+padding: 14px;
+
+text-align: center;
+
+border-radius: 10px;
+
+background:
+    rgba(255, 255, 255, 0.04);
+
+font-size: 12px;
+
+opacity: 0.7;
+
+}
+
+
+.summary-empty {
+
+text-align: center;
+
+padding: 25px 10px;
+
+opacity: 0.65;
+
+}
+
+
+.summary-empty-icon {
+
+font-size: 28px;
+
+margin-bottom: 8px;
+
+}
+.route-detail-box {
+    min-width: 250px;
+    font-size: 13px;
+}
+
+.route-detail-box h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+}
+
+.route-stats {
+    display: grid;
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.route-stats div {
+    display: flex;
+    flex-direction: column;
+}
+
+.route-stats strong {
+    font-size: 14px;
+}
+
+.route-stats small {
+    color: #777;
+    font-size: 10px;
+}
+
+.route-location {
+    font-weight: 700;
+    padding: 7px 0;
+}
+
+.pickup {
+    color: green;
+}
+
+.destination {
+    color: #d62828;
+}
+
+.transit-heading {
+    font-weight: 700;
+    margin: 8px 0;
+}
+
+.route-transit-point {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.transit-number {
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background: #eee;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ============================================================
+         NAVBAR
+    ============================================================ -->
+
+    <nav class="navbar">
+
+        <button
+            class="nav-toggle"
+            id="sidebarToggle"
+            type="button"
+        >
+            ☰
+        </button>
+
+
+        <a
+            href="index.html"
+            class="nav-brand"
+        >
+
+            <div class="logo">
+                🚜
+            </div>
+
+
+            <div class="brand-text">
+
+                <span class="brand-name">
+                    Agri<span class="brand-nameX">Centre</span>
+                </span>
+
+                <span class="brand-subtitle">
+                    Smart India Hackathon 2026
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="index.html">Home</a><a href="about.html">About</a><a href="features.html">Features</a><a href="dashboard.html" class="active">Dashboard</a><a href="team.html">Team</a><a href="contact.html">Contact</a>
+
+
+            <a href="profile.html">
+                Profile
+            </a>
+
+            <a
+                href="#"
+                onclick="logout(); return false;"
+            >
+                Logout
+            </a>
+
+        </div>
+
+
+        <div class="nav-right">
+
+            <button
+                class="nav-btn"
+                type="button"
+                onclick="location.href='alerts.html'"
+                title="Alerts"
+            >
+                🔔
+
+                <span class="nav-badge">
+                    3
+                </span>
+
+            </button>
+
+
+            <button
+                class="nav-btn"
+                type="button"
+                onclick="location.href='ai-assistant.html'"
+                title="AI Assistant"
+            >
+                🤖
+            </button>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ============================================================
+         LAYOUT
+    ============================================================ -->
+
+    <div class="layout">
+
+
+        <!-- ========================================================
+             SIDEBAR
+        ======================================================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+
+            <div class="sb-section">
+
+                <div class="sb-label">
+                    Main
+                </div>
+
+
+                <a
+                    href="dashboard.html"
+                    class="sb-link"
+                >
+
+                    <span class="si">
+                        📊
+                    </span>
+
+                    <span class="sl">
+                        Dashboard
+                    </span>
+
+                </a>
+
+            </div>
+
+
+
+            <div class="sb-section">
+
+                <div class="sb-label">
+                    Produce
+                </div>
+
+
+                <a
+                    href="add-produce.html"
+                    class="sb-link"
+                >
+
+                    <span class="si">
+                        🌾
+                    </span>
+
+                    <span class="sl">
+                        Add Produce
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="my-listings.html"
+                    class="sb-link"
+                >
+
+                    <span class="si">
+                        📋
+                    </span>
+
+                    <span class="sl">
+                        My Listings
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="offers.html"
+                    class="sb-link"
+                >
+
+                    <span class="si">
+                        🤝
+                    </span>
+
+                    <span class="sl">
+                        Offers
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="buyers.html"
+                    class="sb-link"
+                >
+
+                    <span class="si">
+                        🔎
+                    </span>
+
+                    <span class="sl">
+                        Find Buyers
+                    </span>
+
+                </a>
+
+            </div>
+
+
+
+            <div class="sb-section">
+
+                <div class="sb-label">
+                    Orders & Delivery
+                </div>
+
+
+                <a
+                    href="orders.html"
+                    class="sb-link"
+                >
+
+                    <span class="si">
+                        📦
+                    </span>
+
+                    <span class="sl">
+                        View Orders
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="farmer_logistics.html"
+                    class="sb-link active"
+                >
+
+                    <span class="si">
+                        🚚
+                    </span>
+
+                    <span class="sl">
+                        Logistics
+                    </span>
+
+                </a>
+                <a href="meeting.html" class="sb-link">
+                    <span class="si">🎥</span>
+                    <span class="sl">Meeting Centre</span>
+                </a>
+
+            </div>
+
+
+
+            <div class="sb-section">
+
+                <div class="sb-label">
+                    Reports & Quality
+                </div>
+
+
+                <a
+                    href="reports.html"
+                    class="sb-link"
+                >
+
+                    <span class="si">
+                        📄
+                    </span>
+
+                    <span class="sl">
+                        Reports Centre
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="quality.html"
+                    class="sb-link"
+                >
+
+                    <span class="si">
+                        🛡️
+                    </span>
+
+                    <span class="sl">
+                        Quality & Certification
+                    </span>
+
+                </a>
+
+            </div>
+
+
+
+            <div class="sb-section">
+
+                <div class="sb-label">
+                    Account
+                </div>
+
+
+                <a
+                    href="profile.html"
+                    class="sb-link"
+                >
+
+                    <span class="si">
+                        👤
+                    </span>
+
+                    <span class="sl">
+                        Profile
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="sb-link"
+                    onclick="logout(); return false;"
+                >
+
+                    <span class="si">
+                        🚪
+                    </span>
+
+                    <span class="sl">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- ========================================================
+             MAIN
+        ======================================================== -->
+
+        <main
+            class="main"
+            id="mainArea"
+        >
+
+
+            <!-- PAGE HEADER -->
+
+            <div class="page-header">
+
+                <div class="page-eyebrow">
+                    🚚 Farmer Portal · Logistics
+                </div>
+
+
+                <div class="page-title">
+                    Smart Logistics
+                </div>
+
+
+                <div class="page-sub">
+                    Plan pickup, choose a driver, compare AI-assisted
+                    routes and track your produce after dispatch.
+                </div>
+
+            </div>
+
+
+
+            <!-- ====================================================
+                 KPI SECTION
+            ===================================================== -->
+
+            <section class="section">
+
+                <div class="body">
+
+                    <div class="kpis">
+
+
+                        <div class="kpi">
+
+                            <div class="kpi-icon">
+                                🚚
+                            </div>
+
+                            <div
+                                class="kv"
+                                id="driversCount"
+                            >
+                                —
+                            </div>
+
+                            <div class="kl">
+                                Available Drivers
+                            </div>
+
+                            <div class="kpi-note">
+                                Ready for assignment
+                            </div>
+
+                        </div>
+
+
+                        <div class="kpi">
+
+                            <div class="kpi-icon">
+                                📦
+                            </div>
+
+                            <div
+                                class="kv"
+                                id="pending"
+                            >
+                                —
+                            </div>
+
+                            <div class="kl">
+                                Pending Pickups
+                            </div>
+
+                            <div class="kpi-note">
+                                Awaiting transportation
+                            </div>
+
+                        </div>
+
+
+                        <div class="kpi">
+
+                            <div class="kpi-icon">
+                                🛣️
+                            </div>
+
+                            <div
+                                class="kv"
+                                id="active"
+                            >
+                                —
+                            </div>
+
+                            <div class="kl">
+                                Active Shipments
+                            </div>
+
+                            <div class="kpi-note">
+                                Currently in delivery
+                            </div>
+
+                        </div>
+
+
+                        <div class="kpi">
+
+                            <div class="kpi-icon">
+                                ⏱️
+                            </div>
+
+                            <div
+                                class="kv"
+                                id="eta"
+                            >
+                                —
+                            </div>
+
+                            <div class="kl">
+                                Average ETA
+                            </div>
+
+                            <div class="kpi-note">
+                                Estimated delivery time
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ====================================================
+                 STEP 1
+            ===================================================== -->
+
+            <section class="section">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <h2>
+                            1. Select Shipment
+                        </h2>
+
+                        <p>
+                          Choose an order that is ready for transportation.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="body">
+
+                    <select
+                        id="shipment"
+                        class="select"
+                        onchange="shipmentChanged()"
+                    >
+
+                    <option value="">
+                      Select an order ready for logistics
+                  </option>
+
+                    </select>
+
+
+                    <div class="shipment-grid">
+
+
+                        <div class="detail">
+
+                            <div class="detail-label">
+                                Pickup
+                            </div>
+
+                            <div
+                                class="detail-value"
+                                id="pickup"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <div class="detail-label">
+                                Destination
+                            </div>
+
+                            <div
+                                class="detail-value"
+                                id="destination"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <div class="detail-label">
+                                Produce / Quantity
+                            </div>
+
+                            <div
+                                class="detail-value"
+                                id="produce"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ====================================================
+                 STEP 2
+            ===================================================== -->
+
+            <section class="section">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <h2>
+                            2. Choose Driver
+                        </h2>
+
+                        <p>
+                            Select an available driver from the fleet.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="body">
+
+                  <div class="driver-filters">
+
+                    <input
+                        type="text"
+                        id="driverSearch"
+                        placeholder="Search driver, ID or vehicle..."
+                        oninput="applyDriverFilters()"
+                    >
+                
+                    <select
+                        id="driverCity"
+                        onchange="applyDriverFilters()"
+                    >
+                        <option value="">All Cities</option>
+                    </select>
+                
+                    <select
+                        id="driverVehicle"
+                        onchange="applyDriverFilters()"
+                    >
+                        <option value="">All Vehicles</option>
+                    </select>
+                
+                    <select
+                        id="driverRating"
+                        onchange="applyDriverFilters()"
+                    >
+                        <option value="">Any Rating</option>
+                        <option value="4.5">4.5+ ⭐</option>
+                        <option value="4">4.0+ ⭐</option>
+                        <option value="3.5">3.5+ ⭐</option>
+                    </select>
+                    <select
+    id="driverDistance"
+    onchange="applyDriverFilters()"
+>
+    <option value="nearest">
+        Nearest First
+    </option>
+
+    <option value="">
+        Any Distance
+    </option>
+
+    <option value="10">
+        Within 10 km
+    </option>
+
+    <option value="25">
+        Within 25 km
+    </option>
+
+    <option value="50">
+        Within 50 km
+    </option>
+
+    <option value="100">
+        Within 100 km
+    </option>
+
+    <option value="250">
+        Within 250 km
+    </option>
+
+    <option value="500">
+        Within 500 km
+    </option>
+</select>
+                </div>
+                
+                <div
+                    class="driver-results-info"
+                    id="driverResultsInfo"
+                ></div>
+                
+                <div id="drivers"></div>
+                
+                <button
+                    type="button"
+                    id="showMoreDrivers"
+                    class="show-more-btn"
+                    onclick="showMoreDrivers()"
+                    style="display:none;"
+                >
+                    Show More Drivers
+                </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ====================================================
+                 STEP 3
+            ===================================================== -->
+
+            <section class="section">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <h2>
+                            3. Route Optimization
+                        </h2>
+
+                        <p>
+                            AI recommends a route, but the farmer decides
+                            which route to use.
+                        </p>
+
+                    </div>
+
+
+                    <span class="badge">
+                        🤖 AI Assisted
+                    </span>
+
+                </div>
+
+
+                <div class="body">
+
+                    <div class="routes">
+
+
+                        <div
+                            class="route selected"
+                            data-route="AI Recommended"
+                            onclick="selectRoute(this)"
+                        >
+
+                            <span class="badge">
+                                AI RECOMMENDED
+                            </span>
+
+                            <h3>
+                                Balanced Route
+                            </h3>
+
+                            <div
+                                class="route-distance"
+                                id="aiDistance"
+                            >
+                                —
+                                <span>
+                                    km
+                                </span>
+                            </div>
+
+                            <div class="route-meta">
+
+                                <span>
+                                    ⏱
+                                    <span id="aiTime">
+                                        —
+                                    </span>
+                                </span>
+
+                                <span>
+                                    ₹
+                                    <span id="aiCost">
+                                        —
+                                    </span>
+                                </span>
+
+                            </div>
+
+                            <p class="desc">
+                                Balances estimated travel time,
+                                distance and transportation cost.
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="route"
+                            data-route="Fastest"
+                            onclick="selectRoute(this)"
+                        >
+
+                            <h3>
+                                🚀 Fastest
+                            </h3>
+
+                            <div
+                                class="route-distance"
+                                id="fastDistance"
+                            >
+                                —
+                                <span>
+                                    km
+                                </span>
+                            </div>
+
+                            <div class="route-meta">
+
+                                <span>
+                                    ⏱
+                                    <span id="fastTime">
+                                        —
+                                    </span>
+                                </span>
+
+                                <span>
+                                    ₹
+                                    <span id="fastCost">
+                                        —
+                                    </span>
+                                </span>
+
+                            </div>
+
+                            <p class="desc">
+                                Prioritizes minimum estimated
+                                travel time.
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="route"
+                            data-route="Shortest Distance"
+                            onclick="selectRoute(this)"
+                        >
+
+                            <h3>
+                                📍 Shortest
+                            </h3>
+
+                            <div
+                                class="route-distance"
+                                id="shortDistance"
+                            >
+                                —
+                                <span>
+                                    km
+                                </span>
+                            </div>
+
+                            <div class="route-meta">
+
+                                <span>
+                                    ⏱
+                                    <span id="shortTime">
+                                        —
+                                    </span>
+                                </span>
+
+                                <span>
+                                    ₹
+                                    <span id="shortCost">
+                                        —
+                                    </span>
+                                </span>
+
+                            </div>
+
+                            <p class="desc">
+                                Prioritizes minimum road distance.
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="route"
+                            data-route="Lowest Cost"
+                            onclick="selectRoute(this)"
+                        >
+
+                            <h3>
+                                💰 Lowest Cost
+                            </h3>
+
+                            <div
+                                class="route-distance"
+                                id="costDistance"
+                            >
+                                —
+                                <span>
+                                    km
+                                </span>
+                            </div>
+
+                            <div class="route-meta">
+
+                                <span>
+                                    ⏱
+                                    <span id="costTime">
+                                        —
+                                    </span>
+                                </span>
+
+                                <span>
+                                    ₹
+                                    <span id="lowestCost">
+                                        —
+                                    </span>
+                                </span>
+
+                            </div>
+
+                            <p class="desc">
+                                Prioritizes lower estimated
+                                transportation cost.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="ai">
+
+                        <div>
+                            🧠
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                AI route recommendation
+                            </strong>
+
+                            <p id="aiText">
+                                Select a shipment to calculate
+                                route recommendations.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ====================================================
+                 STEP 4
+            ===================================================== -->
+
+            <section class="section">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <h2>
+                            4. Route Map
+                        </h2>
+
+                        <p>
+                            View pickup, destination and selected route.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="body">
+
+                    <div
+                        id="map"
+                        class="map"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ====================================================
+                 STEP 5
+            ===================================================== -->
+
+            <section class="section">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <h2>
+                            5. Confirm Logistics Plan
+                        </h2>
+
+                        <p>
+                            Attach the selected driver and route
+                            to the shipment.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="body">
+
+                    <div
+                        class="summary"
+                        id="summary"
+                    >
+                        Select a shipment and driver.
+                    </div>
+
+
+                    <div class="actions">
+
+                        <button
+                            class="btn btn-secondary"
+                            type="button"
+                            onclick="clearPlan()"
+                        >
+                            Clear Selection
+                        </button>
+
+
+                        <button
+    id="confirm"
+    class="primary"
+    type="button"
+    onclick="confirmPlan()"
+>
+    Confirm Logistics Plan →
+</button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ====================================================
+                 TRACKING
+            ===================================================== -->
+
+            <section class="section">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <h2>
+                            Active Shipments
+                        </h2>
+
+                        <p>
+                            Track orders after they have been dispatched.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="tracking"
+                    class="body tracking-list"
+                >
+
+                    <div class="empty">
+                        Loading active shipments...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ====================================================
+                 FOOTER
+            ===================================================== -->
+
+            <footer>
+
+                <div class="ft-grid">
+
+
+                    <div>
+
+                        <div class="ft-brand">
+                            Agri<span>Centre</span>
+                        </div>
+
+                        <p class="ft-desc">
+                            A Direct-to-Market platform connecting
+                            farmers &amp; FPOs with consumers and bulk
+                            buyers — eliminating middlemen, ensuring
+                            fair prices and fresher produce.
+                            Smart India Hackathon 2026 ·
+                            Problem Statement ID 26033.
+                        </p>
+
+                    </div>
+
+
+                    <div class="ft-col">
+
+                        <h4>
+                            Platform
+                        </h4>
+
+                        <a href="dashboard.html">
+                            Dashboard
+                        </a>
+
+                        <a href="my-listings.html">
+                            My Listings
+                        </a>
+
+                        <a href="orders.html">
+                            Orders
+                        </a>
+
+                        <a href="quality.html">
+                            Quality &amp; Certification
+                        </a>
+
+                    </div>
+
+
+                    <div class="ft-col">
+
+                        <h4>
+                            AI &amp; Tools
+                        </h4>
+
+                        <a href="demand-forecasting.html">
+                            AI Market Insights
+                        </a>
+
+                        <a href="ai-assistant.html">
+                            AI Assistant
+                        </a>
+
+                        <a href="reports.html">
+                            Reports Center
+                        </a>
+
+                    </div>
+
+
+                    <div class="ft-col">
+
+                        <h4>
+                            Stay Updated
+                        </h4>
+
+                        <div class="sub-box">
+
+                            <p>
+                                Get alerts and platform updates via email.
+                            </p>
+
+
+                            <form
+                                class="sub-form"
+                                id="subForm"
+                            >
+
+                                <input
+                                    class="sub-input"
+                                    id="subEmail"
+                                    type="email"
+                                    placeholder="Your email address"
+                                    required
+                                >
+
+
+                                <button
+                                    class="sub-btn"
+                                    type="submit"
+                                >
+                                    Subscribe
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="ft-bottom">
+
+                    <span>
+                        © 2026 AgriCentre · Smart India Hackathon 2026 ·
+                        Ministry of Consumer Affairs, Food &amp; Public Distribution
+                    </span>
+
+
+                    <div class="ft-links">
+
+                        <a href="privacy.html">
+                            Privacy &amp; Terms
+                        </a>
+
+                        <a href="contact.html">
+                            Contact
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </footer>
+
+
+        </main>
+
+    </div>
+
+
+
+    <!-- ============================================================
+         SCRIPTS
+    ============================================================ -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
+
+
+    <script>
+
+        /* ============================================================
+           CONFIG
+        ============================================================ */
+
+        const API_BASE =
+            "http://127.0.0.1:5000";
+
+
+        let drivers = [];
+
+        let orders = [];
+
+        let currentOrder = null;
+
+        let selectedDriver = null;
+
+        let selectedRoute =
+            "AI Recommended";
+
+        let map = null;
+        let farmerLocation = {
+    latitude: null,
+    longitude: null
+};
+let routeOptions = {};
+let selectedRouteData = null;
+
+let routeLayers = {};
+let pickupMarker = null;
+let destinationMarker = null;
+let shipmentDistance =
+    null;
+        /* ============================================================
+           AUTH
+        ============================================================ */
+
+        function getToken() {
+
+            return localStorage.getItem(
+                "token"
+            );
+
+        }
+
+
+        function logout() {
+
+            localStorage.removeItem(
+                "token"
+            );
+
+            localStorage.removeItem(
+                "user"
+            );
+
+            window.location.href =
+                "login.html";
+
+        }
+
+
+        function getHeaders() {
+
+            const headers = {
+
+                "Content-Type":
+                    "application/json"
+
+            };
+
+
+            const token =
+                getToken();
+
+
+            if (token) {
+
+                headers.Authorization =
+                    `Bearer ${token}`;
+
+            }
+
+
+            return headers;
+
+        }
+
+
+        /* ============================================================
+           API
+        ============================================================ */
+
+        async function apiGet(path) {
+
+const token =
+    localStorage.getItem('token');
+
+const headers = {};
+
+if (token) {
+    headers.Authorization =
+        'Bearer ' + token;
+}
+
+const res = await fetch(
+    'http://127.0.0.1:5000' + path,
+    {
+        method: 'GET',
+        headers: headers
+    }
+);
+
+if (!res.ok) {
+    throw new Error(
+        `HTTP ${res.status}`
+    );
+}
+
+return await res.json();
+}
+async function apiPost(path, body) {
+
+const token =
+    localStorage.getItem("token");
+
+const headers = {
+    "Content-Type": "application/json"
+};
+
+if (token) {
+    headers.Authorization =
+        "Bearer " + token;
+}
+
+const res = await fetch(
+    "http://127.0.0.1:5000" + path,
+    {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body)
+    }
+);
+
+let data = {};
+
+try {
+    data = await res.json();
+} catch {
+    data = {};
+}
+
+if (!res.ok) {
+    throw new Error(
+        data.message ||
+        `HTTP ${res.status}`
+    );
+}
+
+return data;
+}
+/* ============================================================
+   FARMER LOCATION
+   ============================================================ */
+
+   async function loadFarmerLocation() {
+
+try {
+
+    const data =
+        await apiGet(
+            "/api/auth/profile"
+        );
+
+
+    const user =
+        data.user ||
+        {};
+
+
+    const latitude =
+        Number(
+            user.latitude
+        );
+
+
+    const longitude =
+        Number(
+            user.longitude
+        );
+
+
+    if (
+        Number.isFinite(latitude) &&
+        Number.isFinite(longitude)
+    ) {
+
+        farmerLocation = {
+
+            latitude:
+                latitude,
+
+            longitude:
+                longitude
+
+        };
+
+
+        console.log(
+            "Farmer location:",
+            farmerLocation
+        );
+
+        return;
+
+    }
+
+
+    console.warn(
+        "Farmer coordinates are not available."
+    );
+
+} catch (error) {
+
+    console.error(
+        "Farmer location loading error:",
+        error
+    );
+
+}
+
+}
+/* ============================================================
+   HAVERSINE DISTANCE
+   ============================================================ */
+
+   function calculateDistanceKm(
+    lat1,
+    lon1,
+    lat2,
+    lon2
+) {
+
+    const values = [
+        lat1,
+        lon1,
+        lat2,
+        lon2
+    ]
+        .map(Number);
+
+
+    if (
+        values.some(
+            value =>
+                !Number.isFinite(value)
+        )
+    ) {
+
+        return null;
+
+    }
+
+
+    const [
+        latitude1,
+        longitude1,
+        latitude2,
+        longitude2
+    ] = values;
+
+
+    const earthRadiusKm =
+        6371;
+
+
+    const dLatitude =
+        (
+            latitude2 -
+            latitude1
+        ) *
+        Math.PI /
+        180;
+
+
+    const dLongitude =
+        (
+            longitude2 -
+            longitude1
+        ) *
+        Math.PI /
+        180;
+
+
+    const a =
+
+        Math.sin(
+            dLatitude / 2
+        ) ** 2
+
+        +
+
+        Math.cos(
+            latitude1 *
+            Math.PI /
+            180
+        )
+
+        *
+
+        Math.cos(
+            latitude2 *
+            Math.PI /
+            180
+        )
+
+        *
+
+        Math.sin(
+            dLongitude / 2
+        ) ** 2;
+
+
+    const c =
+        2 *
+        Math.atan2(
+            Math.sqrt(a),
+            Math.sqrt(
+                1 - a
+            )
+        );
+
+
+    return (
+        earthRadiusKm *
+        c
+    );
+
+}
+/* ============================================================
+   DRIVER COORDINATES
+   ============================================================ */
+
+   function getDriverCoordinates(
+    driver
+) {
+
+    /*
+     * Driver documents use GeoJSON:
+     *
+     * coordinates:
+     * [
+     *     longitude,
+     *     latitude
+     * ]
+     */
+
+    if (
+        driver.location &&
+        Array.isArray(
+            driver.location.coordinates
+        ) &&
+        driver.location.coordinates.length >= 2
+    ) {
+
+        const longitude =
+            Number(
+                driver.location.coordinates[0]
+            );
+
+
+        const latitude =
+            Number(
+                driver.location.coordinates[1]
+            );
+
+
+        if (
+            Number.isFinite(latitude) &&
+            Number.isFinite(longitude)
+        ) {
+
+            return {
+                latitude,
+                longitude
+            };
+
+        }
+
+    }
+
+
+    /*
+     * Fallback in case a driver document
+     * eventually uses latitude/longitude
+     * directly.
+     */
+
+    const latitude =
+        Number(
+            driver.latitude
+        );
+
+
+    const longitude =
+        Number(
+            driver.longitude
+        );
+
+
+    if (
+        Number.isFinite(latitude) &&
+        Number.isFinite(longitude)
+    ) {
+
+        return {
+            latitude,
+            longitude
+        };
+
+    }
+
+
+    return null;
+
+}
+
+        /* ============================================================
+           DRIVERS
+        ============================================================ */
+
+        async function loadDrivers() {
+
+            const container =
+                document.getElementById(
+                    "drivers"
+                );
+
+
+            try {
+
+                const data =
+                    await apiGet(
+                        "/api/drivers?status=AVAILABLE"
+                    );
+
+
+                drivers =
+                    data.drivers ||
+                    data.data ||
+                    [];
+
+
+                    document.getElementById(
+    "driversCount"
+).textContent =
+    drivers.length;
+
+
+filteredDrivers = [
+    ...drivers
+];
+
+visibleDriverCount = 6;
+
+populateDriverFilters();
+
+renderDrivers();
+            } catch (error) {
+
+                console.error(
+                    "Driver loading error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "driversCount"
+                ).textContent =
+                    "—";
+
+
+                container.innerHTML = `
+
+                    <div class="empty">
+
+                        Unable to load drivers.
+                        Check the backend.
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        let filteredDrivers = [];
+let visibleDriverCount = 6;
+
+function applyDriverFilters() {
+
+const search =
+    document
+        .getElementById(
+            "driverSearch"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+const city =
+    document
+        .getElementById(
+            "driverCity"
+        )
+        .value
+        .toLowerCase();
+
+
+const vehicle =
+    document
+        .getElementById(
+            "driverVehicle"
+        )
+        .value
+        .toLowerCase();
+
+
+const rating =
+    parseFloat(
+        document
+            .getElementById(
+                "driverRating"
+            )
+            .value
+    ) || 0;
+
+
+const distanceFilter =
+    document
+        .getElementById(
+            "driverDistance"
+        )
+        .value;
+
+
+filteredDrivers =
+    drivers
+        .map(
+            driver => {
+
+                const coordinates =
+                    getDriverCoordinates(
+                        driver
+                    );
+
+
+                let distanceKm =
+                    null;
+
+
+                if (
+                    coordinates &&
+                    farmerLocation.latitude !== null &&
+                    farmerLocation.longitude !== null
+                ) {
+
+                    distanceKm =
+                        calculateDistanceKm(
+
+                            farmerLocation.latitude,
+
+                            farmerLocation.longitude,
+
+                            coordinates.latitude,
+
+                            coordinates.longitude
+
+                        );
+
+                }
+
+
+                return {
+
+                    ...driver,
+
+                    distance_km:
+                        distanceKm
+
+                };
+
+            }
+        )
+        .filter(
+            driver => {
+
+                const searchable = [
+
+                    driver.name,
+
+                    driver.driver_id,
+
+                    driver.vehicle_number,
+
+                    driver.city,
+
+                    driver.state
+
+                ]
+                    .filter(Boolean)
+                    .join(" ")
+                    .toLowerCase();
+
+
+                const matchesSearch =
+                    !search ||
+                    searchable.includes(
+                        search
+                    );
+
+
+                const matchesCity =
+                    !city ||
+                    String(
+                        driver.city || ""
+                    )
+                        .toLowerCase() ===
+                    city;
+
+
+                const matchesVehicle =
+                    !vehicle ||
+                    String(
+                        driver.vehicle_type || ""
+                    )
+                        .toLowerCase() ===
+                    vehicle;
+
+
+                const matchesRating =
+                    Number(
+                        driver.rating || 0
+                    ) >= rating;
+
+
+                let matchesDistance =
+                    true;
+
+
+                if (
+                    distanceFilter &&
+                    distanceFilter !==
+                        "nearest"
+                ) {
+
+                    const maxDistance =
+                        Number(
+                            distanceFilter
+                        );
+
+
+                    matchesDistance =
+
+                        driver.distance_km !== null &&
+
+                        driver.distance_km <=
+                            maxDistance;
+
+                }
+
+
+                return (
+
+                    matchesSearch &&
+
+                    matchesCity &&
+
+                    matchesVehicle &&
+
+                    matchesRating &&
+
+                    matchesDistance
+
+                );
+
+            }
+        );
+
+
+/*
+ * Nearest First
+ */
+
+if (
+    distanceFilter ===
+    "nearest"
+) {
+
+    filteredDrivers.sort(
+        (
+            driverA,
+            driverB
+        ) => {
+
+            /*
+             * Drivers without coordinates
+             * go to the bottom.
+             */
+
+            if (
+                driverA.distance_km ===
+                    null
+            ) {
+
+                return 1;
+
+            }
+
+
+            if (
+                driverB.distance_km ===
+                    null
+            ) {
+
+                return -1;
+
+            }
+
+
+            return (
+                driverA.distance_km -
+                driverB.distance_km
+            );
+
+        }
+    );
+
+}
+
+
+visibleDriverCount =
+    6;
+
+
+renderDrivers();
+
+}
+
+function populateDriverFilters() {
+
+/*
+ * Keep the city list broad enough for the
+ * AgriCentre India logistics fleet.
+ *
+ * We combine:
+ * 1. Cities actually present in the database
+ * 2. Common Indian logistics cities
+ *
+ * Duplicates are removed automatically.
+ */
+
+const commonCities = [
+
+    "Ahmedabad",
+    "Amritsar",
+    "Aurangabad",
+    "Bengaluru",
+    "Bhopal",
+    "Bhubaneswar",
+    "Chandigarh",
+    "Chennai",
+    "Coimbatore",
+    "Dehradun",
+    "Delhi",
+    "Faridabad",
+    "Gandhinagar",
+    "Ghaziabad",
+    "Gurugram",
+    "Guwahati",
+    "Hyderabad",
+    "Indore",
+    "Jaipur",
+    "Jalandhar",
+    "Jammu",
+    "Jodhpur",
+    "Kanpur",
+    "Kochi",
+    "Kolkata",
+    "Kota",
+    "Lucknow",
+    "Ludhiana",
+    "Madurai",
+    "Meerut",
+    "Mumbai",
+    "Mysuru",
+    "Nagpur",
+    "Nashik",
+    "Noida",
+    "Patiala",
+    "Patna",
+    "Pune",
+    "Rajkot",
+    "Ranchi",
+    "Surat",
+    "Thane",
+    "Thiruvananthapuram",
+    "Udaipur",
+    "Vadodara",
+    "Varanasi",
+    "Vijayawada",
+    "Visakhapatnam"
+];
+
+
+const databaseCities =
+    drivers
+        .map(
+            driver =>
+                String(
+                    driver.city || ""
+                ).trim()
+        )
+        .filter(Boolean);
+
+
+const cities =
+    [
+        ...new Set(
+            [
+                ...databaseCities,
+                ...commonCities
+            ]
+        )
+    ]
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        );
+
+
+const vehicles =
+    [
+        ...new Set(
+            drivers
+                .map(
+                    driver =>
+                        String(
+                            driver.vehicle_type ||
+                            ""
+                        ).trim()
+                )
+                .filter(Boolean)
+        )
+    ]
+        .sort(
+            (a, b) =>
+                a.localeCompare(b)
+        );
+
+
+const citySelect =
+    document.getElementById(
+        "driverCity"
+    );
+
+
+const vehicleSelect =
+    document.getElementById(
+        "driverVehicle"
+    );
+
+
+citySelect.innerHTML = `
+
+    <option value="">
+        All Cities
+    </option>
+
+    ${
+        cities
+            .map(
+                city => `
+                    <option
+                        value="${escapeAttribute(
+                            city
+                        )}"
+                    >
+                        ${escapeHtml(
+                            city
+                        )}
+                    </option>
+                `
+            )
+            .join("")
+    }
+
+`;
+
+
+vehicleSelect.innerHTML = `
+
+    <option value="">
+        All Vehicles
+    </option>
+
+    ${
+        vehicles
+            .map(
+                vehicle => `
+                    <option
+                        value="${escapeAttribute(
+                            vehicle
+                        )}"
+                    >
+                        ${escapeHtml(
+                            vehicle
+                        )}
+                    </option>
+                `
+            )
+            .join("")
+    }
+
+`;
+
+}
+
+
+function showMoreDrivers() {
+
+    visibleDriverCount += 6;
+
+    renderDrivers();
+
+}
+
+
+function renderDrivers() {
+
+    const container =
+        document.getElementById(
+            "drivers"
+        );
+
+    if (!filteredDrivers.length) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No drivers match your filters.
+            </div>
+        `;
+
+        document.getElementById(
+            "driverResultsInfo"
+        ).textContent = "0 drivers found";
+
+        document.getElementById(
+            "showMoreDrivers"
+        ).style.display = "none";
+
+        return;
+    }
+
+    const visibleDrivers =
+        filteredDrivers.slice(
+            0,
+            visibleDriverCount
+        );
+
+    container.innerHTML =
+        visibleDrivers
+            .map(
+                driver => {
+
+                    const id =
+                        driver.driver_id ||
+                        driver.id ||
+                        "";
+
+                    const selected =
+                        selectedDriver &&
+                        String(
+                            selectedDriver.driver_id ||
+                            selectedDriver.id
+                        ) ===
+                        String(id);
+
+                    return `
+                        <div
+                            class="driver-card ${
+                                selected
+                                    ? "selected"
+                                    : ""
+                            }"
+                            onclick="selectDriver(
+                                '${escapeAttribute(id)}'
+                            )"
+                        >
+
+                            <div class="driver-name">
+
+                                🚚
+
+                                ${escapeHtml(
+                                    driver.name ||
+                                    "Driver"
+                                )}
+
+                            </div>
+
+                            <div class="driver-meta">
+
+                                ⭐
+                                ${escapeHtml(
+                                    driver.rating ??
+                                    "—"
+                                )}
+
+                                · Capacity:
+
+                                ${escapeHtml(
+                                    driver.vehicle_capacity_kg ??
+                                    "—"
+                                )}
+
+                                kg
+
+                            </div>
+
+                            <div class="driver-desc">
+
+                                ${escapeHtml(
+                                    driver.vehicle_type ||
+                                    "Vehicle"
+                                )}
+
+                                ·
+
+                                ${escapeHtml(
+                                    driver.vehicle_number ||
+                                    ""
+                                )}
+
+                                <br>
+
+📍
+
+${escapeHtml(
+    [
+        driver.city,
+        driver.state
+    ]
+        .filter(Boolean)
+        .join(", ") ||
+    "Location unavailable"
+)}
+
+${
+    driver.distance_km !== null &&
+    driver.distance_km !== undefined
+
+        ? `
+
+            <span class="driver-distance">
+
+                📏
+                ${driver.distance_km.toFixed(1)}
+                km away
+
+            </span>
+
+          `
+
+        : ""
+
+}
+
+                            </div>
+
+                            <span class="availability">
+                                Available
+                            </span>
+
+                        </div>
+                    `;
+                }
+            )
+            .join("");
+
+    document.getElementById(
+        "driverResultsInfo"
+    ).textContent =
+        `${filteredDrivers.length} drivers found · showing ${
+            visibleDrivers.length
+        }`;
+
+    const showMore =
+        document.getElementById(
+            "showMoreDrivers"
+        );
+
+    showMore.style.display =
+        visibleDriverCount <
+        filteredDrivers.length
+            ? "block"
+            : "none";
+
+}
+
+
+function selectDriver(id) {
+
+const driver =
+    drivers.find(
+        item =>
+            String(
+                item.driver_id ||
+                item.id
+            ) ===
+            String(id)
+    );
+
+
+if (!driver) {
+
+    console.error(
+        "Driver not found:",
+        id
+    );
+
+    return;
+
+}
+
+
+/*
+ * Calculate the distance again at the
+ * exact moment the driver is selected.
+ *
+ * This prevents selectedDriver from
+ * losing distance_km.
+ */
+
+const coordinates =
+    getDriverCoordinates(
+        driver
+    );
+
+
+let distanceKm =
+    null;
+
+
+if (
+    coordinates &&
+    Number.isFinite(
+        Number(
+            farmerLocation.latitude
+        )
+    ) &&
+    Number.isFinite(
+        Number(
+            farmerLocation.longitude
+        )
+    )
+) {
+
+    distanceKm =
+        calculateDistanceKm(
+
+            Number(
+                farmerLocation.latitude
+            ),
+
+            Number(
+                farmerLocation.longitude
+            ),
+
+            coordinates.latitude,
+
+            coordinates.longitude
+
+        );
+
+}
+
+
+selectedDriver = {
+
+    ...driver,
+
+    distance_km:
+        distanceKm
+
+};
+
+
+console.log(
+    "Selected driver:",
+    selectedDriver
+);
+
+
+console.log(
+    "Selected driver distance:",
+    selectedDriver.distance_km
+);
+
+
+renderDrivers();
+
+updateSummary();
+
+}
+
+        /* ============================================================
+           ORDERS
+        ============================================================ */
+
+        async function loadOrders() {
+
+            try {
+
+                const data =
+                    await apiGet(
+                        "/api/orders/farmer"
+                    );
+
+
+                orders =
+                    data.orders ||
+                    data.data ||
+                    [];
+
+
+                    const pendingOrders = orders.filter(order => {
+
+                    const status =
+                        String(order.status || "")
+                            .trim()
+                            .toUpperCase();
+
+                    return [
+                        "CONFIRMED",
+                        "PROCESSING",
+                        "READY",
+                        "PENDING_PICKUP"
+                    ].includes(status);
+
+                    });
+
+                    document.getElementById("pending").textContent =
+                        pendingOrders.length;
+
+
+                const select =
+                    document.getElementById(
+                        "shipment"
+                    );
+
+
+                select.innerHTML = `
+
+                    <option value="">
+                        Select a confirmed order
+                    </option>
+
+                    ${
+                      pendingOrders
+                            .map(
+                                order => `
+
+                                    <option
+                                        value="${escapeAttribute(
+                                            order.order_id ||
+                                            order.id ||
+                                            ""
+                                        )}"
+                                    >
+
+                                        ${escapeHtml(
+                                            order.order_id ||
+                                            order.id ||
+                                            "Order"
+                                        )}
+
+                                        ·
+
+                                        ${escapeHtml(
+                                            order.produce_name ||
+                                            order.crop ||
+                                            order.product_name ||
+                                            "Produce"
+                                        )}
+
+                                        ·
+
+                                        ${escapeHtml(
+                                            order.quantity ??
+                                            ""
+                                        )}
+
+                                        ${escapeHtml(
+                                            order.unit ||
+                                            "kg"
+                                        )}
+
+                                    </option>
+
+                                `
+                            )
+                            .join("")
+                    }
+
+                `;
+
+            } catch (error) {
+
+                console.error(
+                    "Order loading error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "pending"
+                ).textContent =
+                    "—";
+
+            }
+
+        }
+/* ============================================================
+   ROUTE HELPERS
+============================================================ */
+
+function getCoordinates(location) {
+
+if (!location) {
+    return null;
+}
+
+const latitude = Number(
+    location.latitude ??
+    location.lat
+);
+
+const longitude = Number(
+    location.longitude ??
+    location.lng ??
+    location.lon
+);
+
+if (
+    !Number.isFinite(latitude) ||
+    !Number.isFinite(longitude)
+) {
+    return null;
+}
+
+return {
+    latitude,
+    longitude
+};
+}
+
+
+/* ------------------------------------------------------------
+HAVERSINE DISTANCE
+------------------------------------------------------------ */
+
+function calculateDistanceKm(
+lat1,
+lon1,
+lat2,
+lon2
+) {
+
+const earthRadius = 6371;
+
+const dLat =
+    (lat2 - lat1) *
+    Math.PI / 180;
+
+const dLon =
+    (lon2 - lon1) *
+    Math.PI / 180;
+
+const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) ** 2;
+
+const c =
+    2 *
+    Math.atan2(
+        Math.sqrt(a),
+        Math.sqrt(1 - a)
+    );
+
+return earthRadius * c;
+}
+
+function drawRouteOnMap(
+    route,
+    routeName
+) {
+
+    if (!route || !route.geometry) {
+        return null;
+    }
+
+    const coordinates =
+        route.geometry.coordinates.map(
+            point => [
+                point[1],
+                point[0]
+            ]
+        );
+
+    const colors = {
+        "AI Recommended": "green",
+        "Fastest": "blue",
+        "Shortest Distance": "orange",
+        "Lowest Cost": "purple"
+    };
+
+    const line =
+    L.polyline(
+        coordinates,
+        {
+            color:
+                colors[routeName] ||
+                "gray",
+
+            weight:
+                routeName === selectedRoute
+                    ? 7
+                    : 4,
+
+            opacity:
+                routeName === selectedRoute
+                    ? 1
+                    : 0.55,
+
+            dashArray:
+                routeName === "Fastest"
+                    ? "10, 8"
+                    : routeName === "Shortest Distance"
+                        ? "3, 8"
+                        : routeName === "Lowest Cost"
+                            ? "15, 5, 3, 5"
+                            : null
+        }
+    ).addTo(map);
+
+    line.on(
+    "click",
+    function() {
+
+        selectRouteByName(
+            routeName
+        );
+
+        showRouteModal(
+            routeName,
+            route
+        );
+
+    }
+);
+    return line;
+}
+function selectRouteByName(
+    routeName
+) {
+
+    console.log(
+        "Changing map to route:",
+        routeName
+    );
+
+
+    /* -----------------------------------------
+       Get selected route data
+    ----------------------------------------- */
+
+    selectedRoute =
+        routeName;
+
+    selectedRouteData =
+        routeOptions[
+            routeName
+        ] || null;
+
+
+    console.log(
+        "Selected route data:",
+        selectedRouteData
+    );
+
+
+    if (!selectedRouteData) {
+
+        console.warn(
+            "Route not found:",
+            routeName
+        );
+
+        return;
+    }
+
+
+    /* -----------------------------------------
+       Highlight selected card
+    ----------------------------------------- */
+
+    document
+        .querySelectorAll(".route")
+        .forEach(card => {
+
+            card.classList.toggle(
+                "selected",
+                card.dataset.route ===
+                routeName
+            );
+
+        });
+
+
+    /* -----------------------------------------
+       REMOVE CURRENT ROUTE
+    ----------------------------------------- */
+
+    Object.keys(routeLayers)
+        .forEach(name => {
+
+            if (routeLayers[name]) {
+
+                map.removeLayer(
+                    routeLayers[name]
+                );
+
+            }
+
+        });
+
+
+    routeLayers = {};
+
+
+    /* -----------------------------------------
+       DRAW ONLY SELECTED ROUTE
+    ----------------------------------------- */
+
+    routeLayers[routeName] =
+        drawRouteOnMap(
+            selectedRouteData,
+            routeName
+        );
+
+
+    /* -----------------------------------------
+       FIT MAP TO SELECTED ROUTE
+    ----------------------------------------- */
+
+    if (routeLayers[routeName]) {
+
+map.fitBounds(
+    routeLayers[routeName].getBounds(),
+    {
+        padding: [
+            50,
+            50
+        ]
+    }
+);
+
+}
+
+
+/* -----------------------------------------
+SHOW TRANSIT POINTS FOR THIS ROUTE
+----------------------------------------- */
+
+createTransitMarkers(
+selectedRouteData
+);
+
+
+updateSummary();
+
+}
+async function createTransitMarkers(
+    route
+) {
+
+    /* -----------------------------------------
+       REMOVE OLD MARKERS
+    ----------------------------------------- */
+
+    if (
+        window.transitMarkers
+    ) {
+
+        window.transitMarkers.forEach(
+            marker => {
+
+                if (
+                    map.hasLayer(marker)
+                ) {
+
+                    map.removeLayer(
+                        marker
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    window.transitMarkers = [];
+
+
+    if (
+        !route ||
+        !route.steps ||
+        !route.steps.length
+    ) {
+
+        console.log(
+            "No route steps available"
+        );
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------
+       GET VALID ROUTE STEPS
+    ----------------------------------------- */
+
+    const steps =
+        route.steps.filter(
+            step => {
+
+                if (
+                    !step.location ||
+                    step.location.length !== 2
+                ) {
+
+                    return false;
+
+                }
+
+
+                const name =
+                    step.name?.trim();
+
+
+                return Boolean(
+                    name
+                );
+
+            }
+        );
+
+
+    if (!steps.length) {
+
+        console.log(
+            "No usable transit points"
+        );
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------
+       PICK REPRESENTATIVE POINTS
+    ----------------------------------------- */
+
+    const maxPoints = 5;
+
+    let selectedSteps = [];
+
+
+    if (
+        steps.length <=
+        maxPoints
+    ) {
+
+        selectedSteps =
+            steps;
+
+    } else {
+
+        for (
+            let i = 0;
+            i < maxPoints;
+            i++
+        ) {
+
+            const index =
+                Math.round(
+                    i *
+                    (
+                        steps.length - 1
+                    ) /
+                    (
+                        maxPoints - 1
+                    )
+                );
+
+
+            selectedSteps.push(
+                steps[index]
+            );
+
+        }
+
+    }
+
+
+    /* -----------------------------------------
+       REMOVE DUPLICATE COORDINATES
+    ----------------------------------------- */
+
+    const uniquePoints = [];
+
+    const coordinateSet =
+        new Set();
+
+
+    selectedSteps.forEach(
+        step => {
+
+            const lng =
+                Number(
+                    step.location[0]
+                );
+
+            const lat =
+                Number(
+                    step.location[1]
+                );
+
+
+            if (
+                !Number.isFinite(lat) ||
+                !Number.isFinite(lng)
+            ) {
+
+                return;
+
+            }
+
+
+            const key =
+                `${lat.toFixed(3)},${lng.toFixed(3)}`;
+
+
+            if (
+                coordinateSet.has(key)
+            ) {
+
+                return;
+
+            }
+
+
+            coordinateSet.add(key);
+
+
+            uniquePoints.push({
+
+                step:
+                    step,
+
+                latitude:
+                    lat,
+
+                longitude:
+                    lng
+
+            });
+
+        }
+    );
+
+
+    /* -----------------------------------------
+       REVERSE GEOCODE
+    ----------------------------------------- */
+
+    for (
+        let i = 0;
+        i < uniquePoints.length;
+        i++
+    ) {
+
+        const point =
+            uniquePoints[i];
+
+
+        /*
+         * Nominatim asks clients to avoid
+         * sending requests too quickly.
+         */
+
+        if (i > 0) {
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        1100
+                    )
+            );
+
+        }
+
+
+        const city =
+            await reverseGeocodeCity(
+                point.latitude,
+                point.longitude
+            );
+
+
+        point.city =
+            city ||
+            point.step.name ||
+            "Transit point";
+
+
+        /* -------------------------------------
+           CREATE MAP MARKER
+        ------------------------------------- */
+
+        const icon =
+            L.divIcon({
+
+                className:
+                    "transit-marker-wrapper",
+
+                html: `
+                    <div class="transit-marker">
+                        ${i + 1}
+                    </div>
+                `,
+
+                iconSize: [
+                    30,
+                    30
+                ],
+
+                iconAnchor: [
+                    15,
+                    15
+                ]
+
+            });
+
+
+        const marker =
+            L.marker(
+                [
+                    point.latitude,
+                    point.longitude
+                ],
+                {
+                    icon:
+                        icon
+                }
+            )
+            .addTo(map);
+
+
+        /*
+         * Small tooltip directly on map
+         */
+
+        marker.bindTooltip(
+            `
+                <strong>
+                    ${i + 1}. 
+                    ${escapeHtml(
+                        point.city
+                    )}
+                </strong>
+            `,
+            {
+                direction:
+                    "top",
+
+                offset:
+                    [
+                        0,
+                        -12
+                    ]
+            }
+        );
+
+
+        /*
+         * Clicking marker opens
+         * the full route modal.
+         */
+
+        marker.on(
+            "click",
+            function() {
+
+                showRouteModal(
+                    selectedRoute,
+                    selectedRouteData
+                );
+
+            }
+        );
+
+
+        window.transitMarkers.push(
+            marker
+        );
+
+    }
+
+
+    /*
+     * Save city names onto route data
+     * so the modal can use them.
+     */
+
+    route.transitCities =
+        uniquePoints.map(
+            point => ({
+                name:
+                    point.city,
+
+                latitude:
+                    point.latitude,
+
+                longitude:
+                    point.longitude
+            })
+        );
+
+
+    /*
+     * Refresh modal data if needed.
+     */
+
+    console.log(
+        "Transit cities:",
+        route.transitCities
+    );
+
+}
+function showRouteModal(
+    routeName,
+    route
+) {
+
+  if (
+    !route.transitCities ||
+    !route.transitCities.length
+) {
+
+    createTransitMarkers(
+        route
+    ).then(
+        () => {
+
+            showRouteModal(
+                routeName,
+                route
+            );
+
+        }
+    );
+
+    return;
+
+}
+if (!route) {
+        return;
+    }
+
+
+    const steps =
+        route.steps || [];
+
+
+    /* -----------------------------------------
+       REMOVE DUPLICATE ROAD NAMES
+    ----------------------------------------- */
+
+    const uniqueSteps = [];
+
+    const seen =
+        new Set();
+
+
+    steps.forEach(step => {
+
+        const name =
+            step.name?.trim();
+
+
+        if (
+            name &&
+            !seen.has(name)
+        ) {
+
+            seen.add(name);
+
+            uniqueSteps.push(
+                step
+            );
+
+        }
+
+    });
+
+
+    const displaySteps =
+        uniqueSteps.slice(
+            0,
+            10
+        );
+
+
+        const transitCities =
+    route.transitCities ||
+    [];
+
+
+const transitHTML =
+    transitCities.length
+
+        ? transitCities
+            .map(
+                (
+                    point,
+                    index
+                ) => `
+
+                    <div
+                        class="modal-transit-item"
+                    >
+
+                        <div
+                            class="modal-transit-number"
+                        >
+                            ${index + 1}
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                ${escapeHtml(
+                                    point.name
+                                )}
+                            </strong>
+
+                            <small>
+                                Transit point
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                `
+            )
+            .join("")
+
+        : `
+            <div
+                class="modal-no-transit"
+            >
+                Loading transit points...
+            </div>
+        `;
+
+    /* -----------------------------------------
+       ROUTE COLOR
+    ----------------------------------------- */
+
+    const colors = {
+
+        "AI Recommended":
+            "#008000",
+
+        "Fastest":
+            "#0057ff",
+
+        "Shortest Distance":
+            "#ff9900",
+
+        "Lowest Cost":
+            "#8b008b"
+
+    };
+
+
+    const routeColor =
+        colors[routeName] ||
+        "#008000";
+
+
+    /* -----------------------------------------
+       MODAL CONTENT
+    ----------------------------------------- */
+
+    const modal =
+        document.getElementById(
+            "routeModal"
+        );
+
+
+    const content =
+        document.getElementById(
+            "routeModalContent"
+        );
+
+
+    content.innerHTML = `
+
+        <div
+            class="route-modal-title"
+            style="
+                border-left-color:
+                ${routeColor};
+            "
+        >
+
+            <span>
+                ROUTE DETAILS
+            </span>
+
+            <h2>
+                ${escapeHtml(
+                    routeName
+                )}
+            </h2>
+
+        </div>
+
+
+        <div class="route-modal-stats">
+
+            <div>
+
+                <strong>
+                    ${Number(
+                        route.distance_km
+                    ).toFixed(1)}
+                </strong>
+
+                <span>
+                    km
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <strong>
+                    ${Number(
+                        route.eta_hours
+                    ).toFixed(1)}
+                </strong>
+
+                <span>
+                    hrs
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <strong>
+                    ₹${Number(
+                        route.estimated_cost
+                    ).toLocaleString(
+                        "en-IN"
+                    )}
+                </strong>
+
+                <span>
+                    estimated
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="route-timeline">
+
+            <div class="route-endpoint">
+
+                <div class="route-endpoint-icon">
+                    🚜
+                </div>
+
+                <div>
+
+                    <strong>
+                        Pickup
+                    </strong>
+
+                    <p>
+                        ${
+                            currentOrder
+                                ?.pickup_location
+                                ?.address ||
+                            "Farmer location"
+                        }
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-transit-list">
+
+                ${transitHTML}
+
+            </div>
+
+
+            <div class="route-endpoint">
+
+                <div class="route-endpoint-icon">
+                    📍
+                </div>
+
+                <div>
+
+                    <strong>
+                        Destination
+                    </strong>
+
+                    <p>
+                        ${
+                            currentOrder
+                                ?.destination
+                                ?.address ||
+                            "Buyer location"
+                        }
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    modal.classList.add(
+        "open"
+    );
+
+}
+/* ============================================================
+LOAD ROUTE OPTIONS
+============================================================ */
+async function geocodeAddress(address) {
+
+const url =
+    "https://nominatim.openstreetmap.org/search?" +
+    new URLSearchParams({
+        q: address,
+        format: "json",
+        limit: 1
+    });
+
+const response =
+    await fetch(url, {
+        headers: {
+            "Accept": "application/json"
+        }
+    });
+
+if (!response.ok) {
+    throw new Error(
+        "Unable to geocode address."
+    );
+}
+
+const results =
+    await response.json();
+
+if (!results.length) {
+    throw new Error(
+        "Could not find location: " +
+        address
+    );
+}
+
+return {
+    latitude:
+        Number(results[0].lat),
+
+    longitude:
+        Number(results[0].lon)
+};
+}
+async function reverseGeocodeCity(
+    latitude,
+    longitude
+) {
+
+    try {
+
+        const url =
+            "https://nominatim.openstreetmap.org/reverse?" +
+            new URLSearchParams({
+
+                lat:
+                    latitude,
+
+                lon:
+                    longitude,
+
+                format:
+                    "json",
+
+                zoom:
+                    10,
+
+                addressdetails:
+                    1
+
+            });
+
+
+        const response =
+            await fetch(
+                url,
+                {
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            return null;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const address =
+            data.address ||
+            {};
+
+
+        /*
+         * Prefer actual settlement names.
+         */
+
+        return (
+            address.city ||
+            address.town ||
+            address.municipality ||
+            address.village ||
+            address.county ||
+            null
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Reverse geocoding failed:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+async function calculateRouteOptions() {
+
+if (!currentOrder) {
+    return;
+}
+
+try {
+
+  let pickup =
+    getCoordinates(
+        currentOrder.pickup_location
+    );
+
+const destination =
+    getCoordinates(
+        currentOrder.destination
+    );
+
+    if (!pickup) {
+
+const pickupAddress =
+    currentOrder
+        ?.pickup_location
+        ?.address;
+
+if (pickupAddress) {
+
+    console.log(
+        "Geocoding pickup address:",
+        pickupAddress
+    );
+
+    pickup =
+        await geocodeAddress(
+            pickupAddress
+        );
+
+    // Save the newly geocoded coordinates
+    // back into the current order
+    currentOrder.pickup_location.latitude =
+        pickup.latitude;
+
+    currentOrder.pickup_location.longitude =
+        pickup.longitude;
+
+    // Redraw the map so the pickup marker appears
+    drawShipmentMap();
+}
+}
+
+if (!pickup || !destination) {
+
+    throw new Error(
+        "Pickup or destination coordinates are missing."
+    );
+}
+if (!pickup || !destination) {
+    throw new Error(
+        "Pickup or destination coordinates are missing."
+    );
+}
+
+const data =
+    await apiPost(
+        "/api/routes",
+        {
+            pickup: pickup,
+            destination: destination
+        }
+    );
+
+
+    console.log(
+        "Route options received:",
+        data
+    );
+
+
+    const routes =
+        data.routes ||
+        {};
+
+
+    /*
+     * Save them globally so that
+     * selecting Fastest / Shortest /
+     * Lowest Cost actually works.
+     */
+    routeOptions =
+        routes;
+    /* ==========================================
+   DRAW ALL FOUR ROUTES
+========================================== */
+
+/* ==========================================
+   SHOW ONLY SELECTED ROUTE
+========================================== */
+
+Object.keys(routeLayers)
+    .forEach(name => {
+
+        if (routeLayers[name]) {
+
+            map.removeLayer(
+                routeLayers[name]
+            );
+
+        }
+
+    });
+
+routeLayers = {};
+
+
+/* -----------------------------------------
+   Default to AI Recommended
+----------------------------------------- */
+
+selectedRoute =
+    data.recommended ||
+    "AI Recommended";
+
+selectedRouteData =
+    routes[selectedRoute] ||
+    null;
+
+
+/* -----------------------------------------
+   Draw ONLY selected route
+----------------------------------------- */
+
+if (selectedRouteData) {
+
+    routeLayers[selectedRoute] =
+        drawRouteOnMap(
+            selectedRouteData,
+            selectedRoute
+        );
+
+}
+    
+    /*
+     * -----------------------------------------
+     * AI RECOMMENDED
+     * -----------------------------------------
+     */
+
+    const ai =
+        routes["AI Recommended"];
+
+    if (ai) {
+
+        document.getElementById(
+            "aiDistance"
+        ).innerHTML =
+            `${Number(
+                ai.distance_km
+            ).toFixed(1)}
+            <span>km</span>`;
+
+        document.getElementById(
+            "aiTime"
+        ).textContent =
+            `${Number(
+                ai.eta_hours
+            ).toFixed(1)} hrs`;
+
+        document.getElementById(
+            "aiCost"
+        ).textContent =
+            `₹${Number(
+                ai.estimated_cost
+            ).toLocaleString(
+                "en-IN",
+                {
+                    maximumFractionDigits: 0
+                }
+            )}`;
+    }
+
+
+    /*
+     * -----------------------------------------
+     * FASTEST
+     * -----------------------------------------
+     */
+
+    const fastest =
+        routes["Fastest"];
+
+    if (fastest) {
+
+        document.getElementById(
+            "fastDistance"
+        ).innerHTML =
+            `${Number(
+                fastest.distance_km
+            ).toFixed(1)}
+            <span>km</span>`;
+
+        document.getElementById(
+            "fastTime"
+        ).textContent =
+            `${Number(
+                fastest.eta_hours
+            ).toFixed(1)} hrs`;
+
+        document.getElementById(
+            "fastCost"
+        ).textContent =
+            `₹${Number(
+                fastest.estimated_cost
+            ).toLocaleString(
+                "en-IN",
+                {
+                    maximumFractionDigits: 0
+                }
+            )}`;
+    }
+
+
+    /*
+     * -----------------------------------------
+     * SHORTEST DISTANCE
+     * -----------------------------------------
+     */
+
+    const shortest =
+        routes["Shortest Distance"];
+
+    if (shortest) {
+
+        document.getElementById(
+            "shortDistance"
+        ).innerHTML =
+            `${Number(
+                shortest.distance_km
+            ).toFixed(1)}
+            <span>km</span>`;
+
+        document.getElementById(
+            "shortTime"
+        ).textContent =
+            `${Number(
+                shortest.eta_hours
+            ).toFixed(1)} hrs`;
+
+        document.getElementById(
+            "shortCost"
+        ).textContent =
+            `₹${Number(
+                shortest.estimated_cost
+            ).toLocaleString(
+                "en-IN",
+                {
+                    maximumFractionDigits: 0
+                }
+            )}`;
+    }
+
+
+    /*
+     * -----------------------------------------
+     * LOWEST COST
+     * -----------------------------------------
+     */
+
+    const lowestCost =
+        routes["Lowest Cost"];
+
+    if (lowestCost) {
+
+        document.getElementById(
+            "costDistance"
+        ).innerHTML =
+            `${Number(
+                lowestCost.distance_km
+            ).toFixed(1)}
+            <span>km</span>`;
+
+        document.getElementById(
+            "costTime"
+        ).textContent =
+            `${Number(
+                lowestCost.eta_hours
+            ).toFixed(1)} hrs`;
+
+        document.getElementById(
+            "lowestCost"
+        ).textContent =
+            `₹${Number(
+                lowestCost.estimated_cost
+            ).toLocaleString(
+                "en-IN",
+                {
+                    maximumFractionDigits: 0
+                }
+            )}`;
+    }
+
+
+    /*
+     * Backend tells us which one is recommended.
+     */
+    selectedRoute =
+        data.recommended ||
+        "AI Recommended";
+    selectedRouteData =
+    routeOptions[
+        selectedRoute
+    ] || null;
+
+
+    /*
+     * Make AI card selected.
+     */
+    document
+        .querySelectorAll(".route")
+        .forEach(
+            card => {
+
+                card.classList.toggle(
+                    "selected",
+                    card.dataset.route ===
+                    selectedRoute
+                );
+
+            }
+        );
+
+
+    /*
+     * AI explanation
+     */
+    document.getElementById(
+        "aiText"
+    ).textContent =
+        "AI recommends the balanced route using shipment distance, estimated travel time and transportation cost. You can override the recommendation.";
+
+
+    /*
+     * Update summary.
+     */
+    updateSummary();
+
+
+} catch (error) {
+
+    console.error(
+        "Route calculation error:",
+        error
+    );
+
+    document.getElementById(
+        "aiText"
+    ).textContent =
+        "Unable to calculate route options.";
+
+}
+
+}
+/* ============================================================
+   RENDER ROUTE OPTIONS
+============================================================ */
+
+function renderRouteOptions() {
+
+const ai =
+    routeOptions["AI Recommended"];
+
+const fastest =
+    routeOptions["Fastest"];
+
+const shortest =
+    routeOptions["Shortest Distance"];
+
+const lowest =
+    routeOptions["Lowest Cost"];
+
+
+if (ai) {
+
+    document.getElementById(
+        "aiDistance"
+    ).innerHTML =
+        `${ai.distance_km}
+         <span>km</span>`;
+
+    document.getElementById(
+        "aiTime"
+    ).textContent =
+        `${ai.eta_hours} hrs`;
+
+    document.getElementById(
+        "aiCost"
+    ).textContent =
+        Number(
+            ai.estimated_cost
+        ).toLocaleString("en-IN");
+
+}
+
+
+if (fastest) {
+
+    document.getElementById(
+        "fastDistance"
+    ).innerHTML =
+        `${fastest.distance_km}
+         <span>km</span>`;
+
+    document.getElementById(
+        "fastTime"
+    ).textContent =
+        `${fastest.eta_hours} hrs`;
+
+    document.getElementById(
+        "fastCost"
+    ).textContent =
+        Number(
+            fastest.estimated_cost
+        ).toLocaleString("en-IN");
+
+}
+
+
+if (shortest) {
+
+    document.getElementById(
+        "shortDistance"
+    ).innerHTML =
+        `${shortest.distance_km}
+         <span>km</span>`;
+
+    document.getElementById(
+        "shortTime"
+    ).textContent =
+        `${shortest.eta_hours} hrs`;
+
+    document.getElementById(
+        "shortCost"
+    ).textContent =
+        Number(
+            shortest.estimated_cost
+        ).toLocaleString("en-IN");
+
+}
+
+
+if (lowest) {
+
+    document.getElementById(
+        "costDistance"
+    ).innerHTML =
+        `${lowest.distance_km}
+         <span>km</span>`;
+
+    document.getElementById(
+        "costTime"
+    ).textContent =
+        `${lowest.eta_hours} hrs`;
+
+    document.getElementById(
+        "lowestCost"
+    ).textContent =
+        Number(
+            lowest.estimated_cost
+        ).toLocaleString("en-IN");
+
+}
+
+
+selectedRouteData =
+    routeOptions[
+        selectedRoute
+    ] ||
+    routeOptions[
+        "AI Recommended"
+    ] ||
+    null;
+
+
+updateAIRecommendation();
+
+updateSummary();
+
+}
+/* ============================================================
+   AI RECOMMENDATION
+============================================================ */
+
+function updateAIRecommendation() {
+
+const text =
+    document.getElementById(
+        "aiText"
+    );
+
+if (!text) {
+    return;
+}
+
+
+const ai =
+    routeOptions[
+        "AI Recommended"
+    ];
+
+
+if (!ai) {
+
+    text.textContent =
+        "Select a shipment to calculate route recommendations.";
+
+    return;
+
+}
+
+
+text.textContent =
+    `AI recommends the balanced route: ` +
+    `${ai.distance_km} km, ` +
+    `${ai.eta_hours} hrs estimated travel time, ` +
+    `₹${Number(
+        ai.estimated_cost
+    ).toLocaleString("en-IN")} estimated cost. ` +
+    `You can override the recommendation.`;
+
+}
+
+        async function shipmentChanged() {
+
+const id =
+    document
+        .getElementById(
+            "shipment"
+        )
+        .value;
+
+
+currentOrder =
+    orders.find(
+        order =>
+            String(
+                order.order_id ||
+                order.id
+            ) ===
+            String(id)
+    ) || null;
+
+
+/* ========================================================
+   NOTHING SELECTED
+======================================================== */
+
+if (!currentOrder) {
+
+    farmerLocation = {
+
+        latitude:
+            null,
+
+        longitude:
+            null
+
+    };
+
+
+    document.getElementById(
+        "pickup"
+    ).textContent =
+        "—";
+
+
+    document.getElementById(
+        "destination"
+    ).textContent =
+        "—";
+
+
+    document.getElementById(
+        "produce"
+    ).textContent =
+        "—";
+
+
+    document.getElementById(
+        "aiText"
+    ).textContent =
+        "Select a shipment to calculate route recommendations.";
+
+
+    /*
+     * Recalculate drivers without a
+     * farmer reference point.
+     */
+
+    applyDriverFilters();
+
+    resetRouteCards();
+    updateSummary();
+
+    return;
+
+}
+
+
+/* ========================================================
+   PRODUCE / QUANTITY
+======================================================== */
+
+document.getElementById(
+    "produce"
+).textContent =
+
+    `${
+        currentOrder.produce_name ||
+        currentOrder.crop ||
+        currentOrder.product_name ||
+        "Produce"
+    } · ${
+        currentOrder.quantity ??
+        ""
+    } ${
+        currentOrder.unit ||
+        "kg"
+    }`;
+
+
+document.getElementById(
+    "pickup"
+).textContent =
+    "Loading pickup location...";
+
+
+document.getElementById(
+    "destination"
+).textContent =
+    "Loading destination...";
+
+
+try {
+
+    const data =
+        await apiGet(
+            `/api/logistics/order/${
+                encodeURIComponent(
+                    id
+                )
+            }`
+        );
+
+
+    const pickup =
+        data.pickup_location ||
+        {};
+
+
+    const destination =
+        data.destination ||
+        {};
+
+
+    /* ====================================================
+       DISPLAY PICKUP
+    ==================================================== */
+
+    const pickupText = [
+
+        pickup.address,
+
+        pickup.city,
+
+        pickup.state
+
+    ]
+        .filter(Boolean)
+        .join(", ");
+
+
+    document.getElementById(
+        "pickup"
+    ).textContent =
+        pickupText ||
+        "Pickup location unavailable";
+
+
+    /* ====================================================
+       DISPLAY DESTINATION
+    ==================================================== */
+
+    const destinationText = [
+
+        destination.address,
+
+        destination.city,
+
+        destination.state
+
+    ]
+        .filter(Boolean)
+        .join(", ");
+
+
+    document.getElementById(
+        "destination"
+    ).textContent =
+        destinationText ||
+        "Destination unavailable";
+
+
+    /* ====================================================
+       SAVE LOCATIONS
+    ==================================================== */
+
+    currentOrder.pickup_location =
+        pickup;
+
+
+    currentOrder.destination =
+        destination;
+
+
+    /* ====================================================
+       SET FARMER REFERENCE LOCATION
+    ==================================================== */
+    console.log(
+    "FULL PICKUP:",
+    JSON.stringify(
+        currentOrder.pickup_location,
+        null,
+        2
+    )
+);
+
+console.log(
+    "FULL DESTINATION:",
+    JSON.stringify(
+        currentOrder.destination,
+        null,
+        2
+    )
+);
+    const pickupLatitude =
+        Number(
+            pickup.latitude
+        );
+
+
+    const pickupLongitude =
+        Number(
+            pickup.longitude
+        );
+
+
+    if (
+        Number.isFinite(
+            pickupLatitude
+        ) &&
+        Number.isFinite(
+            pickupLongitude
+        )
+    ) {
+
+        farmerLocation = {
+
+            latitude:
+                pickupLatitude,
+
+            longitude:
+                pickupLongitude
+
+        };
+
+
+        console.log(
+            "Driver distance reference:",
+            farmerLocation
+        );
+
+
+        /*
+         * Recalculate all drivers
+         * using this pickup location.
+         */
+
+        applyDriverFilters();
+
+    } else {
+
+        console.warn(
+            "Pickup coordinates unavailable. Driver distance cannot be calculated."
+        );
+
+
+        farmerLocation = {
+
+            latitude:
+                null,
+
+            longitude:
+                null
+
+        };
+
+
+        applyDriverFilters();
+
+    }
+
+
+    /* ====================================================
+       AI MESSAGE
+    ==================================================== */
+
+    document.getElementById(
+        "aiText"
+    ).textContent =
+        "AI recommends the balanced route using shipment distance, estimated travel time and transportation cost. You can override the recommendation.";
+
+
+    console.log(
+        "Selected shipment locations:",
+        {
+            pickup,
+            destination
+        }
+    );
+    await calculateRouteOptions();
+
+
+} catch (error) {
+
+    console.error(
+        "Shipment location loading error:",
+        error
+    );
+
+
+    document.getElementById(
+        "pickup"
+    ).textContent =
+        "Unable to load pickup location";
+
+
+    document.getElementById(
+        "destination"
+    ).textContent =
+        "Unable to load destination";
+
+
+    document.getElementById(
+        "aiText"
+    ).textContent =
+        "Unable to load shipment locations.";
+
+}
+
+
+updateSummary();
+
+}
+function resetRouteCards() {
+
+const ids = [
+    "aiDistance",
+    "fastDistance",
+    "shortDistance",
+    "costDistance"
+];
+
+
+ids.forEach(
+    id => {
+
+        const element =
+            document.getElementById(id);
+
+        if (element) {
+
+            element.innerHTML =
+                `— <span>km</span>`;
+
+        }
+
+    }
+);
+
+
+[
+    "aiTime",
+    "fastTime",
+    "shortTime",
+    "costTime"
+]
+.forEach(
+    id => {
+
+        const element =
+            document.getElementById(id);
+
+        if (element) {
+
+            element.textContent =
+                "—";
+
+        }
+
+    }
+);
+
+
+[
+    "aiCost",
+    "fastCost",
+    "shortCost",
+    "lowestCost"
+]
+.forEach(
+    id => {
+
+        const element =
+            document.getElementById(id);
+
+        if (element) {
+
+            element.textContent =
+                "—";
+
+        }
+
+    }
+);
+
+
+routeOptions = {};
+
+selectedRouteData = null;
+
+}
+        /* ============================================================
+           ROUTES
+        ============================================================ */
+
+        function selectRoute(element) {
+
+const routeName =
+    element.dataset.route;
+
+
+console.log(
+    "Route card clicked:",
+    routeName
+);
+
+
+selectRouteByName(
+    routeName
+);
+
+}
+/* ============================================================
+   DRAW SHIPMENT MAP
+============================================================ */
+const pickupIcon =
+    L.divIcon({
+        className: "custom-map-marker",
+        html: `
+            <div class="pickup-pin">
+                🚜
+            </div>
+        `,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18]
+    });
+
+const destinationIcon =
+    L.divIcon({
+        className: "custom-map-marker",
+        html: `
+            <div class="destination-pin">
+                📍
+            </div>
+        `,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18]
+    });
+function drawShipmentMap() {
+
+if (!map || !currentOrder) {
+    return;
+}
+
+
+const pickup =
+    getCoordinates(
+        currentOrder.pickup_location
+    );
+
+const destination =
+    getCoordinates(
+        currentOrder.destination
+    );
+
+
+if (!pickup || !destination) {
+    return;
+}
+
+
+const pickupPoint = [
+    pickup.latitude,
+    pickup.longitude
+];
+
+const destinationPoint = [
+    destination.latitude,
+    destination.longitude
+];
+
+
+/* --------------------------------------------------------
+   CLEAR OLD MARKERS / ROUTE
+-------------------------------------------------------- */
+
+if (pickupMarker) {
+
+    map.removeLayer(
+        pickupMarker
+    );
+
+}
+
+
+if (destinationMarker) {
+
+    map.removeLayer(
+        destinationMarker
+    );
+
+}
+
+
+
+
+
+/* --------------------------------------------------------
+   PICKUP MARKER
+-------------------------------------------------------- */
+
+pickupMarker =
+    L.marker(
+        pickupPoint,
+        {
+            icon: pickupIcon
+        }
+    )
+    .addTo(map)
+    .bindPopup(
+      "<b>🚜 PICKUP LOCATION</b><br>Farmer / FPO"
+    );
+
+
+/* --------------------------------------------------------
+   DESTINATION MARKER
+-------------------------------------------------------- */
+destinationMarker =
+    L.marker(
+        destinationPoint,
+        {
+            icon: destinationIcon
+        }
+    )
+    .addTo(map)
+    .bindPopup(
+      "<b>📍 DESTINATION</b><br>Buyer"
+    );
+
+
+/* --------------------------------------------------------
+   ROUTE LINE
+-------------------------------------------------------- */
+
+
+
+}
+
+
+        /* ============================================================
+           SUMMARY
+        ============================================================ */
+
+        function updateSummary() {
+
+const summary =
+    document.getElementById(
+        "summary"
+    );
+
+
+if (!summary) {
+
+    return;
+
+}
+
+
+if (!currentOrder) {
+
+    summary.innerHTML = `
+        <div class="summary-empty">
+
+            <div class="summary-empty-icon">
+                🚚
+            </div>
+
+            <div>
+                Select a shipment to
+                begin logistics planning.
+            </div>
+
+        </div>
+    `;
+
+    return;
+
+}
+
+
+if (!selectedDriver) {
+
+    summary.innerHTML = `
+
+        <div class="summary-header">
+            <span>Selected Shipment</span>
+        </div>
+
+        <div class="summary-row">
+            <span>Order</span>
+            <strong>
+                ${escapeHtml(
+                    currentOrder.order_id ||
+                    currentOrder.id ||
+                    "—"
+                )}
+            </strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Produce</span>
+            <strong>
+                ${escapeHtml(
+                    currentOrder.produce_name ||
+                    currentOrder.crop ||
+                    currentOrder.product_name ||
+                    "—"
+                )}
+            </strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Quantity</span>
+            <strong>
+                ${escapeHtml(
+                    String(
+                        currentOrder.quantity ??
+                        "—"
+                    )
+                )}
+                ${
+                    currentOrder.unit ||
+                    "kg"
+                }
+            </strong>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-select-driver">
+            👆 Select a driver to continue
+        </div>
+
+    `;
+
+    return;
+
+}
+
+
+const distance =
+    selectedDriver.distance_km;
+
+
+const distanceText =
+    distance !== null &&
+    distance !== undefined
+
+        ? `${Number(
+            distance
+        ).toFixed(1)} km`
+
+        : "Unavailable";
+
+
+summary.innerHTML = `
+
+    <div class="summary-header">
+
+        <span>
+            Logistics Plan
+        </span>
+
+        <span class="summary-status">
+            READY
+        </span>
+
+    </div>
+
+
+    <div class="summary-row">
+
+        <span>Order</span>
+
+        <strong>
+            ${escapeHtml(
+                currentOrder.order_id ||
+                currentOrder.id ||
+                "—"
+            )}
+        </strong>
+
+    </div>
+
+
+    <div class="summary-row">
+
+        <span>Produce</span>
+
+        <strong>
+            ${escapeHtml(
+                currentOrder.produce_name ||
+                currentOrder.crop ||
+                currentOrder.product_name ||
+                "—"
+            )}
+        </strong>
+
+    </div>
+
+
+    <div class="summary-row">
+
+        <span>Quantity</span>
+
+        <strong>
+            ${escapeHtml(
+                String(
+                    currentOrder.quantity ??
+                    "—"
+                )
+            )}
+            ${
+                currentOrder.unit ||
+                "kg"
+            }
+        </strong>
+
+    </div>
+
+
+    <div class="summary-divider"></div>
+
+
+    <div class="summary-driver">
+
+        <div class="summary-driver-icon">
+            🚚
+        </div>
+
+        <div class="summary-driver-info">
+
+            <strong>
+                ${escapeHtml(
+                    selectedDriver.name ||
+                    "Driver"
+                )}
+            </strong>
+
+            <span>
+                ${
+                    selectedDriver.vehicle_type ||
+                    "Vehicle"
+                }
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="summary-details">
+
+        <div>
+
+            <span>Vehicle</span>
+
+            <strong>
+                ${escapeHtml(
+                    selectedDriver.vehicle_number ||
+                    "—"
+                )}
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>Capacity</span>
+
+            <strong>
+                ${
+                    selectedDriver.vehicle_capacity_kg ??
+                    "—"
+                } kg
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>Rating</span>
+
+            <strong>
+                ⭐ ${
+                    selectedDriver.rating ??
+                    "—"
+                }
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>Distance</span>
+
+            <strong>
+                ${distanceText}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="summary-route">
+
+        <span>
+            Route
+        </span>
+
+        <strong>
+    ${escapeHtml(selectedRoute)}
+</strong>
+    </div>
+
+`;
+
+}
+
+        /* ============================================================
+           CONFIRM
+        ============================================================ */
+
+        async function confirmPlan() {
+
+          if (
+    !currentOrder ||
+    !selectedDriver ||
+    !selectedRoute ||
+    !selectedRouteData
+) {
+    alert(
+        "Please select a shipment, driver, and route first."
+    );
+    return;
+}
+
+
+            const button =
+                document.getElementById(
+                    "confirm"
+                );
+
+
+            button.disabled = true;
+
+            button.textContent =
+                "Saving...";
+
+
+            const payload = {
+
+                order_id:
+                    currentOrder.order_id ||
+                    currentOrder.id,
+
+                driver_id:
+                    selectedDriver.driver_id ||
+                    selectedDriver.id,
+
+                driver_name:
+                    selectedDriver.name,
+
+                vehicle_number:
+                    selectedDriver.vehicle_number,
+
+                route_choice:
+                    selectedRoute,
+                    distance_km:
+    selectedRouteData?.distance_km,
+
+pickup_location:
+    currentOrder.pickup_location,
+
+destination:
+    currentOrder.destination,
+
+farmer_id:
+    currentOrder.farmer_id,
+
+buyer_id:
+    currentOrder.buyer_id
+
+            };
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/api/deliveries`,
+                        {
+                            method: "POST",
+                            headers: getHeaders(),
+                            body: JSON.stringify(
+                                payload
+                            )
+                        }
+                    );
+
+                    console.log(
+    "Delivery API status:",
+    response.status
+);
+
+console.log(
+    "Delivery API URL:",
+    `${API_BASE}/api/deliveries`
+);
+                let data = {};
+
+
+                try {
+
+                    data =
+                        await response.json();
+
+                } catch {
+
+                    data = {};
+
+                }
+
+
+                if (
+                    !response.ok ||
+                    data.success === false
+                ) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to create delivery."
+                    );
+
+                }
+
+                alert(
+    "Logistics plan confirmed successfully."
+);
+
+button.textContent =
+    "Logistics Plan Confirmed ✓";
+
+button.disabled = true;
+
+await loadTracking();
+
+            } catch (error) {
+
+console.error(
+    "Logistics confirmation error:",
+    error
+);
+
+alert(
+    "Delivery error: " + error.message
+);
+
+}finally {
+
+if (
+    button.textContent !==
+    "Logistics Plan Confirmed ✓"
+) {
+
+    button.textContent =
+        "Confirm Logistics Plan →";
+
+    button.disabled = false;
+
+}
+
+updateSummary();
+
+}
+        }
+
+
+        /* ============================================================
+           TRACKING
+        ============================================================ */
+
+        async function loadTracking() {
+
+const container =
+    document.getElementById(
+        "tracking"
+    );
+
+
+try {
+
+    const data =
+        await apiGet(
+            "/api/deliveries"
+        );
+
+
+        const deliveries =
+    data.deliveries ||
+    data.data ||
+    [];
+
+
+/* ============================================================
+   ACTIVE SHIPMENTS
+   ============================================================ */
+
+const activeStatuses = [
+    "PICKED_UP",
+    "DISPATCHED",
+    "IN_TRANSIT",
+    "OUT_FOR_DELIVERY"
+];
+
+
+const active =
+    deliveries.filter(
+        delivery => {
+
+            const status =
+                String(
+                    delivery.status ||
+                    ""
+                )
+                    .trim()
+                    .toUpperCase();
+
+            return activeStatuses.includes(
+                status
+            );
+
+        }
+);
+
+
+/* ============================================================
+   ACTIVE SHIPMENTS KPI
+   ============================================================ */
+
+document.getElementById(
+    "active"
+).textContent =
+    active.length;
+    /*
+     * AVERAGE ETA
+     *
+     * Use eta_hours from the actual
+     * delivery documents.
+     */
+
+    const etaValues =
+        active
+            .map(
+                delivery =>
+                    Number(
+                        delivery.eta_hours
+                    )
+            )
+            .filter(
+                eta =>
+                    Number.isFinite(
+                        eta
+                    ) &&
+                    eta >= 0
+            );
+
+
+    if (
+        etaValues.length === 0
+    ) {
+
+        document.getElementById(
+            "eta"
+        ).textContent =
+            "—";
+
+    } else {
+
+        const totalEta =
+            etaValues.reduce(
+                (
+                    total,
+                    eta
+                ) =>
+                    total + eta,
+                0
+            );
+
+
+        const averageEta =
+            totalEta /
+            etaValues.length;
+
+
+        document.getElementById(
+            "eta"
+        ).textContent =
+            `${averageEta.toFixed(1)} hrs`;
+
+    }
+
+
+    /*
+     * TRACKING LIST
+     */
+
+    if (
+        !active.length
+    ) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                No active shipments yet.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        active
+            .map(
+                delivery => `
+
+                    <div class="ship">
+
+                        <div>
+
+                            <div class="ship-id">
+
+                                ${escapeHtml(
+                                    delivery.order_id ||
+                                    delivery.delivery_id ||
+                                    "Shipment"
+                                )}
+
+                            </div>
+
+
+                            <div class="ship-meta">
+
+                                ${escapeHtml(
+                                    delivery.driver_name ||
+                                    "Driver pending"
+                                )}
+
+                                ·
+
+                                ${escapeHtml(
+                                    delivery.vehicle_number ||
+                                    "Vehicle pending"
+                                )}
+
+                                · ETA
+
+                                ${escapeHtml(
+                                    delivery.eta_hours ??
+                                    "—"
+                                )}
+
+                                hrs
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="tracking-right">
+
+                            <span class="status">
+
+                                ${escapeHtml(
+                                    String(
+                                        delivery.status ||
+                                        "IN TRANSIT"
+                                    ).replaceAll(
+                                        "_",
+                                        " "
+                                    )
+                                )}
+
+                            </span>
+
+
+                            <button
+                                class="track-btn"
+                                type="button"
+                                onclick="trackShipment(
+                                    '${escapeAttribute(
+                                        delivery.order_id ||
+                                        delivery.delivery_id ||
+                                        ""
+                                    )}'
+                                )"
+                            >
+
+                                Track
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+} catch (error) {
+
+    console.error(
+        "Tracking loading error:",
+        error
+    );
+
+
+    document.getElementById(
+        "active"
+    ).textContent =
+        "—";
+
+
+    document.getElementById(
+        "eta"
+    ).textContent =
+        "—";
+
+
+    container.innerHTML = `
+
+        <div class="empty">
+
+            Unable to load shipment tracking.
+
+        </div>
+
+    `;
+
+}
+
+}
+
+
+async function trackShipment(shipmentId) {
+
+try {
+
+    const data =
+        await apiGet(
+            "/api/deliveries"
+        );
+
+    const deliveries =
+        data.deliveries ||
+        data.data ||
+        [];
+
+    const delivery =
+        deliveries.find(
+            item =>
+                String(
+                    item.order_id ||
+                    item.delivery_id ||
+                    ""
+                ) ===
+                String(
+                    shipmentId
+                )
+        );
+
+
+    if (!delivery) {
+
+        alert(
+            "Delivery details could not be found."
+        );
+
+        return;
+
+    }
+
+
+    window.trackedDelivery =
+        delivery;
+
+
+    await openTrackingModal(
+        delivery
+    );
+
+
+} catch (error) {
+
+    console.error(
+        "Track shipment error:",
+        error
+    );
+
+    alert(
+        "Unable to load tracking details."
+    );
+
+}
+
+}
+    /* ============================================================
+           MAP
+        ============================================================ */
+
+        function initializeMap() {
+
+            map =
+                L.map(
+                    "map"
+                ).setView(
+                    [
+                        28.6139,
+                        77.2090
+                    ],
+                    5
+                );
+
+
+            L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+                    maxZoom: 19,
+
+                    attribution:
+                        "© OpenStreetMap contributors"
+                }
+            ).addTo(
+                map
+            );
+            const legend =
+    L.control({
+        position: "topright"
+    });
+
+legend.onAdd =
+    function() {
+
+        const div =
+            L.DomUtil.create(
+                "div",
+                "route-legend"
+            );
+
+        div.innerHTML = `
+
+            <div class="legend-title">
+                Route Guide
+            </div>
+
+            <div class="legend-item">
+                <span
+                    class="legend-line ai"
+                ></span>
+                AI Recommended
+            </div>
+
+            <div class="legend-item">
+                <span
+                    class="legend-line fastest"
+                ></span>
+                Fastest
+            </div>
+
+            <div class="legend-item">
+                <span
+                    class="legend-line shortest"
+                ></span>
+                Shortest Distance
+            </div>
+
+            <div class="legend-item">
+                <span
+                    class="legend-line cost"
+                ></span>
+                Lowest Cost
+            </div>
+
+            <hr>
+
+            <div class="legend-marker">
+                🚜 Pickup
+            </div>
+
+            <div class="legend-marker">
+                📍 Destination
+            </div>
+
+        `;
+
+        return div;
+    };
+
+legend.addTo(map);
+        }
+
+
+        /* ============================================================
+           CLEAR
+        ============================================================ */
+
+        function clearPlan() {
+
+            currentOrder = null;
+
+            selectedDriver = null;
+
+            selectedRoute =
+                "AI Recommended";
+
+
+            document.getElementById(
+                "shipment"
+            ).value = "";
+
+
+            document.getElementById(
+                "pickup"
+            ).textContent =
+                "—";
+
+
+            document.getElementById(
+                "destination"
+            ).textContent =
+                "—";
+
+
+            document.getElementById(
+                "produce"
+            ).textContent =
+                "—";
+
+
+            document.getElementById(
+                "aiText"
+            ).textContent =
+                "Select a shipment to calculate route recommendations.";
+
+
+            document
+                .querySelectorAll(
+                    ".route"
+                )
+                .forEach(
+                    (route, index) =>
+                        route.classList.toggle(
+                            "selected",
+                            index === 0
+                        )
+                );
+
+
+            renderDrivers();
+
+            updateSummary();
+
+        }
+
+
+        /* ============================================================
+           SECURITY
+        ============================================================ */
+
+        function escapeHtml(
+            value
+        ) {
+
+            return String(
+                value ?? ""
+            )
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        function escapeAttribute(
+            value
+        ) {
+
+            return escapeHtml(
+                value
+            );
+
+        }
+
+
+        /* ============================================================
+           SIDEBAR
+        ============================================================ */
+
+        function initializeSidebar() {
+
+            const sidebar =
+                document.getElementById(
+                    "sidebar"
+                );
+
+
+            const mainArea =
+                document.getElementById(
+                    "mainArea"
+                );
+
+
+            const toggle =
+                document.getElementById(
+                    "sidebarToggle"
+                );
+
+
+            toggle.addEventListener(
+                "click",
+                function() {
+
+                    if (
+                        window.innerWidth <=
+                        768
+                    ) {
+
+                        sidebar.classList.toggle(
+                            "open"
+                        );
+
+                    } else {
+
+                        sidebar.classList.toggle(
+                            "collapsed"
+                        );
+
+                        mainArea.classList.toggle(
+                            "expanded"
+                        );
+
+                    }
+
+                }
+            );
+
+
+            document.addEventListener(
+                "click",
+                function(event) {
+
+                    if (
+                        window.innerWidth <=
+                        768 &&
+                        !sidebar.contains(
+                            event.target
+                        ) &&
+                        !toggle.contains(
+                            event.target
+                        )
+                    ) {
+
+                        sidebar.classList.remove(
+                            "open"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* ============================================================
+           SUBSCRIBE
+        ============================================================ */
+
+        document
+            .getElementById(
+                "subForm"
+            )
+            .addEventListener(
+                "submit",
+                function(event) {
+
+                    event.preventDefault();
+
+
+                    const email =
+                        document.getElementById(
+                            "subEmail"
+                        ).value.trim();
+
+
+                    if (!email) {
+
+                        return;
+
+                    }
+
+
+                    alert(
+                        "Subscribed successfully."
+                    );
+
+
+                    document.getElementById(
+                        "subEmail"
+                    ).value = "";
+
+                }
+            );
+
+
+        /* ============================================================
+           INITIALIZE
+        ============================================================ */
+
+        document.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+        if (!getToken()) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        initializeSidebar();
+
+        initializeMap();
+
+
+        await Promise.all([
+            loadDrivers(),
+            loadOrders(),
+            loadTracking()
+        ]);
+
+    }
+);
+    </script>
+<div
+id="routeModal"
+class="route-modal"
+>
+
+<div
+    class="route-modal-backdrop"
+    onclick="closeRouteModal()"
+></div>
+
+
+<div class="route-modal-box">
+
+    <button
+        class="route-modal-close"
+        onclick="closeRouteModal()"
+    >
+        ×
+    </button>
+
+
+    <div
+        id="routeModalContent"
+    ></div>
+
+</div>
+
+</div>
+<script>
+
+  function closeRouteModal() {
+  
+      const modal =
+          document.getElementById(
+              "routeModal"
+          );
+  
+      if (modal) {
+  
+          modal.classList.remove(
+              "open"
+          );
+  
+      }
+  
+  }
+  async function openTrackingModal(delivery) {
+
+const modal =
+    document.getElementById("trackingModal");
+
+const content =
+    document.getElementById(
+        "trackingModalContent"
+    );
+
+const status =
+    String(
+        delivery.status ||
+        "IN_TRANSIT"
+    )
+    .trim()
+    .toUpperCase();
+
+const statusText =
+    status.replaceAll("_", " ");
+
+const orderId =
+    delivery.order_id ||
+    delivery.delivery_id ||
+    "Shipment";
+
+const eta =
+    delivery.eta_hours != null
+        ? `${Number(delivery.eta_hours).toFixed(1)} hrs`
+        : "—";
+
+
+/*
+ * ---------------------------------------------------------
+ * GET LOCATIONS
+ *
+ * Delivery records may not contain coordinates.
+ * Therefore use the order-location endpoint as fallback.
+ * ---------------------------------------------------------
+ */
+
+let pickup =
+    delivery.pickup_location ||
+    null;
+
+let destination =
+    delivery.destination ||
+    null;
+
+
+if (
+    !pickup?.latitude ||
+    !pickup?.longitude ||
+    !destination?.latitude ||
+    !destination?.longitude
+) {
+
+    try {
+
+        const locationData =
+            await apiGet(
+                `/api/logistics/order/${encodeURIComponent(orderId)}`
+            );
+
+        pickup =
+            locationData.pickup_location ||
+            pickup ||
+            {};
+
+        destination =
+            locationData.destination ||
+            destination ||
+            {};
+
+    } catch (error) {
+
+        console.warn(
+            "Unable to load order locations:",
+            error
+        );
+
+    }
+
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * BUILD JOURNEY DATA
+ * ---------------------------------------------------------
+ */
+
+let route = null;
+
+try {
+
+    if (
+        pickup?.latitude &&
+        pickup?.longitude &&
+        destination?.latitude &&
+        destination?.longitude
+    ) {
+
+        const routeData =
+            await apiPost(
+                "/api/routes",
+                {
+                    pickup: {
+                        latitude:
+                            Number(
+                                pickup.latitude
+                            ),
+
+                        longitude:
+                            Number(
+                                pickup.longitude
+                            )
+                    },
+
+                    destination: {
+                        latitude:
+                            Number(
+                                destination.latitude
+                            ),
+
+                        longitude:
+                            Number(
+                                destination.longitude
+                            )
+                    }
+                }
+            );
+
+        const routes =
+            routeData.routes ||
+            {};
+
+        route =
+            routes[
+                delivery.route_choice
+            ] ||
+            routes[
+                "AI Recommended"
+            ] ||
+            routes[
+                "Fastest"
+            ] ||
+            null;
+
+    }
+
+} catch (error) {
+
+    console.warn(
+        "Tracking route calculation failed:",
+        error
+    );
+
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * TRANSIT POINTS
+ * ---------------------------------------------------------
+ */
+
+let transitPoints = [];
+
+
+if (
+    route?.transitCities?.length
+) {
+
+    transitPoints =
+        route.transitCities;
+
+} else if (
+    route?.steps?.length
+) {
+
+    /*
+     * Use route steps as fallback.
+     * Remove duplicate road names.
+     */
+
+    const seen =
+        new Set();
+
+    route.steps.forEach(
+        step => {
+
+            const name =
+                step.name?.trim();
+
+            if (
+                name &&
+                !seen.has(name)
+            ) {
+
+                seen.add(name);
+
+                transitPoints.push({
+
+                    name:
+                        name,
+
+                    latitude:
+                        Number(
+                            step.location?.[1]
+                        ),
+
+                    longitude:
+                        Number(
+                            step.location?.[0]
+                        )
+
+                });
+
+            }
+
+        }
+    );
+
+}
+
+
+/*
+ * Keep the modal readable.
+ */
+
+transitPoints =
+    transitPoints.slice(
+        0,
+        8
+    );
+
+
+/*
+ * ---------------------------------------------------------
+ * CURRENT STATUS
+ * ---------------------------------------------------------
+ *
+ * We only claim a current city if actual driver GPS
+ * coordinates exist.
+ */
+
+const driver =
+    delivery.driver ||
+    {};
+
+const driverLocation =
+    getDriverCoordinates(
+        driver
+    );
+
+
+let currentText =
+    "Shipment is currently in transit.";
+
+let currentSub =
+    "Live driver location is not available yet.";
+
+
+if (
+    status === "PICKED_UP"
+) {
+
+    currentText =
+        "Shipment picked up";
+
+    currentSub =
+        "Produce has been collected from the pickup location.";
+
+} else if (
+    status === "DISPATCHED"
+) {
+
+    currentText =
+        "Shipment dispatched";
+
+    currentSub =
+        "The vehicle has started the delivery journey.";
+
+} else if (
+    status === "IN_TRANSIT"
+) {
+
+    currentText =
+        "Shipment is in transit";
+
+    currentSub =
+        "The vehicle is travelling towards the destination.";
+
+} else if (
+    status === "OUT_FOR_DELIVERY"
+) {
+
+    currentText =
+        "Out for delivery";
+
+    currentSub =
+        "The shipment is approaching the destination.";
+
+}
+
+
+if (driverLocation) {
+
+    currentText =
+        "Driver location available";
+
+    currentSub =
+        "The vehicle's latest GPS position is shown on the map.";
+
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * JOURNEY HTML
+ * ---------------------------------------------------------
+ */
+
+const journeyItems = [];
+
+
+journeyItems.push({
+
+    name:
+        "Pickup",
+
+    description:
+        [
+            pickup?.address,
+            pickup?.city,
+            pickup?.state
+        ]
+            .filter(Boolean)
+            .join(", ") ||
+        "Pickup location",
+
+    type:
+        "start"
+
+});
+
+
+transitPoints.forEach(
+    point => {
+
+        journeyItems.push({
+
+            name:
+                point.name,
+
+            description:
+                "Transit point",
+
+            type:
+                "transit"
+
+        });
+
+    }
+);
+
+
+journeyItems.push({
+
+    name:
+        "Destination",
+
+    description:
+        [
+            destination?.address,
+            destination?.city,
+            destination?.state
+        ]
+            .filter(Boolean)
+            .join(", ") ||
+        "Destination",
+
+    type:
+        "destination"
+
+});
+
+
+/*
+ * Determine which journey stage is highlighted.
+ */
+
+let currentIndex = 0;
+
+if (
+    status === "PICKED_UP"
+) {
+
+    currentIndex = 1;
+
+} else if (
+    status === "DISPATCHED" ||
+    status === "IN_TRANSIT"
+) {
+
+    currentIndex =
+        Math.min(
+            Math.max(
+                1,
+                Math.floor(
+                    journeyItems.length / 2
+                )
+            ),
+            journeyItems.length - 2
+        );
+
+} else if (
+    status === "OUT_FOR_DELIVERY"
+) {
+
+    currentIndex =
+        Math.max(
+            journeyItems.length - 2,
+            1
+        );
+
+}
+
+
+const journeyHTML =
+    journeyItems
+        .map(
+            (item, index) => {
+
+                const completed =
+                    index <
+                    currentIndex;
+
+                const current =
+                    index ===
+                    currentIndex;
+
+                let icon =
+                    index === 0
+                        ? "🚜"
+                        : index ===
+                          journeyItems.length - 1
+                            ? "📍"
+                            : "•";
+
+                if (current) {
+                    icon = "🚚";
+                }
+
+                return `
+
+                    <div class="
+                        journey-item
+                        ${completed ? "completed" : ""}
+                        ${current ? "current" : ""}
+                    ">
+
+                        <div class="journey-dot">
+                            ${icon}
+                        </div>
+
+                        <div class="journey-content">
+
+                            <strong>
+                                ${escapeHtml(
+                                    item.name
+                                )}
+                            </strong>
+
+                            <span>
+                                ${escapeHtml(
+                                    item.description
+                                )}
+                            </span>
+
+                            ${
+                                current
+                                    ? `
+                                        <span class="journey-current">
+                                            CURRENT STAGE
+                                        </span>
+                                      `
+                                    : ""
+                            }
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+
+/*
+ * ---------------------------------------------------------
+ * MODAL
+ * ---------------------------------------------------------
+ */
+
+content.innerHTML = `
+
+    <div class="tracking-header">
+
+        <h2>
+            Shipment Tracking
+        </h2>
+
+        <p>
+            ${escapeHtml(orderId)}
+        </p>
+
+    </div>
+
+
+    <div class="tracking-info-grid">
+
+        <div class="tracking-info">
+
+            <strong>
+                ${escapeHtml(
+                    delivery.driver_name ||
+                    "Driver pending"
+                )}
+            </strong>
+
+            <span>
+                Driver
+            </span>
+
+        </div>
+
+
+        <div class="tracking-info">
+
+            <strong>
+                ${escapeHtml(
+                    delivery.vehicle_number ||
+                    "—"
+                )}
+            </strong>
+
+            <span>
+                Vehicle
+            </span>
+
+        </div>
+
+
+        <div class="tracking-info">
+
+            <strong>
+                ${escapeHtml(
+                    statusText
+                )}
+            </strong>
+
+            <span>
+                Status
+            </span>
+
+        </div>
+
+
+        <div class="tracking-info">
+
+            <strong>
+                ${escapeHtml(
+                    eta
+                )}
+            </strong>
+
+            <span>
+                Estimated arrival
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="tracking-current">
+
+        <div class="tracking-current-title">
+            Current status
+        </div>
+
+        <div class="tracking-current-main">
+            ${escapeHtml(
+                currentText
+            )}
+        </div>
+
+        <div class="tracking-current-sub">
+            ${escapeHtml(
+                currentSub
+            )}
+        </div>
+
+    </div>
+
+
+    <div class="tracking-layout">
+
+        <div>
+
+            <div
+                id="trackingMap"
+                class="tracking-map"
+            ></div>
+
+        </div>
+
+
+        <div class="tracking-journey">
+
+            <div class="tracking-journey-title">
+                Shipment Journey
+            </div>
+
+            ${journeyHTML}
+
+            ${
+                driverLocation
+                    ? ""
+                    : `
+                        <div class="tracking-note">
+                            📡 Live driver GPS is not connected yet.
+                            The journey shown is the planned route.
+                        </div>
+                      `
+            }
+
+        </div>
+
+    </div>
+
+`;
+
+
+modal.classList.add(
+    "open"
+);
+
+
+/*
+ * Wait until modal is visible,
+ * then initialize Leaflet.
+ */
+
+setTimeout(
+    () => {
+
+        initializeTrackingMap(
+            {
+                delivery,
+                pickup,
+                destination,
+                route,
+                driverLocation
+            }
+        );
+
+    },
+    150
+);
+
+}
+async function initializeTrackingMap(data) {
+
+const delivery =
+    data.delivery;
+
+const pickup =
+    data.pickup;
+
+const destination =
+    data.destination;
+
+const route =
+    data.route;
+
+const driverLocation =
+    data.driverLocation;
+
+
+const mapElement =
+    document.getElementById(
+        "trackingMap"
+    );
+
+
+if (!mapElement) {
+    return;
+}
+
+
+/*
+ * Remove previous map.
+ */
+
+if (
+    window.trackingMap
+) {
+
+    window.trackingMap.remove();
+
+    window.trackingMap =
+        null;
+
+}
+
+
+const pickupLat =
+    Number(
+        pickup?.latitude
+    );
+
+const pickupLng =
+    Number(
+        pickup?.longitude
+    );
+
+const destinationLat =
+    Number(
+        destination?.latitude
+    );
+
+const destinationLng =
+    Number(
+        destination?.longitude
+    );
+
+
+if (
+    !Number.isFinite(pickupLat) ||
+    !Number.isFinite(pickupLng) ||
+    !Number.isFinite(destinationLat) ||
+    !Number.isFinite(destinationLng)
+) {
+
+    mapElement.innerHTML = `
+
+        <div style="
+            height:100%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#6b7280;
+            font-size:13px;
+            text-align:center;
+            padding:20px;
+            box-sizing:border-box;
+        ">
+
+            📍 Tracking map unavailable.<br>
+            Location coordinates are missing.
+
+        </div>
+
+    `;
+
+    return;
+
+}
+
+
+/*
+ * Create map.
+ */
+
+const trackingMap =
+    L.map(
+        "trackingMap"
+    );
+
+
+window.trackingMap =
+    trackingMap;
+
+
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        maxZoom:
+            19,
+
+        attribution:
+            "© OpenStreetMap contributors"
+    }
+)
+.addTo(
+    trackingMap
+);
+
+
+/*
+ * ---------------------------------------------------------
+ * PICKUP MARKER
+ * ---------------------------------------------------------
+ */
+
+const pickupIcon =
+    L.divIcon({
+
+        className:
+            "",
+
+        html: `
+            <div class="tracking-map-marker">
+                🚜
+            </div>
+        `,
+
+        iconSize:
+            [34, 34],
+
+        iconAnchor:
+            [17, 17]
+
+    });
+
+
+L.marker(
+    [
+        pickupLat,
+        pickupLng
+    ],
+    {
+        icon:
+            pickupIcon
+    }
+)
+.addTo(
+    trackingMap
+)
+.bindPopup(
+    `
+        <strong>🚜 Pickup</strong><br>
+        ${escapeHtml(
+            pickup.address ||
+            pickup.city ||
+            "Pickup location"
+        )}
+    `
+);
+
+
+/*
+ * ---------------------------------------------------------
+ * DESTINATION MARKER
+ * ---------------------------------------------------------
+ */
+
+const destinationIcon =
+    L.divIcon({
+
+        className:
+            "",
+
+        html: `
+            <div class="tracking-map-marker">
+                📍
+            </div>
+        `,
+
+        iconSize:
+            [34, 34],
+
+        iconAnchor:
+            [17, 17]
+
+    });
+
+
+L.marker(
+    [
+        destinationLat,
+        destinationLng
+    ],
+    {
+        icon:
+            destinationIcon
+    }
+)
+.addTo(
+    trackingMap
+)
+.bindPopup(
+    `
+        <strong>📍 Destination</strong><br>
+        ${escapeHtml(
+            destination.address ||
+            destination.city ||
+            "Destination"
+        )}
+    `
+);
+
+
+/*
+ * ---------------------------------------------------------
+ * ROUTE
+ * ---------------------------------------------------------
+ */
+
+let routeLayer =
+    null;
+
+
+if (
+    route?.geometry
+) {
+
+    routeLayer =
+        L.geoJSON(
+            route.geometry,
+            {
+                style: {
+
+                    color:
+                        "#159447",
+
+                    weight:
+                        6,
+
+                    opacity:
+                        0.85
+
+                }
+            }
+        )
+        .addTo(
+            trackingMap
+        );
+
+} else {
+
+    routeLayer =
+        L.polyline(
+            [
+                [
+                    pickupLat,
+                    pickupLng
+                ],
+
+                [
+                    destinationLat,
+                    destinationLng
+                ]
+            ],
+            {
+                color:
+                    "#159447",
+
+                weight:
+                    5,
+
+                dashArray:
+                    "8, 8"
+            }
+        )
+        .addTo(
+            trackingMap
+        );
+
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * TRANSIT CITY MARKERS
+ * ---------------------------------------------------------
+ */
+
+const transitPoints =
+    route?.transitCities ||
+    [];
+
+
+transitPoints.forEach(
+    (point, index) => {
+
+        const lat =
+            Number(
+                point.latitude
+            );
+
+        const lng =
+            Number(
+                point.longitude
+            );
+
+
+        if (
+            !Number.isFinite(lat) ||
+            !Number.isFinite(lng)
+        ) {
+
+            return;
+
+        }
+
+
+        const icon =
+            L.divIcon({
+
+                className:
+                    "",
+
+                html: `
+                    <div class="tracking-transit-marker">
+                        ${index + 1}
+                    </div>
+                `,
+
+                iconSize:
+                    [25, 25],
+
+                iconAnchor:
+                    [12.5, 12.5]
+
+            });
+
+
+        L.marker(
+            [
+                lat,
+                lng
+            ],
+            {
+                icon:
+                    icon
+            }
+        )
+        .addTo(
+            trackingMap
+        )
+        .bindTooltip(
+            `
+                <strong>
+                    ${escapeHtml(
+                        point.name ||
+                        "Transit point"
+                    )}
+                </strong>
+            `,
+            {
+                direction:
+                    "top"
+            }
+        );
+
+    }
+);
+
+
+/*
+ * ---------------------------------------------------------
+ * LIVE DRIVER MARKER
+ * ---------------------------------------------------------
+ */
+
+if (
+    driverLocation
+) {
+
+    const driverIcon =
+        L.divIcon({
+
+            className:
+                "",
+
+            html: `
+                <div class="tracking-map-marker">
+                    🚚
+                </div>
+            `,
+
+            iconSize:
+                [34, 34],
+
+            iconAnchor:
+                [17, 17]
+
+        });
+
+
+    L.marker(
+        [
+            driverLocation.latitude,
+            driverLocation.longitude
+        ],
+        {
+            icon:
+                driverIcon
+        }
+    )
+    .addTo(
+        trackingMap
+    )
+    .bindPopup(
+        "<strong>🚚 Current Driver Location</strong>"
+    )
+    .openPopup();
+
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * FIT MAP
+ * ---------------------------------------------------------
+ */
+
+if (
+    routeLayer
+) {
+
+    trackingMap.fitBounds(
+        routeLayer.getBounds(),
+        {
+            padding:
+                [
+                    35,
+                    35
+                ]
+        }
+    );
+
+} else {
+
+    trackingMap.fitBounds(
+        [
+            [
+                pickupLat,
+                pickupLng
+            ],
+
+            [
+                destinationLat,
+                destinationLng
+            ]
+        ],
+        {
+            padding:
+                [
+                    35,
+                    35
+                ]
+        }
+    );
+
+}
+
+
+/*
+ * Leaflet needs this after the modal becomes visible.
+ */
+
+setTimeout(
+    () => {
+
+        trackingMap.invalidateSize();
+
+    },
+    200
+);
+
+}
+
+function closeTrackingModal() {
+
+const modal =
+    document.getElementById(
+        "trackingModal"
+    );
+
+
+if (modal) {
+
+    modal.classList.remove(
+        "open"
+    );
+
+}
+
+
+if (
+    window.trackingMap
+) {
+
+    window.trackingMap.remove();
+
+    window.trackingMap =
+        null;
+
+}
+
+}
+  </script>
+<!-- ============================================================
+     TRACKING MODAL
+============================================================ -->
+
+<div
+    id="trackingModal"
+    class="tracking-modal"
+>
+
+    <div
+        class="tracking-backdrop"
+        onclick="closeTrackingModal()"
+    ></div>
+
+
+    <div class="tracking-modal-box">
+
+        <button
+            type="button"
+            class="tracking-close"
+            onclick="closeTrackingModal()"
+        >
+            ×
+        </button>
+
+
+        <div
+            id="trackingModalContent"
+        >
+
+            <!-- Filled by JavaScript -->
+
+        </div>
+
+
+        <div
+            id="trackingMap"
+            class="tracking-map"
+        ></div>
+
+    </div>
+
+</div>
+</body>
+
+</html>

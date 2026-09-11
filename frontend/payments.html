@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments &amp; Invoices — AgriCentre</title>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+
+        :root {
+            --brand: #2f9e5c;
+            --brand-dark: #1f7a44;
+            --brand-light: #5cc98a;
+            --bg: #0d0e10;
+            --bg2: #14161a;
+            --bg3: #1c1f25;
+            --surface: #22262e;
+            --surface2: #191c21;
+            --border: #2e3340;
+            --text: #e8eaf0;
+            --muted: #8b909e;
+            --sidebar-w: 258px;
+            --nav-h: 64px;
+            --tr: 0.22s cubic-bezier(.4,0,.2,1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body { min-height: 100%; }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        button, input, select { font: inherit; }
+
+        /* ========================= NAVBAR ========================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: var(--nav-h);
+            background: var(--bg2);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 12px;
+            box-shadow: 0 2px 12px #0005;
+        }
+
+        .nav-toggle {
+            background: none;
+            border: 0;
+            color: #fff;
+            font-size: 20px;
+            padding: 6px 8px;
+            cursor: pointer;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand);
+            border-radius: 8px;
+            font-size: 20px;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font: 700 32px Rajdhani, sans-serif;
+            line-height: 1;
+        }
+
+        .brand-nameX { color: var(--brand); }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: #ddd;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            margin-left: auto;
+            display: flex;
+            gap: 5px;
+        }
+
+        .nav-links a {
+            color: #9aa7bb;
+            padding: 9px 11px;
+            border-radius: 7px;
+            font-size: 13px;
+            transition: var(--tr);
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            background: #ffffff0f;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 7px;
+            margin-left: 8px;
+        }
+
+        .nav-btn {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg3);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover { border-color: #4b5362; }
+
+        .nav-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 16px;
+            height: 16px;
+            padding: 0 4px;
+            border-radius: 10px;
+            background: #e05d55;
+            color: #fff;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ========================= LAYOUT ========================= */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--nav-h);
+        }
+
+        /* ========================= SIDEBAR ========================= */
+        .sidebar {
+            position: fixed;
+            top: var(--nav-h);
+            left: 0;
+            bottom: 0;
+            z-index: 900;
+            width: var(--sidebar-w);
+            overflow-y: auto;
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            padding: 22px 14px;
+            transition: width var(--tr), transform var(--tr);
+        }
+
+        .sidebar.collapsed {
+            width: 76px;
+        }
+
+        .sb-section { margin-bottom: 22px; }
+
+        .sb-label {
+            padding: 0 12px 8px;
+            color: #70798a;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .sb-link {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 12px;
+            margin-bottom: 3px;
+            border-radius: 8px;
+            color: #9aa3b2;
+            font-size: 13px;
+            font-weight: 600;
+            transition: var(--tr);
+        }
+
+        .sb-link:hover {
+            background: #ffffff08;
+            color: #fff;
+        }
+
+        .sb-link.active {
+            background: #2f9e5c1c;
+            color: #62c989;
+            border: 1px solid #2f9e5c25;
+        }
+
+        .si {
+            width: 23px;
+            min-width: 23px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .sidebar.collapsed .sb-label,
+        .sidebar.collapsed .sl {
+            display: none;
+        }
+
+        .sidebar.collapsed .sb-link {
+            justify-content: center;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        /* ========================= MAIN ========================= */
+        .main {
+            width: calc(100% - var(--sidebar-w));
+            margin-left: var(--sidebar-w);
+            transition: width var(--tr), margin-left var(--tr);
+            min-width: 0;
+        }
+
+        .main.expanded {
+            width: calc(100% - 76px);
+            margin-left: 76px;
+        }
+
+        .page-content {
+            padding: 34px 34px 48px;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .page-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .eyebrow {
+            color: var(--brand-light);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .title {
+            font-size: 31px;
+            line-height: 1.15;
+            color: #fff;
+            margin-bottom: 7px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .head-tools {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .refresh-btn {
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: #dfe4ed;
+            border-radius: 9px;
+            padding: 10px 14px;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover { border-color: #4a5260; }
+
+        /* ========================= STATS ========================= */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 13px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 16px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        /* ========================= TOOLBAR ========================= */
+        .toolbar {
+            display: flex;
+            gap: 9px;
+            margin-bottom: 15px;
+        }
+
+        .search,
+        .filter {
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: var(--surface2);
+            color: #e8eaf0;
+            outline: none;
+            padding: 11px 13px;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 230px;
+        }
+
+        .filter { min-width: 190px; }
+
+        .search::placeholder { color: #666e7d; }
+
+        .search:focus,
+        .filter:focus { border-color: #4d8c63; }
+
+        .filter option {
+            background: var(--surface2);
+            color: #fff;
+        }
+
+        /* ========================= PAYMENT CARDS ========================= */
+        .payment-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 13px;
+        }
+
+        .payment-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 17px;
+            transition: var(--tr);
+        }
+
+        .payment-card:hover {
+            border-color: #414958;
+            transform: translateY(-1px);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .order-id {
+            color: #737c8d;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .produce {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .status {
+            white-space: nowrap;
+            border-radius: 20px;
+            padding: 5px 9px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .status.payment-due { background: #5a431b; color: #f3c66f; }
+        .status.advance-paid { background: #183d28; color: #69d493; }
+        .status.final-due { background: #1d3550; color: #7eb9ef; }
+        .status.complete { background: #173e2b; color: #69d59a; }
+        .status.failed { background: #4a2525; color: #f18a83; }
+        .status.cancelled { background: #303238; color: #a2a7b0; }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 11px 16px;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            display: block;
+            color: #6f7887;
+            font-size: 10px;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .detail-value {
+            color: #dce1e8;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .payment-progress {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 13px 0;
+            margin-bottom: 13px;
+        }
+
+        .progress-title {
+            display: flex;
+            justify-content: space-between;
+            color: #8f98a7;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .progress-title strong { color: #dce3e9; }
+
+        .progress-bar {
+            height: 7px;
+            background: #111318;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--brand);
+            border-radius: 20px;
+            transition: width .3s ease;
+        }
+
+        .stages {
+            display: flex;
+            gap: 7px;
+            margin-top: 10px;
+        }
+
+        .stage {
+            flex: 1;
+            font-size: 10px;
+            padding: 8px;
+            border-radius: 7px;
+            background: #191c21;
+            color: #737c88;
+        }
+
+        .stage.paid {
+            background: #173324;
+            color: #69cf8d;
+        }
+
+        .stage.due {
+            background: #42341b;
+            color: #e9bf68;
+        }
+
+        .stage.locked {
+            background: #1b1d21;
+            color: #737a83;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 8px;
+            padding: 9px 12px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #b9c2cf;
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover { border-color: #586171; color: #fff; }
+
+        .btn-primary {
+            background: var(--brand);
+            color: #fff;
+        }
+
+        .btn-primary:hover { background: var(--brand-dark); }
+
+        .btn-disabled {
+            background: #1a1d22;
+            color: #6f7782;
+            cursor: not-allowed;
+            border: 1px solid #272c35;
+        }
+
+        .empty,
+        .loader {
+            grid-column: 1 / -1;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            text-align: center;
+            padding: 55px 20px;
+            color: var(--muted);
+        }
+
+        .empty strong {
+            display: block;
+            color: #dfe4eb;
+            margin-bottom: 6px;
+        }
+
+        /* ========================= MODAL ========================= */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #0009;
+            z-index: 1500;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal {
+            width: min(720px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 20px 60px #0009;
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .modal-head h2 {
+            color: #fff;
+            font-size: 21px;
+        }
+
+        .close {
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: #b7bfca;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 19px;
+        }
+
+        .modal-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 14px;
+            margin-bottom: 11px;
+        }
+
+        .modal-section h3 {
+            color: #65c989;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-bottom: 11px;
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .modal-item span {
+            display: block;
+            color: #707989;
+            font-size: 10px;
+            margin-bottom: 3px;
+        }
+
+        .modal-item strong {
+            color: #dce1e8;
+            font-size: 12px;
+        }
+
+        .payment-stage {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 11px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .payment-stage:last-child { border-bottom: 0; }
+
+        .stage-name {
+            color: #e3e7ed;
+            font-weight: 800;
+            font-size: 12px;
+        }
+
+        .stage-amount {
+            color: #747d8a;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        /* ========================= FOOTER ========================= */
+        footer {
+            background: #111318;
+            border-top: 1px solid var(--border);
+            padding: 38px 34px 0;
+        }
+
+        .ft-grid {
+            max-width: 1500px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.7fr 1fr 1fr 1.2fr;
+            gap: 35px;
+            padding-bottom: 30px;
+        }
+
+        .ft-brand {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .ft-brand span { color: var(--brand); }
+
+        .ft-desc {
+            color: #737b89;
+            font-size: 11px;
+            line-height: 1.7;
+            max-width: 390px;
+        }
+
+        .ft-col {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .ft-col h4 {
+            color: #9ca5b2;
+            font-size: 10px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .ft-col a {
+            color: #6f7886;
+            font-size: 11px;
+            transition: var(--tr);
+        }
+
+        .ft-col a:hover { color: #fff; }
+
+        .sub-box p {
+            color: #6f7886;
+            font-size: 11px;
+            line-height: 1.5;
+            margin-bottom: 9px;
+        }
+
+        .sub-form {
+            display: flex;
+            gap: 7px;
+        }
+
+        .sub-input {
+            flex: 1;
+            min-width: 0;
+            padding: 9px 11px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #191c21;
+            color: #fff;
+            outline: none;
+            font-size: 11px;
+        }
+
+        .sub-input::placeholder { color: #5d6572; }
+
+        .sub-btn {
+            padding: 9px 13px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--brand);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .ft-bottom {
+            max-width: 1500px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 14px 0;
+            border-top: 1px solid var(--border);
+            color: #555d69;
+            font-size: 10px;
+        }
+
+        .ft-links {
+            display: flex;
+            gap: 14px;
+        }
+
+        .ft-links a:hover { color: #9aa3af; }
+
+        /* ========================= ACCESS / TOAST ========================= */
+        .toast {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 2000;
+            display: none;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #191c21;
+            color: #fff;
+            font-size: 12px;
+            box-shadow: 0 8px 30px #0008;
+        }
+
+        .toast.show { display: block; }
+        .toast.error { background: #542624; }
+
+        .access-denied {
+            display: none;
+            max-width: 620px;
+            margin: 80px auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 35px;
+            text-align: center;
+        }
+
+        .access-denied h2 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .access-denied p {
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* ========================= RESPONSIVE ========================= */
+        @media (max-width: 1100px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .payment-list { grid-template-columns: 1fr; }
+            .ft-grid { grid-template-columns: 1.5fr 1fr 1fr; }
+            .ft-grid > :last-child { grid-column: 1 / -1; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-w);
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open { transform: translateX(0); }
+            .sidebar.collapsed { width: var(--sidebar-w); }
+
+            .sidebar.collapsed .sb-label,
+            .sidebar.collapsed .sl {
+                display: block;
+            }
+
+            .sidebar.collapsed .sb-link {
+                justify-content: flex-start;
+            }
+
+            .main,
+            .main.expanded {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .nav-links { display: none; }
+
+            .page-content {
+                padding: 28px 20px 34px;
+            }
+
+            .page-head {
+                display: block;
+            }
+
+            .head-tools {
+                margin-top: 15px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .search,
+            .filter {
+                width: 100%;
+            }
+
+            .ft-grid {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+
+            .ft-grid > :last-child { grid-column: auto; }
+
+            footer { padding: 35px 20px 0; }
+        }
+
+        @media (max-width: 520px) {
+            .stats { grid-template-columns: 1fr 1fr; }
+            .details-grid,
+            .modal-grid { grid-template-columns: 1fr; }
+            .stages { flex-direction: column; }
+            .card-actions { flex-direction: column; }
+            .card-actions .btn { width: 100%; }
+            .modal-actions { flex-direction: column-reverse; }
+            .modal-actions .btn { width: 100%; }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <button class="nav-toggle" id="sidebarToggle" type="button">☰</button>
+
+    <a href="index.html" class="nav-brand">
+        <div class="logo">🚜</div>
+        <div class="brand-text">
+            <span class="brand-name">Agri<span class="brand-nameX">Centre</span></span>
+            <span class="brand-subtitle">Smart India Hackathon 2026</span>
+        </div>
+    </a>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="features.html">Features</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="team.html">Team</a>
+        <a href="contact.html">Contact</a>
+        <a href="profile.html">Profile</a>
+        <a href="#" onclick="logout(); return false;">Logout</a>
+    </div>
+
+    <div class="nav-right">
+        <button class="nav-btn" onclick="location.href='alerts.html'" title="Notifications">
+            🔔
+            <span class="nav-badge">3</span>
+        </button>
+        <button class="nav-btn" onclick="location.href='ai-assistant.html'" title="AI Assistant">🤖</button>
+    </div>
+</nav>
+
+<div class="layout">
+
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main" id="mainArea">
+
+        <section class="page-content" id="paymentContent">
+
+            <div class="page-head">
+                <div>
+                    <div class="eyebrow" id="roleEyebrow">Vendor Finance</div>
+                    <h1 class="title">Payments &amp; Invoices</h1>
+                    <p class="subtitle">
+                        Manage your 50% advance payment and the remaining 50% after delivery.
+                    </p>
+                </div>
+
+                <div class="head-tools">
+                    <span class="user-chip" id="welcomeUser">Buyer</span>
+                    <button class="refresh-btn" onclick="loadPayments()">↻ Refresh</button>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Total Order Value</div>
+                    <div class="stat-value" id="totalValue">₹0</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">Amount Paid</div>
+                    <div class="stat-value" id="paidValue">₹0</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">Remaining</div>
+                    <div class="stat-value" id="remainingValue">₹0</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">Orders Fully Paid</div>
+                    <div class="stat-value" id="paidOrders">0</div>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <input
+                    id="searchInput"
+                    class="search"
+                    type="search"
+                    placeholder="Search order, produce, farmer..."
+                    oninput="renderPayments()"
+                >
+
+                <select id="statusFilter" class="filter" onchange="renderPayments()">
+                    <option value="ALL">All Payments</option>
+                    <option value="PAYMENT_DUE">Payment Due</option>
+                    <option value="ADVANCE_PAID">Advance Paid</option>
+                    <option value="FINAL_PAYMENT_DUE">Final Payment Due</option>
+                    <option value="COMPLETELY_PAID">Completely Paid</option>
+                    <option value="PAYMENT_FAILED">Payment Failed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                </select>
+            </div>
+
+            <div id="paymentList" class="payment-list">
+                <div class="loader">Loading payments...</div>
+            </div>
+
+        </section>
+
+        <section id="accessDenied" class="access-denied">
+            <h2>Payments are for buyers only</h2>
+            <p>
+                Farmer accounts do not make payments through checkout.
+                Payments are available to Vendor and Wholesaler / Bulk Buyer accounts.
+            </p>
+            <a class="btn btn-primary" href="marketplace.html">Go to Marketplace</a>
+        </section>
+
+        <footer>
+            <div class="ft-grid">
+
+                <div>
+                    <div class="ft-brand">Agri<span>Centre</span></div>
+                    <p class="ft-desc">
+                        A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.
+                    </p>
+                </div>
+
+                <div class="ft-col">
+                    <h4>Platform</h4>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="marketplace.html">Marketplace</a>
+                    <a href="buyer-orders.html">Orders</a>
+                    <a href="buyer-logistics.html">Delivery Tracking</a>
+                </div>
+
+                <div class="ft-col">
+                    <h4>AI &amp; Tools</h4>
+                    <a href="dashboard.html#aiInsights">AI Market Insights</a>
+                    <a href="ai-assistant.html">AI Assistant</a>
+                    <a href="reports.html">Reports Center</a>
+                </div>
+
+                <div class="ft-col">
+                    <h4>Stay Updated</h4>
+                    <div class="sub-box">
+                        <p>Get alerts and platform updates via email.</p>
+                        <form class="sub-form" id="subForm">
+                            <input class="sub-input" id="subEmail" type="email" placeholder="Your email address" required>
+                            <button class="sub-btn" type="submit">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="ft-bottom">
+                <span>
+                    © 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution
+                </span>
+
+                <div class="ft-links">
+                    <a href="privacy.html">Privacy &amp; Terms</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+</div>
+
+<div id="detailsModal" class="modal-overlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+
+        <div class="modal-head">
+            <div>
+                <div class="eyebrow">Payment Details</div>
+                <h2 id="modalTitle">Order Details</h2>
+            </div>
+            <button class="close" onclick="closeModal()">×</button>
+        </div>
+
+        <div id="modalBody"></div>
+
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="closeModal()">Close</button>
+            <button id="modalPayBtn" class="btn btn-primary" style="display:none;"></button>
+        </div>
+
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API_BASE = "http://127.0.0.1:5000/api/payments";
+        let payments = [];
+        let currentPayment = null;
+        let currentUser = {};
+
+        // ------------------------------------------------------------
+        // ROLE / AUTH
+        // ------------------------------------------------------------
+        function getStoredUser() {
+            const possibleKeys = ["user", "currentUser", "loggedInUser"];
+
+            for (const key of possibleKeys) {
+                try {
+                    const value = localStorage.getItem(key);
+                    if (value) {
+                        const parsed = JSON.parse(value);
+                        if (parsed && typeof parsed === "object") return parsed;
+                    }
+                } catch (e) {}
+            }
+
+            return {};
+        }
+
+        function getToken() {
+            return (
+                localStorage.getItem("token") ||
+                localStorage.getItem("access_token") ||
+                localStorage.getItem("jwt") ||
+                ""
+            );
+        }
+
+        function normalizeRole(role) {
+            return String(role || "")
+                .trim()
+                .toUpperCase()
+                .replace(/-/g, "_")
+                .replace(/\s+/g, "_");
+        }
+
+        function isBuyerRole(role) {
+            const normalized = normalizeRole(role);
+            return normalized === "VENDOR" ||
+                   normalized === "WHOLESALER" ||
+                   normalized === "BULK_BUYER";
+        }
+
+        function setupRole() {
+            currentUser = getStoredUser();
+
+            const role = normalizeRole(currentUser.role);
+            const name = currentUser.name || currentUser.full_name || "Buyer";
+
+            document.getElementById("welcomeUser").textContent = name;
+
+            if (role === "WHOLESALER" || role === "BULK_BUYER") {
+                document.getElementById("roleEyebrow").textContent = "Bulk Buyer Finance";
+            } else {
+                document.getElementById("roleEyebrow").textContent = "Vendor Finance";
+            }
+
+            renderSidebar();
+
+            // Farmers must not use the payment page.
+            if (role === "FARMER") {
+                document.getElementById("paymentContent").style.display = "none";
+                document.getElementById("accessDenied").style.display = "block";
+                return false;
+            }
+
+            // If role is known and is not an allowed buyer role, don't expose checkout.
+            if (role && !isBuyerRole(role)) {
+                document.getElementById("paymentContent").style.display = "none";
+                document.getElementById("accessDenied").style.display = "block";
+                return false;
+            }
+
+            return true;
+        }
+
+        function renderSidebar() {
+            const role = normalizeRole(currentUser.role);
+            const isBulk = role === "WHOLESALER" || role === "BULK_BUYER" || role === "BULK BUYER";
+
+            const vendorSidebar = `
+                <div class="sb-section">
+                    <div class="sb-label">Main</div>
+                    <a class="sb-link" href="dashboard.html"><span class="si">📊</span><span class="sl">Dashboard</span></a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Shopping</div>
+                    <a class="sb-link" href="marketplace.html"><span class="si">🛒</span><span class="sl">Marketplace</span></a>
+                    <a class="sb-link" href="cart.html"><span class="si">🛍️</span><span class="sl">My Cart</span></a>
+                    <a class="sb-link" href="favorites.html"><span class="si">❤️</span><span class="sl">Favorites</span></a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Orders &amp; Delivery</div>
+                    <a class="sb-link" href="buyer-orders.html"><span class="si">📦</span><span class="sl">My Orders</span></a>
+                    <a class="sb-link" href="buyer-logistics.html"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a>
+                    <a class="sb-link active" href="payments.html"><span class="si">💳</span><span class="sl">Payments &amp; Invoices</span></a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Communication</div>
+                    <a class="sb-link" href="meeting.html"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">AI &amp; Insights</div>
+                    <a class="sb-link" href="dashboard.html#aiInsights"><span class="si">🤖</span><span class="sl">AI Insights</span></a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Account</div>
+                    <a class="sb-link" href="profile.html"><span class="si">👤</span><span class="sl">Profile</span></a>
+                    <a class="sb-link" href="alerts.html"><span class="si">🔔</span><span class="sl">Notifications</span></a>
+                    <a class="sb-link" href="#" onclick="logout(); return false;"><span class="si">🚪</span><span class="sl">Logout</span></a>
+                </div>`;
+
+            const bulkSidebar = `
+                <div class="sb-section">
+                    <div class="sb-label">Main</div>
+                    <a class="sb-link" href="dashboard.html"><span class="si">📊</span><span class="sl">Dashboard</span></a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Bulk Buying</div>
+                    <a class="sb-link" href="marketplace.html"><span class="si">🛒</span><span class="sl">Marketplace</span></a>
+                    <a class="sb-link" href="offers.html"><span class="si">🤝</span><span class="sl">My Offers</span></a>
+                    <a class="sb-link" href="cart.html"><span class="si">🛍️</span><span class="sl">Bulk Cart</span></a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Orders</div>
+                    <a class="sb-link" href="buyer-orders.html"><span class="si">📦</span><span class="sl">Bulk Orders</span></a>
+                    <a class="sb-link" href="buyer-logistics.html"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a>
+                    <a class="sb-link active" href="payments.html"><span class="si">💳</span><span class="sl">Payments &amp; Invoices</span></a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Communication</div>
+                    <a class="sb-link" href="meeting.html"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">AI &amp; Insights</div>
+                    <a class="sb-link" href="dashboard.html#aiInsights"><span class="si">🤖</span><span class="sl">AI Insights</span></a>
+                </div>
+
+                <div class="sb-section">
+                    <div class="sb-label">Account</div>
+                    <a class="sb-link" href="profile.html"><span class="si">🏢</span><span class="sl">Business Profile</span></a>
+                    <a class="sb-link" href="alerts.html"><span class="si">🔔</span><span class="sl">Notifications</span></a>
+                    <a class="sb-link" href="#" onclick="logout(); return false;"><span class="si">🚪</span><span class="sl">Logout</span></a>
+                </div>`;
+
+            document.getElementById("sidebar").innerHTML = isBulk ? bulkSidebar : vendorSidebar;
+        }
+
+        function logout() {
+            fetch("/api/auth/logout", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Authorization": `Bearer ${getToken()}`
+                }
+            }).finally(() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.href = "login.html";
+            });
+        }
+
+        // ------------------------------------------------------------
+        // HELPERS
+        // ------------------------------------------------------------
+        function money(value) {
+            const amount = Number(value || 0);
+            return "₹" + amount.toLocaleString("en-IN", {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function formatDate(value) {
+            if (!value) return "—";
+
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+
+            return date.toLocaleString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
+
+        function statusText(status) {
+            const map = {
+                PAYMENT_DUE: "Payment Due",
+                ADVANCE_PAID: "Advance Paid",
+                FINAL_PAYMENT_DUE: "Final Payment Due",
+                COMPLETELY_PAID: "Completely Paid",
+                PAYMENT_FAILED: "Payment Failed",
+                CANCELLED: "Cancelled"
+            };
+
+            return map[status] || String(status || "Unknown");
+        }
+
+        function statusClass(status) {
+            const map = {
+                PAYMENT_DUE: "payment-due",
+                ADVANCE_PAID: "advance-paid",
+                FINAL_PAYMENT_DUE: "final-due",
+                COMPLETELY_PAID: "complete",
+                PAYMENT_FAILED: "failed",
+                CANCELLED: "cancelled"
+            };
+
+            return map[status] || "cancelled";
+        }
+
+        function stageStatus(stage) {
+            return String(stage?.status || "").toUpperCase();
+        }
+
+        function getPaidAmount(payment) {
+            let paid = 0;
+
+            if (stageStatus(payment.advance_payment) === "PAID") {
+                paid += Number(payment.advance_payment?.amount || 0);
+            }
+
+            if (stageStatus(payment.final_payment) === "PAID") {
+                paid += Number(payment.final_payment?.amount || 0);
+            }
+
+            return paid;
+        }
+
+        function getRemainingAmount(payment) {
+            return Math.max(
+                0,
+                Number(payment.amount || 0) - getPaidAmount(payment)
+            );
+        }
+
+        function getProgress(payment) {
+            const total = Number(payment.amount || 0);
+            if (!total) return 0;
+            return Math.min(100, (getPaidAmount(payment) / total) * 100);
+        }
+
+        function showToast(message, error = false) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.className = "toast show" + (error ? " error" : "");
+
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                toast.className = "toast";
+            }, 4000);
+        }
+
+        async function apiFetch(url, options = {}) {
+            const headers = {
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            };
+
+            const token = getToken();
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
+
+            const response = await fetch(url, {
+                ...options,
+                headers
+            });
+
+            let data = {};
+            try {
+                data = await response.json();
+            } catch (e) {}
+
+            if (!response.ok) {
+                throw new Error(data.message || data.error || `Request failed (${response.status})`);
+            }
+
+            return data;
+        }
+
+        // ------------------------------------------------------------
+        // LOAD PAYMENTS
+        // ------------------------------------------------------------
+        async function loadPayments() {
+            const list = document.getElementById("paymentList");
+            list.innerHTML = '<div class="loader">Loading payments...</div>';
+
+            try {
+                const data = await apiFetch(API_BASE);
+
+                payments = Array.isArray(data)
+                    ? data
+                    : (data.payments || data.data || []);
+
+                updateStats();
+                renderPayments();
+            } catch (error) {
+                console.error(error);
+                list.innerHTML = `
+                    <div class="empty">
+                        <strong>Could not load payments</strong>
+                        <span>${escapeHtml(error.message)}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // ------------------------------------------------------------
+        // STATS
+        // ------------------------------------------------------------
+        function updateStats() {
+            let total = 0;
+            let paid = 0;
+            let remaining = 0;
+            let fullyPaid = 0;
+
+            payments.forEach(payment => {
+                total += Number(payment.amount || 0);
+                paid += getPaidAmount(payment);
+                remaining += getRemainingAmount(payment);
+
+                if (payment.overall_status === "COMPLETELY_PAID") {
+                    fullyPaid++;
+                }
+            });
+
+            document.getElementById("totalValue").textContent = money(total);
+            document.getElementById("paidValue").textContent = money(paid);
+            document.getElementById("remainingValue").textContent = money(remaining);
+            document.getElementById("paidOrders").textContent = fullyPaid;
+        }
+
+        // ------------------------------------------------------------
+        // RENDER
+        // ------------------------------------------------------------
+        function renderPayments() {
+            const list = document.getElementById("paymentList");
+            const search = document.getElementById("searchInput").value.trim().toLowerCase();
+            const filter = document.getElementById("statusFilter").value;
+
+            let filtered = payments.filter(payment => {
+                const statusMatch =
+                    filter === "ALL" ||
+                    payment.overall_status === filter;
+
+                const searchable = [
+                    payment.order_id,
+                    payment.payment_id,
+                    payment.produce_name,
+                    payment.farmer_name,
+                    payment.category,
+                    payment.buyer_name
+                ].join(" ").toLowerCase();
+
+                return statusMatch && searchable.includes(search);
+            });
+
+            if (!filtered.length) {
+                list.innerHTML = `
+                    <div class="empty">
+                        <strong>No payments found</strong>
+                        <span>Try another search or payment status filter.</span>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = filtered.map(paymentCard).join("");
+        }
+
+        function paymentCard(payment) {
+            const advance = payment.advance_payment || {};
+            const final = payment.final_payment || {};
+
+            const advanceStatus = stageStatus(advance);
+            const finalStatus = stageStatus(final);
+            const progress = getProgress(payment);
+
+            let action = "";
+
+            if (
+                payment.overall_status === "PAYMENT_DUE" ||
+                payment.overall_status === "PAYMENT_FAILED"
+            ) {
+                action = `
+                    <button class="btn btn-primary"
+                        onclick="startPayment('${encodeURIComponent(payment.order_id)}', 'advance')">
+                        Pay 50% Advance
+                    </button>
+                `;
+            } else if (payment.overall_status === "FINAL_PAYMENT_DUE") {
+                action = `
+                    <button class="btn btn-primary"
+                        onclick="startPayment('${encodeURIComponent(payment.order_id)}', 'final')">
+                        Pay Remaining 50%
+                    </button>
+                `;
+            } else if (payment.overall_status === "ADVANCE_PAID") {
+                action = `
+                    <button class="btn btn-disabled" disabled title="Final payment unlocks after delivery">
+                        Final Payment Locked
+                    </button>
+                `;
+            } else if (payment.overall_status === "COMPLETELY_PAID") {
+                action = `
+                    <button class="btn btn-disabled" disabled>
+                        Fully Paid
+                    </button>
+                `;
+            } else if (payment.overall_status === "CANCELLED") {
+                action = `
+                    <button class="btn btn-disabled" disabled>
+                        Cancelled
+                    </button>
+                `;
+            }
+
+            return `
+                <article class="payment-card">
+                    <div class="card-top">
+                        <div>
+                            <div class="order-id">${escapeHtml(payment.order_id || "—")}</div>
+                            <div class="produce">${escapeHtml(payment.produce_name || "Produce Order")}</div>
+                        </div>
+                        <span class="status ${statusClass(payment.overall_status)}">
+                            ${escapeHtml(statusText(payment.overall_status))}
+                        </span>
+                    </div>
+
+                    <div class="details-grid">
+                        <div>
+                            <span class="detail-label">Farmer</span>
+                            <span class="detail-value">${escapeHtml(payment.farmer_name || "—")}</span>
+                        </div>
+                        <div>
+                            <span class="detail-label">Quantity</span>
+                            <span class="detail-value">${escapeHtml(payment.quantity ?? "—")} ${escapeHtml(payment.unit || "")}</span>
+                        </div>
+                        <div>
+                            <span class="detail-label">Order Total</span>
+                            <span class="detail-value">${money(payment.amount)}</span>
+                        </div>
+                        <div>
+                            <span class="detail-label">Paid So Far</span>
+                            <span class="detail-value">${money(getPaidAmount(payment))}</span>
+                        </div>
+                    </div>
+
+                    <div class="payment-progress">
+                        <div class="progress-title">
+                            <span>Payment Progress</span>
+                            <strong>${Math.round(progress)}%</strong>
+                        </div>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:${progress}%"></div>
+                        </div>
+
+                        <div class="stages">
+                            <div class="stage ${advanceStatus === "PAID" ? "paid" : advanceStatus === "PENDING" ? "due" : "locked"}">
+                                Advance 50% · ${money(advance.amount)}
+                            </div>
+
+                            <div class="stage ${finalStatus === "PAID" ? "paid" : finalStatus === "PENDING" ? "due" : "locked"}">
+                                Final 50% · ${money(final.amount)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="btn btn-outline"
+                            onclick="viewDetails('${encodeURIComponent(payment.order_id)}')">
+                            View Details
+                        </button>
+                        ${action}
+                    </div>
+                </article>
+            `;
+        }
+
+        // ------------------------------------------------------------
+        // DETAILS MODAL
+        // ------------------------------------------------------------
+        function viewDetails(encodedOrderId) {
+            const orderId = decodeURIComponent(encodedOrderId);
+            const payment = payments.find(p => p.order_id === orderId);
+
+            if (!payment) {
+                showToast("Payment details not found.", true);
+                return;
+            }
+
+            currentPayment = payment;
+
+            const advance = payment.advance_payment || {};
+            const final = payment.final_payment || {};
+
+            document.getElementById("modalTitle").textContent =
+                `${payment.order_id || "Order"} · ${payment.produce_name || "Produce"}`;
+
+            document.getElementById("modalBody").innerHTML = `
+                <div class="modal-section">
+                    <h3>Order Information</h3>
+                    <div class="modal-grid">
+                        <div class="modal-item">
+                            <span>Order ID</span>
+                            <strong>${escapeHtml(payment.order_id)}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Payment ID</span>
+                            <strong>${escapeHtml(payment.payment_id || "—")}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Produce</span>
+                            <strong>${escapeHtml(payment.produce_name || "—")}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Farmer</span>
+                            <strong>${escapeHtml(payment.farmer_name || "—")}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Quantity</span>
+                            <strong>${escapeHtml(payment.quantity ?? "—")} ${escapeHtml(payment.unit || "")}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Order Total</span>
+                            <strong>${money(payment.amount)}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Order Status</span>
+                            <strong>${escapeHtml(payment.order_status || "—")}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Delivery Status</span>
+                            <strong>${escapeHtml(payment.delivery_status || "—")}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Payment Breakdown</h3>
+
+                    <div class="payment-stage">
+                        <div>
+                            <div class="stage-name">50% Advance</div>
+                            <div class="stage-amount">${money(advance.amount)}</div>
+                        </div>
+                        <span class="status ${advanceStatusClass(advance)}">
+                            ${escapeHtml(paymentStageText(advance))}
+                        </span>
+                    </div>
+
+                    <div class="payment-stage">
+                        <div>
+                            <div class="stage-name">Remaining 50%</div>
+                            <div class="stage-amount">${money(final.amount)}</div>
+                        </div>
+                        <span class="status ${advanceStatusClass(final)}">
+                            ${escapeHtml(paymentStageText(final))}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Transaction Information</h3>
+                    <div class="modal-grid">
+                        <div class="modal-item">
+                            <span>Advance Razorpay Payment ID</span>
+                            <strong>${escapeHtml(advance.razorpay_payment_id || "—")}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Advance Paid At</span>
+                            <strong>${escapeHtml(formatDate(advance.paid_at))}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Final Razorpay Payment ID</span>
+                            <strong>${escapeHtml(final.razorpay_payment_id || "—")}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Final Paid At</span>
+                            <strong>${escapeHtml(formatDate(final.paid_at))}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Overall Status</span>
+                            <strong>${escapeHtml(statusText(payment.overall_status))}</strong>
+                        </div>
+                        <div class="modal-item">
+                            <span>Remaining Amount</span>
+                            <strong>${money(getRemainingAmount(payment))}</strong>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const payBtn = document.getElementById("modalPayBtn");
+            payBtn.style.display = "none";
+
+            if (
+                payment.overall_status === "PAYMENT_DUE" ||
+                payment.overall_status === "PAYMENT_FAILED"
+            ) {
+                payBtn.style.display = "inline-block";
+                payBtn.textContent = "Pay 50% Advance";
+                payBtn.onclick = () => startPayment(payment.order_id, "advance");
+            } else if (payment.overall_status === "FINAL_PAYMENT_DUE") {
+                payBtn.style.display = "inline-block";
+                payBtn.textContent = "Pay Remaining 50%";
+                payBtn.onclick = () => startPayment(payment.order_id, "final");
+            }
+
+            document.getElementById("detailsModal").classList.add("show");
+        }
+
+        function paymentStageText(stage) {
+            const status = stageStatus(stage);
+
+            if (status === "PAID") return "Paid";
+            if (status === "PENDING") return "Payment Due";
+            if (status === "LOCKED") return "Locked Until Delivery";
+            if (status === "FAILED") return "Failed";
+            if (status === "CANCELLED") return "Cancelled";
+
+            return status || "—";
+        }
+
+        function advanceStatusClass(stage) {
+            const status = stageStatus(stage);
+
+            if (status === "PAID") return "advance-paid";
+            if (status === "PENDING") return "final-due";
+            if (status === "LOCKED") return "cancelled";
+            if (status === "FAILED") return "failed";
+            return "cancelled";
+        }
+
+        function closeModal() {
+            document.getElementById("detailsModal").classList.remove("show");
+            currentPayment = null;
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target.id === "detailsModal") {
+                closeModal();
+            }
+        }
+
+        // ------------------------------------------------------------
+        // RAZORPAY
+        // ------------------------------------------------------------
+        async function startPayment(orderIdOrEncoded, paymentType) {
+            const orderId = String(orderIdOrEncoded).includes("%")
+                ? decodeURIComponent(orderIdOrEncoded)
+                : String(orderIdOrEncoded);
+
+            const payment = payments.find(p => p.order_id === orderId);
+
+            if (!payment) {
+                showToast("Order payment record not found.", true);
+                return;
+            }
+
+            if (paymentType === "final") {
+                if (payment.overall_status !== "FINAL_PAYMENT_DUE") {
+                    showToast("Final payment is not available yet. It unlocks after delivery.", true);
+                    return;
+                }
+            }
+
+            const stage = paymentType === "advance"
+                ? payment.advance_payment
+                : payment.final_payment;
+
+            if (stageStatus(stage) === "PAID") {
+                showToast("This payment has already been completed.", true);
+                return;
+            }
+
+            if (typeof Razorpay === "undefined") {
+                showToast("Razorpay Checkout could not be loaded. Check your internet connection.", true);
+                return;
+            }
+
+            try {
+                showToast("Preparing secure Razorpay checkout...");
+
+                const data = await apiFetch(
+                    `${API_BASE}/order/${encodeURIComponent(orderId)}/create`,
+                    {
+                        method: "POST",
+                        body: JSON.stringify({
+                            payment_type: paymentType
+                        })
+                    }
+                );
+
+                const options = {
+                    key: data.key_id,
+                    amount: Number(data.amount) * 100,
+                    currency: data.currency || "INR",
+                    name: "AgriCentre",
+                    description:
+                        paymentType === "advance"
+                            ? `50% Advance Payment - ${orderId}`
+                            : `Final 50% Payment - ${orderId}`,
+                    order_id: data.razorpay_order_id,
+
+                    prefill: {
+                        name: currentUser.name || payment.buyer_name || "",
+                        email: currentUser.email || "",
+                        contact: currentUser.phone || currentUser.mobile || ""
+                    },
+
+                    notes: {
+                        order_id: orderId,
+                        payment_type: paymentType
+                    },
+
+                    theme: {
+                        color: "#28763a"
+                    },
+
+                    handler: async function (response) {
+                        try {
+                            showToast("Payment received. Verifying transaction...");
+
+                            const verifyData = await apiFetch(
+                                `${API_BASE}/verify`,
+                                {
+                                    method: "POST",
+                                    body: JSON.stringify({
+                                        order_id: orderId,
+                                        payment_type: paymentType,
+                                        razorpay_order_id: response.razorpay_order_id,
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_signature: response.razorpay_signature
+                                    })
+                                }
+                            );
+
+                            closeModal();
+
+                            if (verifyData.email_sent) {
+                                showToast("Payment successful. Farmer has been notified by email.");
+                            } else {
+                                showToast("Payment successful and verified.");
+                            }
+
+                            await loadPayments();
+
+                        } catch (error) {
+                            console.error(error);
+                            showToast(
+                                "Payment was received by Razorpay but verification failed: " +
+                                error.message,
+                                true
+                            );
+                        }
+                    },
+
+                    modal: {
+                        ondismiss: function () {
+                            showToast("Payment window closed. No payment was recorded.");
+                        }
+                    }
+                };
+
+                const razorpay = new Razorpay(options);
+
+                razorpay.on("payment.failed", function (response) {
+                    console.error("Razorpay payment failed:", response.error);
+
+                    showToast(
+                        response.error?.description ||
+                        "Payment failed. You can retry from the payment card.",
+                        true
+                    );
+                });
+
+                razorpay.open();
+
+            } catch (error) {
+                console.error(error);
+                showToast(error.message || "Unable to start payment.", true);
+            }
+        }
+
+        // ------------------------------------------------------------
+        // START
+        // ------------------------------------------------------------
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") closeModal();
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const allowed = setupRole();
+
+            const toggle = document.getElementById("sidebarToggle");
+            const sidebar = document.getElementById("sidebar");
+            const main = document.getElementById("mainArea");
+
+            if (toggle && sidebar && main) {
+                toggle.addEventListener("click", function () {
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.toggle("open");
+                    } else {
+                        sidebar.classList.toggle("collapsed");
+                        main.classList.toggle("expanded");
+                    }
+                });
+
+                document.addEventListener("click", function (event) {
+                    if (
+                        window.innerWidth <= 768 &&
+                        sidebar.classList.contains("open") &&
+                        !sidebar.contains(event.target) &&
+                        !toggle.contains(event.target)
+                    ) {
+                        sidebar.classList.remove("open");
+                    }
+                });
+            }
+
+            const subForm = document.getElementById("subForm");
+            if (subForm) {
+                subForm.addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    showToast("Thanks! You are subscribed.");
+                    subForm.reset();
+                });
+            }
+
+            if (allowed) {
+                loadPayments();
+            }
+        });
+    </script>
+
+</body>
+</html>

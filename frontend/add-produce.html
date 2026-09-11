@@ -1,0 +1,2500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriCentre – Add Produce</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --brand:#2f9e5c;
+  --brand-dark:#1f7a44;
+  --brand-light:#5cc98a;
+  --bg:#0d0e10;
+  --bg2:#14161a;
+  --surface:#1c1f25;
+  --surface2:#22262e;
+  --border:#2e3340;
+  --text:#eef1f6;
+  --muted:#8f99ab;
+  --danger:#ef5350;
+  --warning:#f59e0b;
+  --sidebar-w:258px;
+  --nav-h:64px;
+  --radius:14px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:Inter,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+a{text-decoration:none;color:inherit}
+
+.navbar{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:var(--nav-h);
+  z-index:1000;
+  background:var(--bg2);
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  gap:12px;
+  box-shadow:0 2px 15px #0007;
+}
+
+.nav-toggle{
+  background:none;
+  border:0;
+  color:#fff;
+  font-size:21px;
+  padding:6px 8px;
+  cursor:pointer;
+}
+
+.nav-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo{
+  width:38px;height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--brand);
+  border-radius:9px;
+  font-size:20px;
+}
+
+.brand-text{display:flex;flex-direction:column}
+.brand-name{
+  font:700 32px/1 Rajdhani,sans-serif;
+  color:#fff;
+}
+.brand-nameX{color:var(--brand)}
+.brand-subtitle{
+  font-size:10px;
+  color:#c5cad4;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.nav-links{
+  margin-left:auto;
+  display:flex;
+  gap:4px;
+}
+.nav-links a{
+  color:#9aa7bb;
+  padding:9px 11px;
+  border-radius:7px;
+  font-size:13px;
+}
+.nav-links a:hover{color:#fff;background:#ffffff0f}
+.nav-links a.active{color:#fff;background:#2f9e5c33}
+
+.nav-right{display:flex;gap:7px;margin-left:8px}
+.nav-btn{
+  width:38px;height:38px;
+  border:0;border-radius:8px;
+  background:var(--surface2);
+  color:#fff;cursor:pointer;
+  position:relative;
+}
+.nav-badge{
+  position:absolute;
+  top:-5px;right:-4px;
+  background:var(--brand);
+  font-size:9px;
+  min-width:16px;height:16px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.layout{
+  display:flex;
+  margin-top:var(--nav-h);
+  min-height:calc(100vh - var(--nav-h));
+}
+
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--bg2);
+  position:fixed;
+  top:var(--nav-h);
+  bottom:0;
+  left:0;
+  overflow-y:auto;
+  z-index:900;
+  border-right:1px solid #ffffff08;
+  transition:.22s ease;
+}
+
+.sidebar.collapsed{width:72px}
+.sidebar.collapsed .sl,
+.sidebar.collapsed .sb-label{display:none}
+.sidebar.collapsed .sb-link{justify-content:center}
+.sidebar.collapsed + .main{margin-left:72px}
+
+.sb-section{padding:13px 10px}
+.sb-label{
+  color:#66748c;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  padding:0 10px 8px;
+}
+
+.sb-link{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 13px;
+  margin:2px 0;
+  border-radius:7px;
+  color:#91a0b8;
+  font-size:13px;
+}
+.sb-link:hover{background:#ffffff08;color:#fff}
+.sb-link.active{
+  color:#55cf88;
+  background:#2f9e5c24;
+  border-left:3px solid var(--brand);
+}
+.si{width:18px;text-align:center;font-size:16px}
+.sl{white-space:nowrap}
+
+.sb-badge{
+  margin-left:auto;
+  background:var(--brand);
+  color:#fff;
+  border-radius:10px;
+  font-size:9px;
+  min-width:17px;
+  height:17px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.main{
+  flex:1;
+  margin-left:var(--sidebar-w);
+  min-width:0;
+  padding:34px 42px 60px;
+  transition:.22s ease;
+}
+
+.page-head{
+  max-width:1180px;
+  margin:0 auto 28px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.eyebrow{
+  color:var(--brand-light);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
+
+.page-title{
+  font:700 38px/1 Rajdhani,sans-serif;
+  letter-spacing:.2px;
+}
+
+.page-subtitle{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:8px;
+  line-height:1.6;
+}
+
+.user-chip{
+  padding:9px 13px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  border-radius:10px;
+  color:#b8c2d3;
+  font-size:12px;
+}
+
+.form-shell{
+  max-width:1180px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 330px;
+  gap:22px;
+}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+
+.card-head{
+  padding:20px 22px;
+  border-bottom:1px solid var(--border);
+}
+.card-head h2{
+  font:700 21px Rajdhani,sans-serif;
+}
+.card-head p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.card-body{padding:24px 22px}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:0 0 16px;
+  font:700 16px Rajdhani,sans-serif;
+  color:#e9edf5;
+}
+.section-title span{
+  width:27px;height:27px;
+  display:flex;align-items:center;justify-content:center;
+  background:#2f9e5c20;
+  border-radius:7px;
+  font-size:14px;
+}
+
+.form-section{
+  padding-bottom:24px;
+  margin-bottom:24px;
+  border-bottom:1px solid #ffffff0b;
+}
+.form-section:last-child{
+  padding-bottom:0;
+  margin-bottom:0;
+  border-bottom:0;
+}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:16px}
+
+.field{margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+
+label{
+  display:block;
+  font-size:12px;
+  font-weight:600;
+  color:#d7dce6;
+  margin-bottom:7px;
+}
+
+.required{color:#5cc98a}
+
+input,select,textarea{
+  width:100%;
+  border:1px solid var(--border);
+  background:#15171b;
+  color:#eef1f6;
+  border-radius:9px;
+  padding:12px 13px;
+  outline:none;
+  font:400 13px Inter,sans-serif;
+  transition:.18s ease;
+}
+
+input::placeholder,textarea::placeholder{color:#626d80}
+
+input:focus,select:focus,textarea:focus{
+  border-color:var(--brand);
+  box-shadow:0 0 0 3px #2f9e5c16;
+}
+
+input:invalid:not(:placeholder-shown),select:invalid:not(:placeholder-shown){
+  border-color:#713d3d;
+}
+
+textarea{min-height:105px;resize:vertical}
+
+.input-hint{
+  color:#68758a;
+  font-size:10px;
+  line-height:1.5;
+  margin-top:6px;
+}
+
+.price-wrap{position:relative}
+.price-wrap span{
+  position:absolute;
+  left:13px;top:50%;
+  transform:translateY(-50%);
+  color:#8f99ab;
+  font-size:13px;
+}
+.price-wrap input{padding-left:29px}
+
+.upload-box{
+  border:1px dashed #455064;
+  border-radius:12px;
+  padding:22px;
+  background:#15171b;
+  text-align:center;
+  transition:.2s ease;
+  cursor:pointer;
+}
+.upload-box:hover{
+  border-color:var(--brand);
+  background:#2f9e5c09;
+}
+.upload-icon{font-size:30px;margin-bottom:8px}
+.upload-box strong{
+  display:block;
+  font-size:13px;
+}
+.upload-box p{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:5px;
+}
+.upload-box input{display:none}
+
+.preview{
+  display:none;
+  margin-top:14px;
+  position:relative;
+}
+.preview.show{
+  display:block;
+}
+.preview img{
+  width:100%;
+  max-height:220px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid var(--border);
+}
+.remove-image{
+  position:absolute;
+  right:8px;top:8px;
+  width:28px;height:28px;
+  border:0;border-radius:50%;
+  background:#000b;
+  color:#fff;
+  cursor:pointer;
+}
+
+.info-box{
+  padding:14px;
+  background:#102319;
+  border:1px solid #2f9e5c35;
+  border-radius:10px;
+  margin-bottom:18px;
+}
+.info-box strong{
+  font-size:12px;
+  display:block;
+  margin-bottom:4px;
+}
+.info-box p{
+  color:#93a69b;
+  font-size:11px;
+  line-height:1.55;
+}
+
+.side-card{height:max-content}
+.side-body{padding:20px}
+
+.workflow{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.step{
+  display:flex;
+  gap:12px;
+}
+.step-no{
+  flex:0 0 30px;
+  width:30px;height:30px;
+  border-radius:50%;
+  background:#2f9e5c20;
+  color:var(--brand-light);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:11px;
+}
+.step h4{font-size:12px;margin-bottom:4px}
+.step p{
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.5;
+}
+
+.check-list{
+  margin-top:20px;
+  padding-top:18px;
+  border-top:1px solid var(--border);
+}
+.check-list h4{
+  font:700 14px Rajdhani,sans-serif;
+  margin-bottom:11px;
+}
+.check-item{
+  display:flex;
+  gap:8px;
+  color:#aab4c4;
+  font-size:11px;
+  margin:8px 0;
+}
+.check-item span{color:var(--brand-light)}
+
+.form-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:22px;
+}
+
+.btn{
+  border:0;
+  border-radius:9px;
+  padding:12px 18px;
+  font:600 12px Inter,sans-serif;
+  cursor:pointer;
+  transition:.18s ease;
+}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-secondary{
+  background:#282d36;
+  color:#c8ced9;
+  border:1px solid #373e4a;
+}
+.btn-secondary:hover{background:#303641}
+.btn-primary{
+  background:var(--brand);
+  color:#fff;
+  box-shadow:0 5px 18px #2f9e5c25;
+}
+.btn-primary:hover{background:var(--brand-dark);transform:translateY(-1px)}
+
+.status{
+  display:none;
+  margin-top:18px;
+  padding:13px 15px;
+  border-radius:9px;
+  font-size:12px;
+  line-height:1.5;
+}
+.status.success{
+  display:block;
+  background:#102719;
+  border:1px solid #2f9e5c55;
+  color:#80dc9e;
+}
+.status.error{
+  display:block;
+  background:#291618;
+  border:1px solid #74383c;
+  color:#ff9a9a;
+}
+.status.info{
+  display:block;
+  background:#171e2a;
+  border:1px solid #36465e;
+  color:#a9c4e8;
+}
+
+footer{
+  max-width:1180px;
+  margin:28px auto 0;
+  padding-top:22px;
+  border-top:1px solid #ffffff0b;
+  color:#68758a;
+  font-size:10px;
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+@media(max-width:1050px){
+  .form-shell{grid-template-columns:1fr}
+  .side-card{order:-1}
+}
+
+@media(max-width:900px){
+  .nav-links{display:none}
+  .main{padding:28px 22px 50px}
+}
+
+@media(max-width:768px){
+  .sidebar{
+    transform:translateX(-100%);
+    width:258px;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .sidebar.collapsed{width:258px}
+  .sidebar.collapsed .sl,.sidebar.collapsed .sb-label{display:block}
+  .sidebar.collapsed .sb-link{justify-content:flex-start}
+  .main,.sidebar.collapsed + .main{margin-left:0}
+  .page-head{align-items:flex-start;flex-direction:column}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+}
+
+@media(max-width:520px){
+  .main{padding:22px 14px 40px}
+  .page-title{font-size:32px}
+  .card-body{padding:18px 15px}
+  .form-actions{flex-direction:column-reverse}
+  .btn{width:100%}
+}
+/* ============================================================
+   FORM STATUS MESSAGE
+============================================================ */
+
+.status {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 15px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.status.success,
+.status.error,
+.status.loading {
+    display: block;
+}
+
+.status.success {
+    background: rgba(47, 158, 92, 0.15);
+    border: 1px solid rgba(47, 158, 92, 0.4);
+    color: #5cc98a;
+}
+
+.status.error {
+    background: rgba(239, 83, 80, 0.12);
+    border: 1px solid rgba(239, 83, 80, 0.35);
+    color: #ef5350;
+}
+
+.status.loading {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #f59e0b;
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <button class="nav-toggle" id="sidebarToggle" type="button">☰</button>
+
+  <a href="index.html" class="nav-brand">
+    <div class="logo">🚜</div>
+    <div class="brand-text">
+      <span class="brand-name">Agri<span class="brand-nameX">Centre</span></span>
+      <span class="brand-subtitle">Smart India Hackathon 2026</span>
+    </div>
+  </a>
+
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="features.html">Features</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="team.html">Team</a>
+    <a href="contact.html">Contact</a>
+    <a id="profile-link" href="profile.html" style="display:none">Profile</a>
+    <a id="logout-link" href="#" style="display:none">Logout</a>
+    <a id="login-link" href="login.html">Login</a>
+    <a id="signup-link" href="signup.html">Sign Up</a>
+  </div>
+
+  <div class="nav-right">
+    <button class="nav-btn" onclick="location.href='alerts.html'" title="Alerts">
+      🔔<span class="nav-badge">3</span>
+    </button>
+    <button class="nav-btn" onclick="location.href='ai-assistant.html'" title="AI Assistant">🤖</button>
+  </div>
+</nav>
+
+<div class="layout">
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sb-section">
+            <div class="sb-label">Main</div>
+    
+            <a href="dashboard.html" class="sb-link">
+                <span class="si">📊</span>
+                <span class="sl">Dashboard</span>
+            </a>
+        </div>
+    
+    
+        <div class="sb-section">
+            <div class="sb-label">Produce</div>
+    
+            <a href="add-produce.html"  class="sb-link active">
+                <span class="si">🌾</span>
+                <span class="sl">Add Produce</span>
+            </a>
+    
+            <a href="my-listings.html" class="sb-link">
+                <span class="si">📋</span>
+                <span class="sl">My Listings</span>
+            </a>
+    
+            <a href="offers.html" class="sb-link">
+                <span class="si">🤝</span>
+                <span class="sl">Offers</span>
+            </a>
+    
+            <a href="buyers.html" class="sb-link">
+                <span class="si">🔎</span>
+                <span class="sl">Find Buyers</span>
+            </a>
+        </div>
+    
+    
+        <div class="sb-section">
+            <div class="sb-label">Orders & Delivery</div>
+    
+            <a href="orders.html" class="sb-link">
+                <span class="si">📦</span>
+                <span class="sl">Orders</span>
+            </a>
+    
+            <a href="farmer_logistics.html" class="sb-link">
+                <span class="si">🚚</span>
+                <span class="sl">Logistics</span>
+            </a>
+    
+            <a href="meeting.html" class="sb-link">
+                <span class="si">🎥</span>
+                <span class="sl">Meeting Centre</span>
+            </a>
+        </div>
+    
+    
+        <div class="sb-section">
+            <div class="sb-label">Reports & Quality</div>
+    
+            <a href="reports.html" class="sb-link">
+                <span class="si">📄</span>
+                <span class="sl">Reports Centre</span>
+            </a>
+    
+            <a href="quality.html" class="sb-link">
+                <span class="si">🛡️</span>
+                <span class="sl">Quality & Certification</span>
+            </a>
+    
+            <a href="alerts.html" class="sb-link">
+                <span class="si">🔔</span>
+                <span class="sl">Alert Center</span>
+            </a>
+        </div>
+    
+    
+        <div class="sb-section">
+            <div class="sb-label">Account</div>
+    
+            <a href="profile.html" class="sb-link">
+                <span class="si">👤</span>
+                <span class="sl">Profile</span>
+            </a>
+    
+            <a href="#" class="sb-link" onclick="logout(); return false;">
+                <span class="si">🚪</span>
+                <span class="sl">Logout</span>
+            </a>
+        </div>
+    
+    </aside>
+
+<main class="main" id="mainArea">
+
+  <div class="page-head">
+    <div>
+      <div class="eyebrow">Farmer Marketplace</div>
+      <h1 class="page-title">Add Produce</h1>
+      <p class="page-subtitle">
+        Create a produce listing for buyers. Once submitted, your listing can move through
+        the quality-check workflow before appearing in the marketplace.
+      </p>
+    </div>
+
+    <div class="user-chip" id="userChip">🔐 Checking account...</div>
+  </div>
+
+  <div class="form-shell">
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Produce Listing Details</h2>
+        <p>Fields marked with <span class="required">*</span> are required.</p>
+      </div>
+
+      <div class="card-body">
+
+        <div class="info-box">
+          <strong>🌱 Your listing will be linked to your account</strong>
+          <p>
+            You do not enter your farmer ID manually. The authenticated backend will associate
+            this listing with the currently logged-in farmer.
+          </p>
+        </div>
+
+        <form id="produceForm" enctype="multipart/form-data" novalidate>
+
+          <div class="form-section">
+            <h3 class="section-title"><span>🌾</span> Basic Information</h3>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="produce_name">Produce / Crop Name <span class="required">*</span></label>
+                <input id="produce_name" name="produce_name" type="text"
+                       placeholder="e.g. Tomato, Mustard, Wheat" required maxlength="80">
+              </div>
+
+              <div class="field">
+                <label for="category">Category <span class="required">*</span></label>
+                <select id="category" name="category" required>
+                  <option value="">Select category</option>
+                  <option value="VEGETABLES">Vegetables</option>
+                  <option value="FRUITS">Fruits</option>
+                  <option value="GRAINS">Grains</option>
+                  <option value="PULSES">Pulses</option>
+                  <option value="SPICES">Spices</option>
+                  <option value="OILSEEDS">Oilseeds</option>
+                  <option value="SUGARCANE">Sugarcane</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="description">Description</label>
+              <textarea id="description" name="description"
+                        placeholder="Add useful information about freshness, variety, cultivation method, packaging, etc."
+                        maxlength="1000"></textarea>
+              <div class="input-hint">Keep it factual and useful for buyers.</div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="section-title"><span>⚖️</span> Quantity &amp; Pricing</h3>
+
+            <div class="grid-3">
+              <div class="field">
+                <label for="quantity">Available Quantity <span class="required">*</span></label>
+                <input id="quantity" name="quantity" type="number"
+                       min="0.01" step="0.01" placeholder="e.g. 500" required>
+              </div>
+
+              <div class="field">
+                <label for="unit">Unit <span class="required">*</span></label>
+                <select id="unit" name="unit" required>
+                  <option value="">Select unit</option>
+                  <option value="KG">kg</option>
+                  <option value="QUINTAL">Quintal</option>
+                  <option value="TON">Ton</option>
+                  <option value="LITRE">Litre</option>
+                  <option value="PIECE">Piece</option>
+                  <option value="BAG">Bag</option>
+                  <option value="BOX">Box</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="minimum_order_quantity">Minimum Order <span class="required">*</span></label>
+                <input id="minimum_order_quantity" name="minimum_order_quantity" type="number"
+                       min="0.01" step="0.01" placeholder="e.g. 50" required>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="price_per_unit">Listing Price <span class="required">*</span></label>
+                <div class="price-wrap">
+                  <span>₹</span>
+                  <input id="price_per_unit" name="price_per_unit" type="number"
+                         min="0.01" step="0.01" placeholder="Price per selected unit" required>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="price_type">Price Type</label>
+                <select id="price_type" name="price_type">
+                  <option value="FIXED">Fixed price</option>
+                  <option value="NEGOTIABLE">Negotiable</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="section-title"><span>📍</span> Location &amp; Pickup</h3>
+
+            <div class="field">
+              <label for="address">Pickup Address <span class="required">*</span></label>
+              <input id="address" name="address" type="text"
+                     placeholder="Farm / pickup address" required maxlength="250">
+            </div>
+
+            <div class="grid-3">
+              <div class="field">
+                <label for="district">District <span class="required">*</span></label>
+                <input id="district" name="district" type="text"
+                       placeholder="e.g. Nashik" required maxlength="80">
+              </div>
+
+              <div class="field">
+                <label for="state">State <span class="required">*</span></label>
+                <input id="state" name="state" type="text"
+                       placeholder="e.g. Maharashtra" required maxlength="80">
+              </div>
+
+              <div class="field">
+                <label for="pincode">Pincode <span class="required">*</span></label>
+                <input id="pincode" name="pincode" type="text"
+                       inputmode="numeric" pattern="[0-9]{6}"
+                       placeholder="6-digit pincode" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="pickup_details">Pickup Instructions</label>
+              <textarea id="pickup_details" name="pickup_details"
+                        placeholder="Gate/warehouse details, preferred pickup time, packaging notes, etc."
+                        maxlength="500"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="section-title"><span>📅</span> Harvest &amp; Availability</h3>
+
+            <div class="grid-3">
+              <div class="field">
+                <label for="harvest_date">Harvest Date <span class="required">*</span></label>
+                <input id="harvest_date" name="harvest_date" type="date" required>
+              </div>
+
+              <div class="field">
+                <label for="available_from">Available From <span class="required">*</span></label>
+                <input id="available_from" name="available_from" type="date" required>
+              </div>
+
+              <div class="field">
+                <label for="available_until">Available Until</label>
+                <input id="available_until" name="available_until" type="date">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="section-title"><span>📸</span> Produce Photo</h3>
+
+            <label for="image" class="upload-box" id="uploadBox">
+              <div class="upload-icon">📷</div>
+              <strong>Upload a clear produce photo</strong>
+              <p>JPG, JPEG, PNG or WEBP · Maximum 5 MB</p>
+              <input id="image" name="image" type="file"
+                     accept="image/jpeg,image/png,image/webp">
+            </label>
+
+            <div class="preview" id="preview">
+              <img id="previewImage" alt="Produce preview">
+              <button type="button" class="remove-image" id="removeImage">×</button>
+            </div>
+
+            <div class="input-hint">
+              A clear image will be used by the quality-check workflow after submission.
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="resetBtn">Clear Form</button>
+            <button type="button" class="btn btn-secondary" id="draftBtn">Save Draft</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Submit for Quality Check →</button>
+          </div>
+
+          <div id="statusBox" class="status"></div>
+
+        </form>
+      </div>
+    </section>
+
+    <aside class="card side-card">
+      <div class="card-head">
+        <h2>What happens next?</h2>
+        <p>Your listing follows the AgriCentre marketplace workflow.</p>
+      </div>
+
+      <div class="side-body">
+        <div class="workflow">
+
+          <div class="step">
+            <div class="step-no">1</div>
+            <div>
+              <h4>Listing created</h4>
+              <p>Your produce details are stored against your farmer account.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-no">2</div>
+            <div>
+              <h4>Quality check</h4>
+              <p>The uploaded produce photo can be evaluated by the ML quality workflow.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-no">3</div>
+            <div>
+              <h4>Market insights</h4>
+              <p>Demand and price signals can be attached to the listing.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-no">4</div>
+            <div>
+              <h4>Marketplace</h4>
+              <p>After required validation, the listing becomes available to buyers.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="check-list">
+          <h4>Before submitting</h4>
+          <div class="check-item"><span>✓</span> Correct quantity and unit</div>
+          <div class="check-item"><span>✓</span> Realistic listing price</div>
+          <div class="check-item"><span>✓</span> Complete pickup location</div>
+          <div class="check-item"><span>✓</span> Harvest/availability dates</div>
+          <div class="check-item"><span>✓</span> Clear produce photograph</div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <footer>
+    <span>© 2026 AgriCentre · Smart India Hackathon 2026 · Problem Statement ID 26033</span>
+    <span>Direct farmer-to-buyer marketplace</span>
+  </footer>
+
+</main>
+</div>
+
+<script>
+
+  /* ============================================================
+     AGRICENTRE - ADD PRODUCE
+     FINAL FRONTEND SCRIPT
+     ============================================================ */
+  
+  const API_BASE = "http://127.0.0.1:5000";
+  
+  
+  /* ============================================================
+     AUTHENTICATION
+     ============================================================ */
+  
+  function getToken() {
+      return localStorage.getItem("token");
+  }
+  
+  
+  function clearSession() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+  }
+  
+  
+  function redirectToLogin() {
+      clearSession();
+      window.location.href = "login.html";
+  }
+  
+  
+  async function getCurrentUser() {
+  
+      const token = getToken();
+  
+      if (!token) {
+          redirectToLogin();
+          return null;
+      }
+  
+      try {
+  
+          const response = await fetch(
+              `${API_BASE}/api/auth/profile`,
+              {
+                  method: "GET",
+                  headers: {
+                      "Authorization": `Bearer ${token}`,
+                      "Content-Type": "application/json"
+                  }
+              }
+          );
+  
+          if (response.status === 401) {
+              redirectToLogin();
+              return null;
+          }
+  
+          let data;
+  
+          try {
+              data = await response.json();
+          } catch {
+              throw new Error(
+                  "Invalid response from authentication server."
+              );
+          }
+  
+          if (!response.ok || !data.success) {
+              throw new Error(
+                  data.message ||
+                  "Unable to verify your account."
+              );
+          }
+  
+          return data.user;
+  
+      } catch (error) {
+  
+          console.error(
+              "Authentication error:",
+              error
+          );
+  
+          alert(
+              "Unable to verify your account. Please login again."
+          );
+  
+          redirectToLogin();
+  
+          return null;
+      }
+  }
+  
+  
+  /* ============================================================
+     FARMER-ONLY PAGE PROTECTION
+     ============================================================ */
+  
+  async function protectFarmerPage() {
+  
+      const user = await getCurrentUser();
+  
+      if (!user) {
+          return null;
+      }
+  
+      const role = String(
+          user.role || ""
+      ).trim().toUpperCase();
+  
+      if (role !== "FARMER") {
+  
+          alert(
+              "This page is available only to Farmer accounts."
+          );
+  
+          window.location.href =
+              "dashboard.html";
+  
+          return null;
+      }
+  
+      localStorage.setItem(
+          "user",
+          JSON.stringify(user)
+      );
+  
+      return user;
+  }
+  
+  
+  /* ============================================================
+     NAVBAR
+     ============================================================ */
+  
+  function updateNavbar(user) {
+  
+      const token = getToken();
+  
+      const profileLink =
+          document.getElementById("profile-link");
+  
+      const logoutLink =
+          document.getElementById("logout-link");
+  
+      const loginLink =
+          document.getElementById("login-link");
+  
+      const signupLink =
+          document.getElementById("signup-link");
+  
+      if (profileLink) {
+          profileLink.style.display =
+              token ? "inline-block" : "none";
+      }
+  
+      if (logoutLink) {
+          logoutLink.style.display =
+              token ? "inline-block" : "none";
+      }
+  
+      if (loginLink) {
+          loginLink.style.display =
+              token ? "none" : "inline-block";
+      }
+  
+      if (signupLink) {
+          signupLink.style.display =
+              token ? "none" : "inline-block";
+      }
+  
+      const userChip =
+          document.getElementById("userChip");
+  
+      if (userChip) {
+  
+          userChip.textContent =
+              `🌾 ${user.name || "Farmer"}`;
+      }
+  
+      const userName =
+          document.getElementById("nav-user-name");
+  
+      if (userName) {
+  
+          userName.textContent =
+              user.name || "Farmer";
+      }
+  }
+  
+  
+  /* ============================================================
+     LOGOUT
+     ============================================================ */
+  
+  function logout() {
+  
+      clearSession();
+  
+      window.location.href =
+          "login.html";
+  }
+  
+  
+  /* ============================================================
+     SIDEBAR
+     ============================================================ */
+  
+  function initializeSidebar() {
+  
+      const sidebar =
+          document.getElementById("sidebar");
+  
+      const mainArea =
+          document.getElementById("mainArea");
+  
+      const toggle =
+          document.getElementById("sidebarToggle");
+  
+      if (!sidebar || !toggle) {
+          return;
+      }
+  
+      toggle.addEventListener(
+          "click",
+          function() {
+  
+              if (window.innerWidth <= 768) {
+  
+                  sidebar.classList.toggle(
+                      "open"
+                  );
+  
+              } else {
+  
+                  sidebar.classList.toggle(
+                      "collapsed"
+                  );
+  
+                  if (mainArea) {
+  
+                      mainArea.classList.toggle(
+                          "expanded"
+                      );
+                  }
+              }
+          }
+      );
+  
+  
+      document.addEventListener(
+          "click",
+          function(event) {
+  
+              if (
+                  window.innerWidth <= 768 &&
+                  !sidebar.contains(event.target) &&
+                  !toggle.contains(event.target)
+              ) {
+  
+                  sidebar.classList.remove(
+                      "open"
+                  );
+              }
+          }
+      );
+  }
+  
+  
+  /* ============================================================
+     FIELD HELPER
+     ============================================================ */
+  
+  function field(id) {
+      return document.getElementById(id);
+  }
+  
+  
+  /* ============================================================
+     STATUS MESSAGE
+     ============================================================ */
+  
+  function showStatus(message, type = "") {
+  
+      const statusBox =
+          field("statusBox");
+  
+      if (!statusBox) {
+          return;
+      }
+  
+      statusBox.textContent =
+          message || "";
+  
+      statusBox.className =
+          "status";
+  
+      if (type) {
+          statusBox.classList.add(type);
+      }
+  }
+  
+  
+  /* ============================================================
+     FORM VALIDATION
+     ============================================================ */
+  
+  function validateProduceForm() {
+  
+      const produceName =
+          field("produce_name");
+  
+      const category =
+          field("category");
+  
+      const description =
+          field("description");
+  
+      const quantity =
+          field("quantity");
+  
+      const unit =
+          field("unit");
+  
+      const minimumOrder =
+          field("minimum_order_quantity");
+  
+      const price =
+          field("price_per_unit");
+  
+      const priceType =
+          field("price_type");
+  
+      /*
+       * IMPORTANT:
+       * The actual HTML field is #address.
+       * Backend expects "location".
+       * We convert it during FormData creation.
+       */
+      const address =
+          field("address");
+  
+      const district =
+          field("district");
+  
+      const state =
+          field("state");
+  
+      const pincode =
+          field("pincode");
+  
+      const pickupDetails =
+          field("pickup_details");
+  
+      const harvestDate =
+          field("harvest_date");
+  
+      const availableFrom =
+          field("available_from");
+  
+      const availableUntil =
+          field("available_until");
+  
+      const image =
+          field("image");
+  
+  
+      /* --------------------------------------------------------
+         ENSURE REQUIRED HTML ELEMENTS EXIST
+         -------------------------------------------------------- */
+  
+      const requiredFields = {
+          "Produce Name": produceName,
+          "Category": category,
+          "Quantity": quantity,
+          "Unit": unit,
+          "Minimum Order Quantity": minimumOrder,
+          "Price": price,
+          "Address": address,
+          "District": district,
+          "State": state,
+          "Pincode": pincode,
+          "Harvest Date": harvestDate,
+          "Available From": availableFrom,
+          "Image": image
+      };
+  
+  
+      for (
+          const [name, element]
+          of Object.entries(requiredFields)
+      ) {
+  
+          if (!element) {
+  
+              console.error(
+                  `AgriCentre Add Produce: missing field "${name}".`
+              );
+  
+              alert(
+                  `Page configuration error: ${name} field is missing.`
+              );
+  
+              return false;
+          }
+      }
+  
+  
+      /* --------------------------------------------------------
+         PRODUCE NAME
+         -------------------------------------------------------- */
+  
+      if (!produceName.value.trim()) {
+  
+          alert(
+              "Please enter the produce/crop name."
+          );
+  
+          produceName.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         CATEGORY
+         -------------------------------------------------------- */
+  
+      if (!category.value) {
+  
+          alert(
+              "Please select a produce category."
+          );
+  
+          category.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         QUANTITY
+         -------------------------------------------------------- */
+  
+      const quantityValue =
+          Number(quantity.value);
+  
+      if (
+          !Number.isFinite(quantityValue) ||
+          quantityValue <= 0
+      ) {
+  
+          alert(
+              "Available quantity must be greater than zero."
+          );
+  
+          quantity.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         UNIT
+         -------------------------------------------------------- */
+  
+      if (!unit.value) {
+  
+          alert(
+              "Please select a unit."
+          );
+  
+          unit.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         MINIMUM ORDER
+         -------------------------------------------------------- */
+  
+      const minimumOrderValue =
+          Number(minimumOrder.value);
+  
+      if (
+          !Number.isFinite(minimumOrderValue) ||
+          minimumOrderValue <= 0
+      ) {
+  
+          alert(
+              "Minimum order quantity must be greater than zero."
+          );
+  
+          minimumOrder.focus();
+  
+          return false;
+      }
+  
+  
+      if (
+          minimumOrderValue >
+          quantityValue
+      ) {
+  
+          alert(
+              "Minimum order quantity cannot exceed available quantity."
+          );
+  
+          minimumOrder.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         PRICE
+         -------------------------------------------------------- */
+  
+      const priceValue =
+          Number(price.value);
+  
+      if (
+          !Number.isFinite(priceValue) ||
+          priceValue <= 0
+      ) {
+  
+          alert(
+              "Please enter a valid price."
+          );
+  
+          price.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         ADDRESS
+         -------------------------------------------------------- */
+  
+      if (!address.value.trim()) {
+  
+          alert(
+              "Please enter the pickup location/address."
+          );
+  
+          address.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         DISTRICT
+         -------------------------------------------------------- */
+  
+      if (!district.value.trim()) {
+  
+          alert(
+              "Please enter the district."
+          );
+  
+          district.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         STATE
+         -------------------------------------------------------- */
+  
+      if (!state.value.trim()) {
+  
+          alert(
+              "Please enter the state."
+          );
+  
+          state.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         PINCODE
+         -------------------------------------------------------- */
+  
+      const pincodeValue =
+          pincode.value.trim();
+  
+      if (!/^\d{6}$/.test(pincodeValue)) {
+  
+          alert(
+              "Please enter a valid 6-digit pincode."
+          );
+  
+          pincode.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         HARVEST DATE
+         -------------------------------------------------------- */
+  
+      if (!harvestDate.value) {
+  
+          alert(
+              "Please select the harvest date."
+          );
+  
+          harvestDate.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         AVAILABLE FROM
+         -------------------------------------------------------- */
+  
+      if (!availableFrom.value) {
+  
+          alert(
+              "Please select the available-from date."
+          );
+  
+          availableFrom.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         AVAILABLE UNTIL
+         -------------------------------------------------------- */
+  
+      if (
+          availableUntil &&
+          availableUntil.value &&
+          availableUntil.value <
+          availableFrom.value
+      ) {
+  
+          alert(
+              "Available Until cannot be earlier than Available From."
+          );
+  
+          availableUntil.focus();
+  
+          return false;
+      }
+  
+  
+      /* --------------------------------------------------------
+         IMAGE
+         -------------------------------------------------------- */
+  
+      if (!image.files || !image.files.length) {
+  
+          alert(
+              "Please upload a clear produce photograph."
+          );
+  
+          image.focus();
+  
+          return false;
+      }
+  
+  
+      const selectedImage =
+          image.files[0];
+  
+  
+      const allowedTypes = [
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+      ];
+  
+  
+      if (
+          !allowedTypes.includes(
+              selectedImage.type
+          )
+      ) {
+  
+          alert(
+              "Only JPG, JPEG, PNG and WEBP images are allowed."
+          );
+  
+          image.value = "";
+  
+          return false;
+      }
+  
+  
+      const maxImageSize =
+          5 * 1024 * 1024;
+  
+  
+      if (
+          selectedImage.size >
+          maxImageSize
+      ) {
+  
+          alert(
+              "Image size must not exceed 5 MB."
+          );
+  
+          image.value = "";
+  
+          return false;
+      }
+  
+  
+      return true;
+  }
+  
+  
+  /* ============================================================
+     IMAGE PREVIEW
+     ============================================================ */
+  
+  function initializeImagePreview() {
+  
+      const imageInput =
+          field("image");
+  
+      const preview =
+          field("preview");
+  
+      const previewImage =
+          field("previewImage");
+  
+      const removeImage =
+          field("removeImage");
+  
+  
+      if (
+          !imageInput ||
+          !preview ||
+          !previewImage
+      ) {
+  
+          console.warn(
+              "Image preview elements not found."
+          );
+  
+          return;
+      }
+  
+  
+      imageInput.addEventListener(
+          "change",
+          function() {
+  
+              const file =
+                  this.files[0];
+  
+  
+              if (!file) {
+  
+                  preview.classList.remove(
+                      "show"
+                  );
+  
+                  previewImage.removeAttribute(
+                      "src"
+                  );
+  
+                  return;
+              }
+  
+  
+              const allowedTypes = [
+                  "image/jpeg",
+                  "image/png",
+                  "image/webp"
+              ];
+  
+  
+              if (
+                  !allowedTypes.includes(
+                      file.type
+                  )
+              ) {
+  
+                  alert(
+                      "Only JPG, JPEG, PNG and WEBP images are allowed."
+                  );
+  
+                  this.value = "";
+  
+                  preview.classList.remove(
+                      "show"
+                  );
+  
+                  return;
+              }
+  
+  
+              if (
+                  file.size >
+                  5 * 1024 * 1024
+              ) {
+  
+                  alert(
+                      "Image size must not exceed 5 MB."
+                  );
+  
+                  this.value = "";
+  
+                  preview.classList.remove(
+                      "show"
+                  );
+  
+                  return;
+              }
+  
+  
+              const reader =
+                  new FileReader();
+  
+  
+              reader.onload =
+                  function(event) {
+  
+                      previewImage.src =
+                          event.target.result;
+  
+                      preview.classList.add(
+                          "show"
+                      );
+                  };
+  
+  
+              reader.readAsDataURL(file);
+          }
+      );
+  
+  
+      if (removeImage) {
+  
+          removeImage.addEventListener(
+              "click",
+              function() {
+  
+                  imageInput.value = "";
+  
+                  previewImage.removeAttribute(
+                      "src"
+                  );
+  
+                  preview.classList.remove(
+                      "show"
+                  );
+              }
+          );
+      }
+  }
+  
+  
+  /* ============================================================
+     DRAFT
+     ============================================================ */
+  
+  function initializeDraftButton() {
+  
+      const saveDraftButton =
+          field("saveDraftBtn");
+  
+      if (!saveDraftButton) {
+          return;
+      }
+  
+  
+      saveDraftButton.addEventListener(
+          "click",
+          function() {
+  
+              const draft = {
+  
+                  produce_name:
+                      field("produce_name")?.value || "",
+  
+                  category:
+                      field("category")?.value || "",
+  
+                  description:
+                      field("description")?.value || "",
+  
+                  quantity:
+                      field("quantity")?.value || "",
+  
+                  unit:
+                      field("unit")?.value || "",
+  
+                  minimum_order_quantity:
+                      field("minimum_order_quantity")?.value || "",
+  
+                  price_per_unit:
+                      field("price_per_unit")?.value || "",
+  
+                  price_type:
+                      field("price_type")?.value || "",
+  
+                  address:
+                      field("address")?.value || "",
+  
+                  district:
+                      field("district")?.value || "",
+  
+                  state:
+                      field("state")?.value || "",
+  
+                  pincode:
+                      field("pincode")?.value || "",
+  
+                  pickup_details:
+                      field("pickup_details")?.value || "",
+  
+                  harvest_date:
+                      field("harvest_date")?.value || "",
+  
+                  available_from:
+                      field("available_from")?.value || "",
+  
+                  available_until:
+                      field("available_until")?.value || ""
+              };
+  
+  
+              localStorage.setItem(
+                  "agricentre_produce_draft",
+                  JSON.stringify(draft)
+              );
+  
+  
+              showStatus(
+                  "Draft saved on this device.",
+                  "success"
+              );
+          }
+      );
+  }
+  
+  
+  function loadDraft() {
+  
+      const saved =
+          localStorage.getItem(
+              "agricentre_produce_draft"
+          );
+  
+      if (!saved) {
+          return;
+      }
+  
+  
+      try {
+  
+          const draft =
+              JSON.parse(saved);
+  
+  
+          const fields = [
+              "produce_name",
+              "category",
+              "description",
+              "quantity",
+              "unit",
+              "minimum_order_quantity",
+              "price_per_unit",
+              "price_type",
+              "address",
+              "district",
+              "state",
+              "pincode",
+              "pickup_details",
+              "harvest_date",
+              "available_from",
+              "available_until"
+          ];
+  
+  
+          fields.forEach(
+              function(id) {
+  
+                  const element =
+                      field(id);
+  
+                  if (
+                      element &&
+                      draft[id] !== undefined
+                  ) {
+  
+                      element.value =
+                          draft[id];
+                  }
+              }
+          );
+  
+  
+          showStatus(
+              "Saved draft restored.",
+              "success"
+          );
+  
+      } catch (error) {
+  
+          console.warn(
+              "Unable to restore draft:",
+              error
+          );
+      }
+  }
+  
+  
+  /* ============================================================
+     RESET
+     ============================================================ */
+  
+  function initializeResetButton() {
+  
+      const form =
+          field("produceForm");
+  
+      const resetButton =
+          field("resetBtn");
+  
+  
+      if (
+          !form ||
+          !resetButton
+      ) {
+          return;
+      }
+  
+  
+      resetButton.addEventListener(
+          "click",
+          function() {
+  
+              if (
+                  !confirm(
+                      "Clear all entered produce details?"
+                  )
+              ) {
+                  return;
+              }
+  
+  
+              form.reset();
+  
+  
+              localStorage.removeItem(
+                  "agricentre_produce_draft"
+              );
+  
+  
+              const preview =
+                  field("preview");
+  
+              const previewImage =
+                  field("previewImage");
+  
+  
+              if (preview) {
+  
+                  preview.classList.remove(
+                      "show"
+                  );
+              }
+  
+  
+              if (previewImage) {
+  
+                  previewImage.removeAttribute(
+                      "src"
+                  );
+              }
+  
+  
+              showStatus(
+                  "",
+                  ""
+              );
+          }
+      );
+  }
+  
+  
+  /* ============================================================
+     BUILD CORRECT FORMDATA
+     ============================================================ */
+  
+  function buildListingFormData(form) {
+  
+      /*
+       * Start with the actual HTML form.
+       */
+      const formData =
+          new FormData(form);
+  
+  
+      /*
+       * ----------------------------------------------------------
+       * IMPORTANT FIELD MAPPING
+       *
+       * HTML:
+       *     address
+       *
+       * Backend:
+       *     location
+       *
+       * ----------------------------------------------------------
+       */
+  
+      const address =
+          field("address");
+  
+      const pickupDetails =
+          field("pickup_details");
+  
+  
+      /*
+       * Remove the frontend-only name.
+       */
+  
+      formData.delete("address");
+  
+  
+      /*
+       * Send it using the backend's expected name.
+       */
+  
+      formData.append(
+          "location",
+          address ? address.value.trim() : ""
+      );
+  
+  
+      /*
+       * HTML uses pickup_details.
+       * Backend uses pickup_instructions.
+       */
+  
+      formData.delete(
+          "pickup_details"
+      );
+  
+  
+      formData.append(
+          "pickup_instructions",
+          pickupDetails
+              ? pickupDetails.value.trim()
+              : ""
+      );
+  
+  
+      return formData;
+  }
+  
+  
+  /* ============================================================
+     SUBMIT FORM
+     ============================================================ */
+  
+  function initializeProduceForm() {
+  
+      const form =
+          field("produceForm");
+  
+  
+      if (!form) {
+  
+          console.error(
+              "produceForm not found."
+          );
+  
+          return;
+      }
+  
+  
+      form.addEventListener(
+          "submit",
+          async function(event) {
+  
+              event.preventDefault();
+  
+  
+              /* --------------------------------------------------
+                 AUTH TOKEN
+                 -------------------------------------------------- */
+  
+              const token =
+                  getToken();
+  
+  
+              if (!token) {
+  
+                  redirectToLogin();
+  
+                  return;
+              }
+  
+  
+              /* --------------------------------------------------
+                 VALIDATION
+                 -------------------------------------------------- */
+  
+              if (
+                  !validateProduceForm()
+              ) {
+  
+                  return;
+              }
+  
+  
+              /* --------------------------------------------------
+                 BUTTON
+                 -------------------------------------------------- */
+  
+              const submitButton =
+                  field("submitBtn");
+  
+  
+              if (submitButton) {
+  
+                  submitButton.disabled =
+                      true;
+  
+                  submitButton.textContent =
+                      "Submitting...";
+              }
+  
+  
+              showStatus(
+                  "Uploading produce and creating your listing...",
+                  "loading"
+              );
+  
+  
+              /* --------------------------------------------------
+                 FORM DATA
+                 -------------------------------------------------- */
+  
+              const formData =
+                  buildListingFormData(form);
+  
+  
+              try {
+  
+                  const response =
+                      await fetch(
+                          `${API_BASE}/api/listings`,
+                          {
+                              method: "POST",
+  
+                              headers: {
+                                  "Authorization":
+                                      `Bearer ${token}`
+                              },
+  
+                              body: formData
+                          }
+                      );
+  
+  
+                  /* ------------------------------------------------
+                     SESSION EXPIRED
+                     ------------------------------------------------ */
+  
+                  if (
+                      response.status === 401
+                  ) {
+  
+                      alert(
+                          "Your session has expired. Please login again."
+                      );
+  
+                      redirectToLogin();
+  
+                      return;
+                  }
+  
+  
+                  /* ------------------------------------------------
+                     NOT A FARMER
+                     ------------------------------------------------ */
+  
+                  if (
+                      response.status === 403
+                  ) {
+  
+                      alert(
+                          "Only Farmer accounts can create produce listings."
+                      );
+  
+                      window.location.href =
+                          "dashboard.html";
+  
+                      return;
+                  }
+  
+  
+                  /* ------------------------------------------------
+                     READ RESPONSE
+                     ------------------------------------------------ */
+  
+                  let data;
+  
+                  try {
+  
+                      data =
+                          await response.json();
+  
+                  } catch {
+  
+                      throw new Error(
+                          "The server returned an invalid response."
+                      );
+                  }
+  
+  
+                  /* ------------------------------------------------
+                     BACKEND ERROR
+                     ------------------------------------------------ */
+  
+                  if (
+                      !response.ok ||
+                      !data.success
+                  ) {
+  
+                      throw new Error(
+                          data.message ||
+                          "Unable to create the produce listing."
+                      );
+                  }
+  
+  
+                  showStatus(
+    "✓ Produce listing created successfully and submitted for quality check.",
+    "success"
+);
+
+
+/*
+ * IMPORTANT:
+ * Do not reset/redirect immediately.
+ * Keep the success state visible.
+ */
+
+if (submitButton) {
+    submitButton.disabled = false;
+    submitButton.textContent =
+        "Listing Submitted ✓";
+}
+
+
+/*
+ * Scroll to the message so it is visible.
+ */
+const statusBox =
+    field("statusBox");
+
+if (statusBox) {
+
+    statusBox.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+}
+
+
+/*
+ * Redirect only after the farmer
+ * has had time to see the message.
+ */
+setTimeout(
+    function() {
+
+        window.location.href =
+            "my-listings.html";
+
+    },
+    4000
+);
+  
+              } catch (error) {
+  
+                  console.error(
+                      "Produce submission error:",
+                      error
+                  );
+  
+  
+                  showStatus(
+                      error.message ||
+                      "Something went wrong while creating the listing.",
+                      "error"
+                  );
+  
+              } finally {
+
+/*
+ * Only restore the button if submission failed.
+ * On success, the page redirects after 4 seconds.
+ */
+if (
+    submitButton &&
+    !document.querySelector(
+        "#statusBox.success"
+    )
+) {
+
+    submitButton.disabled =
+        false;
+
+    submitButton.textContent =
+        "Submit for Quality Check →";
+}
+}
+          }
+      );
+  }
+  
+  
+  /* ============================================================
+     PAGE INITIALIZATION
+     ============================================================ */
+  
+  document.addEventListener(
+      "DOMContentLoaded",
+      async function() {
+  
+          /*
+           * 1. Verify login.
+           * 2. Verify FARMER role.
+           */
+  
+          const user =
+              await protectFarmerPage();
+  
+  
+          if (!user) {
+              return;
+          }
+  
+  
+          /*
+           * 3. Initialize page.
+           */
+  
+          updateNavbar(user);
+  
+          initializeSidebar();
+  
+          initializeProduceForm();
+  
+          initializeImagePreview();
+  
+          initializeResetButton();
+  
+          initializeDraftButton();
+  
+          loadDraft();
+  
+  
+          console.log(
+              "AgriCentre Add Produce authorized for:",
+              user.name,
+              user.role
+          );
+      }
+  );
+  
+  </script>
+</body>
+</html>

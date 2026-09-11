@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites — AgriCentre</title>
+    <style>
+        :root {
+            --brand: #2f9e5c;
+            --brand-dark: #1f7a44;
+            --brand-light: #5cc98a;
+            --bg: #0d0e10;
+            --bg2: #14161a;
+            --bg3: #1c1f25;
+            --surface: #22262e;
+            --border: #2e3340;
+            --text: #e8eaf0;
+            --muted: #8b909e;
+            --sidebar-w: 258px;
+            --nav-h: 64px;
+            --tr: 0.22s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        /* ========================= NAVBAR ========================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: var(--nav-h);
+            background: var(--bg2);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 12px;
+            box-shadow: 0 2px 12px #0005;
+        }
+
+        .nav-toggle {
+            background: none;
+            border: 0;
+            color: #fff;
+            font-size: 20px;
+            padding: 6px 8px;
+            cursor: pointer;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand);
+            border-radius: 8px;
+            font-size: 20px;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font: 700 32px Rajdhani, sans-serif;
+            line-height: 1;
+        }
+
+        .brand-nameX {
+            color: var(--brand);
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: #ddd;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            margin-left: auto;
+            display: flex;
+            gap: 5px;
+        }
+
+        .nav-links a {
+            color: #9aa7bb;
+            padding: 9px 11px;
+            border-radius: 7px;
+            font-size: 13px;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            background: #ffffff0f;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 7px;
+            margin-left: 8px;
+        }
+
+        .nav-btn {
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--surface);
+            color: #fff;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: -5px;
+            right: -4px;
+            background: var(--brand);
+            font-size: 9px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ========================= LAYOUT ========================= */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--nav-h);
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg2);
+            position: fixed;
+            top: var(--nav-h);
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 900;
+            transition: width var(--tr), transform var(--tr);
+        }
+
+        .sidebar.collapsed {
+            width: 62px;
+        }
+
+        .sb-section {
+            padding: 6px 0;
+        }
+
+        .sb-label {
+            padding: 6px 18px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: #4a5a74;
+        }
+
+        .sb-link {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 9px 18px;
+            color: #7a90aa;
+            font-size: 13px;
+            border-left: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .sb-link:hover {
+            color: #fff;
+            background: #2f9e5c1f;
+        }
+
+        .sb-link.active {
+            color: var(--brand-light);
+            border-left-color: var(--brand);
+            background: #2f9e5c26;
+        }
+
+        .si {
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sl {
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed .sb-label,
+        .sidebar.collapsed .sl {
+            opacity: 0;
+            width: 0;
+        }
+
+        .main {
+            width: calc(100% - var(--sidebar-w));
+            min-height: calc(100vh - var(--nav-h));
+            margin-left: var(--sidebar-w);
+            display: flex;
+            flex-direction: column;
+            transition: margin-left var(--tr), width var(--tr);
+        }
+
+        .main.expanded {
+            width: calc(100% - 62px);
+            margin-left: 62px;
+        }
+
+        /* ========================= PAGE ========================= */
+        .page-content {
+            flex: 1;
+            padding: 34px 48px 42px;
+        }
+
+        .page-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .eyebrow {
+            color: var(--brand-light);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .title {
+            color: #fff;
+            font: 700 32px Rajdhani, sans-serif;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 7px;
+        }
+
+        .head-tools {
+            display: flex;
+            align-items: center;
+        }
+
+        .search {
+            width: 270px;
+            padding: 11px 13px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: var(--bg3);
+            color: var(--text);
+            outline: none;
+            font-size: 13px;
+        }
+
+        .search:focus {
+            border-color: var(--brand);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .fav-card {
+            overflow: hidden;
+        }
+
+        .visual {
+            height: 170px;
+            background: var(--bg3);
+            display: grid;
+            place-items: center;
+            font-size: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .heart {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: rgba(13, 14, 16, .82);
+            color: #ff7180;
+            cursor: pointer;
+        }
+
+        .body {
+            padding: 16px;
+        }
+
+        .name {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 7px;
+        }
+
+        .price {
+            color: var(--brand-light);
+            font-weight: 800;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 9px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg3);
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 750;
+            cursor: pointer;
+        }
+
+        .btn.primary {
+            border-color: var(--brand);
+            background: var(--brand);
+            color: #fff;
+        }
+
+        .btn:hover {
+            border-color: var(--brand);
+        }
+
+        .empty {
+            text-align: center;
+            padding: 70px 20px;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .empty h3 {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+
+        .empty p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .primary {
+            display: inline-block;
+            margin-top: 10px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--brand);
+            color: #fff;
+            padding: 10px 15px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .primary:hover {
+            background: var(--brand-dark);
+        }
+
+        .loading {
+            color: var(--muted);
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        /* ========================= FOOTER ========================= */
+        footer {
+            width: 100%;
+            flex-shrink: 0;
+            background: var(--bg2);
+            color: #8fa0b8;
+            padding: 44px 40px 0;
+            margin-top: 0;
+        }
+
+        .ft-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 36px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #ffffff14;
+        }
+
+        .ft-brand {
+            color: #fff;
+            font: 700 1.4rem Rajdhani, sans-serif;
+            margin-bottom: 9px;
+        }
+
+        .ft-brand span {
+            color: var(--brand);
+        }
+
+        .ft-desc {
+            max-width: 330px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .ft-col h4 {
+            color: #fff;
+            font-size: 12px;
+            margin-bottom: 13px;
+            text-transform: uppercase;
+        }
+
+        .ft-col a {
+            display: block;
+            color: #8fa0b8;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .ft-col a:hover {
+            color: var(--brand-light);
+        }
+
+        .sub-box {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .sub-box p {
+            font-size: 12px;
+        }
+
+        .sub-form {
+            display: flex;
+            gap: 7px;
+        }
+
+        .sub-input {
+            flex: 1;
+            min-width: 0;
+            padding: 9px 12px;
+            border: 1px solid #ffffff1f;
+            border-radius: 8px;
+            background: #ffffff0f;
+            color: #fff;
+            outline: none;
+        }
+
+        .sub-btn {
+            padding: 9px 16px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--brand);
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .ft-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 14px 0;
+            font-size: 11px;
+        }
+
+        .ft-links {
+            display: flex;
+            gap: 14px;
+        }
+
+        /* ========================= TOAST ========================= */
+        .toast {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 2000;
+            display: none;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: var(--surface);
+            color: #fff;
+            font-size: 13px;
+            box-shadow: 0 8px 30px #0008;
+        }
+
+        /* ========================= RESPONSIVE ========================= */
+        @media (max-width: 1100px) {
+            .ft-grid {
+                grid-template-columns: 1.5fr 1fr 1fr;
+            }
+
+            .ft-grid > :last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-w);
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main,
+            .main.expanded {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .page-content {
+                padding: 28px 20px 34px;
+            }
+
+            .page-head {
+                display: block;
+            }
+
+            .head-tools {
+                margin-top: 15px;
+            }
+
+            .search {
+                width: 100%;
+            }
+
+            .ft-grid {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+
+            .ft-grid > :last-child {
+                grid-column: auto;
+            }
+
+            footer {
+                padding: 35px 20px 0;
+            }
+        }
+        /* ========================= FAVORITE CARD POLISH ========================= */
+
+.fav-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.fav-card:hover {
+    transform: translateY(-5px);
+    border-color: #3d8f62;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, .28);
+}
+
+.visual {
+    height: 190px;
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            #26352d 0%,
+            var(--bg3) 55%,
+            #17191e 100%
+        );
+}
+
+.visual img {
+    transition: transform .4s ease;
+}
+
+.fav-card:hover .visual img {
+    transform: scale(1.05);
+}
+
+/* Beautiful heart button */
+
+.heart {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 50%;
+
+    background: rgba(10,12,14,.78);
+    backdrop-filter: blur(10px);
+
+    color: #ff7180;
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+}
+
+.heart svg {
+    width: 21px;
+    height: 21px;
+    fill: currentColor;
+    stroke: currentColor;
+    stroke-width: 1.2;
+}
+
+.heart:hover {
+    transform: scale(1.1);
+    background: rgba(255,82,105,.14);
+    border-color: rgba(255,113,128,.45);
+}
+
+.heart:active {
+    transform: scale(.92);
+}
+
+.heart.removing {
+    transform: scale(1.2);
+    opacity: .5;
+}
+
+/* Saved badge */
+
+.favorite-badge {
+    position: absolute;
+    left: 13px;
+    top: 13px;
+
+    padding: 6px 9px;
+
+    border-radius: 20px;
+
+    background: rgba(13,14,16,.72);
+    backdrop-filter: blur(8px);
+
+    color: #dce5df;
+    font-size: 10px;
+    font-weight: 800;
+
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.favorite-badge span {
+    color: #ff7180;
+    margin-right: 3px;
+}
+
+.produce-placeholder,
+.modal-placeholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 58px;
+}
+
+.meta-label {
+    color: #697587;
+    font-weight: 700;
+    margin-right: 4px;
+}
+
+.price span {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 9px;
+}
+
+.btn {
+    min-height: 43px;
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.details-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.arrow {
+    transition: transform .2s ease;
+}
+
+.details-btn:hover .arrow {
+    transform: translateX(3px);
+}
+
+.cart-btn {
+    box-shadow: 0 8px 20px rgba(47,158,92,.16);
+}
+
+/* Card removal animation */
+
+.removing-card {
+    opacity: 0;
+    transform: scale(.94) translateY(8px);
+    pointer-events: none;
+    transition:
+        opacity .18s ease,
+        transform .18s ease;
+}
+/* ========================= DETAILS MODAL ========================= */
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.details-modal {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background: rgba(0,0,0,.76);
+    backdrop-filter: blur(7px);
+
+    z-index: 3000;
+}
+
+.details-modal.show {
+    display: flex;
+    animation: modalFade .2s ease;
+}
+
+.details-modal-box {
+    position: relative;
+
+    width: min(850px, 100%);
+    max-height: min(700px, 90vh);
+
+    overflow-y: auto;
+
+    background: linear-gradient(
+        145deg,
+        #252a32,
+        #1b1e24
+    );
+
+    border: 1px solid #363d49;
+    border-radius: 20px;
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.6);
+
+    padding: 26px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid #3a404b;
+    border-radius: 50%;
+
+    background: #15181d;
+    color: #dce2ea;
+
+    font-size: 25px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    z-index: 5;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+.modal-close:hover {
+    background: #2f9e5c;
+    transform: rotate(90deg);
+}
+
+.modal-product {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 28px;
+}
+
+.modal-image {
+    height: 320px;
+
+    overflow: hidden;
+
+    border-radius: 15px;
+    background: var(--bg3);
+
+    border: 1px solid #353b46;
+}
+
+.modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-info {
+    padding: 12px 35px 0 0;
+}
+
+.modal-category {
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    background: #2f9e5c20;
+    border: 1px solid #2f9e5c45;
+
+    color: var(--brand-light);
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.modal-info h2 {
+    color: #fff;
+    font-size: 29px;
+    margin-top: 13px;
+    line-height: 1.15;
+}
+
+.modal-price {
+    margin-top: 12px;
+
+    color: var(--brand-light);
+
+    font-size: 22px;
+    font-weight: 850;
+}
+
+.modal-price span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 11px;
+
+    margin-top: 22px;
+}
+
+.modal-grid > div {
+    padding: 12px;
+
+    border-radius: 10px;
+
+    background: #15181d;
+    border: 1px solid #2c313b;
+}
+
+.modal-grid span,
+.description > span {
+    display: block;
+
+    color: #707b8c;
+
+    font-size: 10px;
+    font-weight: 750;
+
+    text-transform: uppercase;
+    letter-spacing: .7px;
+
+    margin-bottom: 5px;
+}
+
+.modal-grid strong {
+    display: block;
+
+    color: #e9edf2;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+.description {
+    margin-top: 18px;
+}
+
+.description p {
+    color: #aab2bf;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    margin-top: 25px;
+    padding-top: 18px;
+
+    border-top: 1px solid #ffffff0d;
+}
+
+.modal-secondary,
+.modal-primary {
+    border: 0;
+    border-radius: 9px;
+
+    padding: 11px 18px;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        background .2s ease;
+}
+
+.modal-secondary {
+    background: #292e37;
+    color: #d8dde5;
+}
+
+.modal-primary {
+    background: var(--brand);
+    color: #fff;
+}
+
+.modal-secondary:hover,
+.modal-primary:hover {
+    transform: translateY(-1px);
+}
+
+.modal-primary:hover {
+    background: var(--brand-dark);
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .details-modal-box {
+        padding: 18px;
+        border-radius: 15px;
+    }
+
+    .modal-product {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .modal-image {
+        height: 220px;
+    }
+
+    .modal-info {
+        padding-right: 0;
+    }
+
+    .modal-info h2 {
+        font-size: 24px;
+    }
+
+    .modal-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .modal-secondary,
+    .modal-primary {
+        width: 100%;
+    }
+}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <button class="nav-toggle" id="sidebarToggle">☰</button>
+
+        <a href="index.html" class="nav-brand">
+            <div class="logo">🚜</div>
+            <div class="brand-text">
+                <span class="brand-name">Agri<span class="brand-nameX">Centre</span></span>
+                <span class="brand-subtitle">Smart India Hackathon 2026</span>
+            </div>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="features.html">Features</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="team.html">Team</a>
+            <a href="contact.html">Contact</a>
+            <a href="profile.html">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+
+        <div class="nav-right">
+            <button class="nav-btn" onclick="location.href='alerts.html'">
+                🔔
+                <span class="nav-badge">3</span>
+            </button>
+            <button class="nav-btn" onclick="location.href='ai-assistant.html'">🤖</button>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <main class="main" id="mainArea">
+            <section class="page-content">
+                <div class="page-head">
+                    <div>
+                        <div class="eyebrow">Shopping</div>
+                        <h1 class="title">Favorites</h1>
+                        <p class="subtitle">Keep track of produce and farmers you may want to buy from.</p>
+                    </div>
+
+                    <div class="head-tools">
+                        <input class="search" id="search" type="search" placeholder="Search favorites...">
+                    </div>
+                </div>
+
+                <div id="content">
+                    <div class="loading">Loading favorites...</div>
+                </div>
+            </section>
+
+            <footer>
+                <div class="ft-grid">
+                    <div>
+                        <div class="ft-brand">Agri<span>Centre</span></div>
+                        <p class="ft-desc">
+                            A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.
+                        </p>
+                    </div>
+
+                    <div class="ft-col">
+                        <h4>Platform</h4>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="marketplace.html">Marketplace</a>
+                        <a href="buyer-orders.html">Orders</a>
+                        <a href="quality.html">Quality &amp; Certification</a>
+                    </div>
+
+                    <div class="ft-col">
+                        <h4>AI &amp; Tools</h4>
+                        <a href="dashboard.html#aiInsights">AI Market Insights</a>
+                        <a href="ai-assistant.html">AI Assistant</a>
+                        <a href="reports.html">Reports Center</a>
+                    </div>
+
+                    <div class="ft-col">
+                        <h4>Stay Updated</h4>
+                        <div class="sub-box">
+                            <p>Get alerts and platform updates via email.</p>
+                            <form class="sub-form" id="subForm">
+                                <input class="sub-input" id="subEmail" type="email" placeholder="Your email address" required>
+                                <button class="sub-btn" type="submit">Subscribe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ft-bottom">
+                    <span>© 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution</span>
+                    <div class="ft-links">
+                        <a href="privacy.html">Privacy &amp; Terms</a>
+                        <a href="contact.html">Contact</a>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+<!-- ========================= DETAILS MODAL ========================= -->
+
+<div
+    class="details-modal"
+    id="detailsModal"
+    onclick="handleModalBackground(event)"
+>
+    <div class="details-modal-box">
+
+        <button
+            class="modal-close"
+            onclick="closeDetailsModal()"
+            aria-label="Close"
+            type="button"
+        >
+            ×
+        </button>
+
+        <div id="detailsModalContent"></div>
+
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+    <script>
+        const API = "http://127.0.0.1:5000/api";
+
+function getToken() {
+    return localStorage.getItem("token");
+}
+
+function authHeaders(includeJson = false) {
+    const headers = {
+        "Authorization": `Bearer ${getToken()}`
+    };
+
+    if (includeJson) {
+        headers["Content-Type"] = "application/json";
+    }
+
+    return headers;
+}
+
+let user = null;
+let items = [];
+
+        function esc(value) {
+            return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            })[char]);
+        }
+
+        function isBulk() {
+            const role = String(user?.role || "VENDOR").toUpperCase();
+            return ["WHOLESALER", "BULK_BUYER", "BULK BUYER"].includes(role);
+        }
+
+        function toast(message) {
+            const element = document.getElementById("toast");
+            element.textContent = message;
+            element.style.display = "block";
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                element.style.display = "none";
+            }, 2200);
+        }
+
+        function logout() {
+            fetch(`${API}/auth/logout`, {
+                method: "POST",
+                credentials: "include"
+            }).finally(() => {
+                location.href = "login.html";
+            });
+        }
+
+        function renderSidebar() {
+            const vendorSidebar = `
+                <div class="sb-section">
+                    <div class="sb-label">Main</div>
+                    <a class="sb-link" href="dashboard.html"><span class="si">📊</span><span class="sl">Dashboard</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Shopping</div>
+                    <a class="sb-link" href="marketplace.html"><span class="si">🛒</span><span class="sl">Marketplace</span></a>
+                    <a class="sb-link" href="cart.html"><span class="si">🛍️</span><span class="sl">My Cart</span></a>
+                    <a class="sb-link active" href="favorites.html"><span class="si">❤️</span><span class="sl">Favorites</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Orders &amp; Delivery</div>
+                    <a class="sb-link" href="buyer-orders.html"><span class="si">📦</span><span class="sl">My Orders</span></a>
+                    <a class="sb-link" href="buyer-logistics.html"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Communication</div>
+                    <a class="sb-link" href="meeting.html"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">AI &amp; Insights</div>
+                    <a class="sb-link" href="dashboard.html#aiInsights"><span class="si">🤖</span><span class="sl">AI Insights</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Account</div>
+                    <a class="sb-link" href="profile.html"><span class="si">👤</span><span class="sl">Profile</span></a>
+                    <a class="sb-link" href="alerts.html"><span class="si">🔔</span><span class="sl">Notifications</span></a>
+                    <a class="sb-link" href="#" onclick="logout(); return false;"><span class="si">🚪</span><span class="sl">Logout</span></a>
+                </div>`;
+
+            const bulkSidebar = `
+                <div class="sb-section">
+                    <div class="sb-label">Main</div>
+                    <a class="sb-link" href="dashboard.html"><span class="si">📊</span><span class="sl">Dashboard</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Bulk Buying</div>
+                    <a class="sb-link" href="marketplace.html"><span class="si">🛒</span><span class="sl">Marketplace</span></a>
+                    <a class="sb-link" href="wholesaler-offers.html"><span class="si">🤝</span><span class="sl">My Offers</span></a>
+                    <a class="sb-link" href="cart.html"><span class="si">🛍️</span><span class="sl">Bulk Cart</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Orders</div>
+                    <a class="sb-link" href="buyer-orders.html"><span class="si">📦</span><span class="sl">Bulk Orders</span></a>
+                    <a class="sb-link" href="buyer-logistics.html"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a>
+                    <a class="sb-link" href="payments.html"><span class="si">💳</span><span class="sl">Payments &amp; Invoices</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Communication</div>
+                    <a class="sb-link" href="meeting.html"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">AI &amp; Insights</div>
+                    <a class="sb-link" href="dashboard.html#aiInsights"><span class="si">🤖</span><span class="sl">AI Insights</span></a>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-label">Account</div>
+                    <a class="sb-link" href="profile.html"><span class="si">🏢</span><span class="sl">Business Profile</span></a>
+                    <a class="sb-link" href="alerts.html"><span class="si">🔔</span><span class="sl">Notifications</span></a>
+                    <a class="sb-link" href="#" onclick="logout(); return false;"><span class="si">🚪</span><span class="sl">Logout</span></a>
+                </div>`;
+
+            document.getElementById("sidebar").innerHTML = isBulk() ? bulkSidebar : vendorSidebar;
+        }
+
+        async function getUser() {
+    try {
+        const response = await fetch(`${API}/auth/profile`, {
+            method: "GET",
+            headers: authHeaders()
+        });
+
+        if (response.status === 401) {
+            logout();
+            return;
+        }
+
+        if (response.ok) {
+            const data = await response.json();
+
+            user = data.user || data;
+
+            localStorage.setItem(
+                "user",
+                JSON.stringify(user)
+            );
+        }
+    } catch (error) {
+        console.warn("Profile request failed:", error);
+    }
+
+    if (!user) {
+        try {
+            user = JSON.parse(
+                localStorage.getItem("user") || "null"
+            );
+        } catch (error) {
+            user = null;
+        }
+    }
+
+    if (!user) {
+        user = {
+            role: "VENDOR",
+            name: "Buyer"
+        };
+    }
+}
+async function loadFavorites() {
+    const container = document.getElementById("content");
+
+    try {
+        const response = await fetch(
+            `${API}/marketplace/favorites`,
+            {
+                method: "GET",
+                headers: authHeaders()
+            }
+        );
+
+        const data = await response
+            .json()
+            .catch(() => ({}));
+
+        if (response.status === 401) {
+            logout();
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                data.error ||
+                "Could not load favorites"
+            );
+        }
+
+        items = data.items || data.listings || [];
+
+        renderFavorites();
+
+    } catch (error) {
+        console.error(
+            "Favorites loading error:",
+            error
+        );
+
+        container.innerHTML = `
+            <div class="card empty">
+                <div class="empty-icon">⚠️</div>
+                <h3>Could not load favorites</h3>
+                <p>${esc(
+                    error.message ||
+                    "Please try again."
+                )}</p>
+            </div>
+        `;
+    }
+}
+
+        function renderFavorites() {
+            const query = document.getElementById("search").value.toLowerCase().trim();
+            const filtered = items.filter((item) => {
+                const text = `${item.produce_name || item.name || ""} ${item.farmer_name || ""} ${item.location || ""}`;
+                return text.toLowerCase().includes(query);
+            });
+
+            const container = document.getElementById("content");
+
+            if (!filtered.length) {
+                container.innerHTML = `
+                    <div class="card empty">
+                        <div class="empty-icon">♡</div>
+                        <h3>${query ? "No matching favorites" : "No favorites yet"}</h3>
+                        <p>${query ? "Try another search." : "Save produce from View Details and it will appear here."}</p>
+                        <a class="primary" href="marketplace.html">Browse Marketplace</a>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="grid">
+                    ${filtered.map(renderFavoriteCard).join("")}
+                </div>`;
+        }
+
+        function renderFavoriteCard(item) {
+
+// IMPORTANT:
+// Backend's real Mongo ID is in item.id
+const id = item.id || item.listing_id;
+
+const price = Number(
+    item.price_per_unit ??
+    item.price ??
+    0
+);
+
+const available = Number(
+    item.available_quantity ??
+    item.quantity ??
+    0
+);
+
+const minimum = Number(
+    item.minimum_order_quantity ??
+    item.minimum_order ??
+    1
+);
+
+const image = item.image_url
+    ? (
+        item.image_url.startsWith("/")
+            ? `http://127.0.0.1:5000${item.image_url}`
+            : item.image_url
+    )
+    : "";
+
+return `
+    <article class="card fav-card" id="favorite-${esc(id)}">
+
+        <div class="visual">
+
+            ${
+                image
+                    ? `
+                        <img
+                            src="${esc(image)}"
+                            alt="${esc(
+                                item.produce_name ||
+                                "Produce"
+                            )}"
+                            onerror="
+                                this.style.display='none';
+                                this.parentElement.classList.add('no-image');
+                            "
+                        >
+                      `
+                    : `
+                        <div class="produce-placeholder">
+                            🌾
+                        </div>
+                      `
+            }
+
+            <button
+                class="heart"
+                title="Remove from favorites"
+                aria-label="Remove from favorites"
+                onclick="removeFavorite('${esc(id)}', this)"
+            >
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/>
+                </svg>
+            </button>
+
+            <div class="favorite-badge">
+                <span>♥</span> Saved
+            </div>
+
+        </div>
+
+        <div class="body">
+
+            <div class="name">
+                ${esc(
+                    item.produce_name ||
+                    item.name ||
+                    "Produce"
+                )}
+            </div>
+
+            <div class="meta">
+                <span class="meta-label">Farmer</span>
+                ${esc(
+                    item.farmer_name ||
+                    "Farmer"
+                )}
+                <br>
+
+                <span class="meta-label">Location</span>
+                ${esc(
+                    item.location ||
+                    item.location_label ||
+                    "Location not specified"
+                )}
+                <br>
+
+                <span class="meta-label">Available</span>
+                ${available.toLocaleString(
+                    "en-IN"
+                )} ${esc(item.unit || "KG")}
+            </div>
+
+            <div class="price">
+                ₹${price.toLocaleString("en-IN")}
+                <span>/ ${esc(item.unit || "KG")}</span>
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="btn details-btn"
+                    onclick="viewDetails('${esc(id)}')"
+                >
+                    <span>View Details</span>
+                    <span class="arrow">→</span>
+                </button>
+
+                <button
+                    class="btn primary cart-btn"
+                    onclick="addToCart('${esc(id)}')"
+                >
+                    🛒 Move to Cart
+                </button>
+
+            </div>
+
+        </div>
+
+    </article>
+`;
+}
+async function removeFavorite(id, button) {
+
+const card = document.getElementById(
+    `favorite-${id}`
+);
+
+if (button) {
+    button.disabled = true;
+    button.classList.add("removing");
+}
+
+try {
+
+    const response = await fetch(
+        `${API}/marketplace/favorites/${encodeURIComponent(id)}`,
+        {
+            method: "DELETE",
+            headers: authHeaders()
+        }
+    );
+
+    const data = await response
+        .json()
+        .catch(() => ({}));
+
+    if (response.status === 401) {
+        logout();
+        return;
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            data.error ||
+            "Could not remove favorite"
+        );
+    }
+
+    // Remove from local array immediately
+    items = items.filter(
+        item =>
+            String(
+                item.id ||
+                item.listing_id
+            ) !== String(id)
+    );
+
+    // Small animation
+    if (card) {
+        card.classList.add("removing-card");
+
+        setTimeout(() => {
+            renderFavorites();
+        }, 180);
+    } else {
+        renderFavorites();
+    }
+
+    toast("Removed from favorites");
+
+} catch (error) {
+
+    if (button) {
+        button.disabled = false;
+        button.classList.remove("removing");
+    }
+
+    console.error(
+        "Remove favorite error:",
+        error
+    );
+
+    toast(
+        error.message ||
+        "Could not remove favorite"
+    );
+}
+}
+
+async function addToCart(id) {
+
+const item = items.find(
+    item =>
+        String(
+            item.id ||
+            item.listing_id
+        ) === String(id)
+);
+
+if (!item) {
+    toast("Favorite item not found.");
+    return;
+}
+
+const available = Number(
+    item.available_quantity ??
+    item.quantity ??
+    0
+);
+
+const listingMOQ = Number(
+    item.minimum_order_quantity ??
+    item.minimum_order ??
+    1
+);
+
+// Bulk buyers need minimum 100 KG
+const quantity = isBulk()
+    ? Math.max(100, listingMOQ)
+    : Math.max(1, listingMOQ);
+
+if (available <= 0) {
+    toast("This produce is currently unavailable.");
+    return;
+}
+
+if (quantity > available) {
+    toast(
+        `Only ${available} ${item.unit || "KG"} available.`
+    );
+    return;
+}
+
+try {
+
+    const response = await fetch(
+        `${API}/marketplace/cart`,
+        {
+            method: "POST",
+            headers: authHeaders(true),
+            body: JSON.stringify({
+                listing_id: id,
+                quantity: quantity
+            })
+        }
+    );
+
+    const data = await response
+        .json()
+        .catch(() => ({}));
+
+    if (response.status === 401) {
+        logout();
+        return;
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            data.error ||
+            "Could not move item to cart"
+        );
+    }
+
+    toast(
+        `🛒 ${item.produce_name || "Item"} moved to cart`
+    );
+
+} catch (error) {
+
+    console.error(
+        "Add to cart error:",
+        error
+    );
+
+    toast(
+        error.message ||
+        "Could not move item to cart"
+    );
+}
+}
+
+function viewDetails(id) {
+
+const item = items.find(
+    item =>
+        String(
+            item.id ||
+            item.listing_id
+        ) === String(id)
+);
+
+if (!item) {
+    toast("Listing details not available.");
+    return;
+}
+
+const price = Number(
+    item.price_per_unit ??
+    item.price ??
+    0
+);
+
+const available = Number(
+    item.available_quantity ??
+    item.quantity ??
+    0
+);
+
+const minimum = Number(
+    item.minimum_order_quantity ??
+    item.minimum_order ??
+    1
+);
+
+const image = item.image_url
+    ? (
+        item.image_url.startsWith("/")
+            ? `http://127.0.0.1:5000${item.image_url}`
+            : item.image_url
+    )
+    : "";
+
+document.getElementById(
+    "detailsModalContent"
+).innerHTML = `
+
+    <div class="modal-product">
+
+        <div class="modal-image">
+
+            ${
+                image
+                    ? `
+                        <img
+                            src="${esc(image)}"
+                            alt="${esc(
+                                item.produce_name ||
+                                "Produce"
+                            )}"
+                        >
+                      `
+                    : `
+                        <div class="modal-placeholder">
+                            🌾
+                        </div>
+                      `
+            }
+
+        </div>
+
+        <div class="modal-info">
+
+            <div class="modal-category">
+                ${esc(
+                    item.category ||
+                    "Fresh Produce"
+                )}
+            </div>
+
+            <h2>
+                ${esc(
+                    item.produce_name ||
+                    item.name ||
+                    "Produce"
+                )}
+            </h2>
+
+            <div class="modal-price">
+                ₹${price.toLocaleString("en-IN")}
+                <span>
+                    / ${esc(item.unit || "KG")}
+                </span>
+            </div>
+
+            <div class="modal-grid">
+
+                <div>
+                    <span>Farmer</span>
+                    <strong>
+                        ${esc(
+                            item.farmer_name ||
+                            "Farmer"
+                        )}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Available</span>
+                    <strong>
+                        ${available.toLocaleString("en-IN")}
+                        ${esc(item.unit || "KG")}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Minimum Order</span>
+                    <strong>
+                        ${minimum}
+                        ${esc(item.unit || "KG")}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Location</span>
+                    <strong>
+                        ${esc(
+                            item.location ||
+                            item.location_label ||
+                            "Not specified"
+                        )}
+                    </strong>
+                </div>
+
+            </div>
+
+            ${
+                item.description
+                    ? `
+                        <div class="description">
+                            <span>Description</span>
+                            <p>
+                                ${esc(
+                                    item.description
+                                )}
+                            </p>
+                        </div>
+                      `
+                    : ""
+            }
+
+        </div>
+
+    </div>
+
+    <div class="modal-actions">
+
+        <button
+            class="modal-secondary"
+            onclick="closeDetailsModal()"
+        >
+            Close
+        </button>
+
+        <button
+            class="modal-primary"
+            onclick="closeDetailsModal(); addToCart('${esc(id)}')"
+        >
+            🛒 Move to Cart
+        </button>
+
+    </div>
+`;
+
+document
+    .getElementById("detailsModal")
+    .classList.add("show");
+
+document.body.classList.add("modal-open");
+}
+function closeDetailsModal() {
+    document
+        .getElementById("detailsModal")
+        .classList.remove("show");
+
+    document.body.classList.remove("modal-open");
+}
+
+function handleModalBackground(event) {
+    if (
+        event.target.id === "detailsModal"
+    ) {
+        closeDetailsModal();
+    }
+}
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+        if (event.key === "Escape") {
+            closeDetailsModal();
+        }
+    }
+);
+        document.getElementById("search").addEventListener("input", renderFavorites);
+
+        document.getElementById("sidebarToggle").addEventListener("click", () => {
+            const sidebar = document.getElementById("sidebar");
+            const main = document.getElementById("mainArea");
+
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle("open");
+            } else {
+                sidebar.classList.toggle("collapsed");
+                main.classList.toggle("expanded");
+            }
+        });
+
+        document.getElementById("subForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            toast("Thanks! You are subscribed.");
+            event.target.reset();
+        });
+
+        async function init() {
+            await getUser();
+            renderSidebar();
+            await loadFavorites();
+        }
+
+        init();
+    </script>
+</body>
+</html>

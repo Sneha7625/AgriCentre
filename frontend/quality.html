@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quality &amp; Certification – AgriCentre</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    :root{--sidebar-w:240px;--nav-h:64px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
+/* ===== VARIABLES ===== */
+:root{
+    --primary:#2f9e5c;
+    --primary-dark:#b8440f;
+    --surface:#22262e;
+    --border:#2e3340;
+    --text:#e8eaf0;
+    --muted:#8b909e;
+    --accent-green:#22c55e;
+    --accent-yellow:#f59e0b;
+    --accent-red:#ef4444;
+    --accent-blue:#3b82f6;
+
+
+  --brand:#2f9e5c;
+  --brand-dark:#1f7a44;
+  --brand-light:#5cc98a;
+  --brand-faint:#eafaf0;
+  --dark:#1a1a2e;
+  --dark-mid:#16213e;
+  --white:#ffffff;
+  --success:#10b981;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --info:#3b82f6;
+  --sidebar-w:258px;
+  --nav-h:64px;
+  --radius:10px;
+  --radius-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+  --tr:.22s cubic-bezier(.4,0,.2,1);
+  --bg: #0d0e10;
+  --bg2: #14161a;
+  --bg3: #1c1f25;
+}
+
+/* ===== NAVBAR ===== */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.nav-toggle{background:none;border:none;cursor:pointer;color:#fff;font-size:20px;padding:6px 8px;border-radius:6px;transition:background var(--tr);flex-shrink:0}
+.nav-toggle:hover{background:rgba(255,255,255,.1)}
+.nav-brand{text-decoration: none;display:flex;align-items:center;gap:10px;font-family:'Rajdhani',sans-serif;font-size:1.45rem;font-weight:700;color:#fff}
+.nav-brand .logo{width:34px;height:34px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:auto}
+.nav-links a{text-decoration: none;color:#9aaac4;font-size:13px;font-weight:500;padding:6px 11px;border-radius:6px;transition:all var(--tr)}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(47,158,92,.22)}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:12px}
+.nav-btn{width:36px;height:36px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#ccc;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);position:relative}
+.nav-btn:hover{background:var(--brand);color:#fff}
+.nav-badge{position:absolute;top:-4px;right:-4px;background:var(--brand);color:#fff;font-size:9px;font-weight:700;padding:1px 4px;border-radius:10px;min-width:16px;text-align:center}
+.nav-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border-radius:8px;padding:5px 10px;cursor:pointer}
+.nav-avatar{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.nav-uname{color:#ddd;font-size:12px;font-weight:500}
+
+.brand-text{display:flex;flex-direction:column;}
+.brand-name{ font-size:32px;font-weight:700;font-family:'Poppins', sans-serif;line-height:1;}
+.brand-nameX{color:var(--brand)}
+.brand-subtitle{font-size:11px;font-weight:500;font-family:'Montserrat', sans-serif; /* Change this */color:#ddd7d7;letter-spacing:1px;text-transform: uppercase;}
+
+
+/* ===== LAYOUT ===== */
+.layout{display:flex;margin-top:var(--nav-h);flex:1}
+
+/* ===== SIDEBAR ===== */
+.sidebar{width:var(--sidebar-w);background:var(--bg2);position:fixed;top:var(--nav-h);bottom:0;left:0;overflow-y:auto;overflow-x:hidden;transition:width var(--tr);z-index:900;display:flex;flex-direction:column}
+.sidebar.collapsed{width:62px}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
+.sb-section{padding:6px 0}
+.sb-label{padding:6px 18px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#4a5a74;white-space:nowrap;overflow:hidden}
+.sidebar.collapsed .sb-label{opacity:0}
+.sb-link{display:flex;align-items:center;gap:11px;padding:9px 18px;color:#7a90aa;font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all var(--tr);white-space:nowrap;cursor:pointer;text-decoration:none}
+.sb-link .si{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.sb-link .sl{overflow:hidden;transition:opacity var(--tr)}
+.sidebar.collapsed .sl{opacity:0;width:0}
+.sb-link:hover{color:#fff;background:rgba(47,158,92,.12)}
+.sb-link.active{color:var(--brand-light);border-left-color:var(--brand);background:rgba(47,158,92,.15)}
+.sb-badge{margin-left:auto;background:var(--brand);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;flex-shrink:0}
+.sidebar.collapsed .sb-badge{display:none}
+
+/* ===== MAIN ===== */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;transition:margin-left var(--tr)}
+.main.expanded{margin-left:62px}
+
+    /* HERO SAFETY BANNER */
+    .quality-hero{background:linear-gradient(135deg,#0d1a0f 0%,#0d1810 60%,#111410 100%);padding:40px 48px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+    .quality-hero::before{content:'';position:absolute;top:0;right:0;width:50%;height:100%;background:radial-gradient(ellipse at 80% 50%,rgba(34,197,94,0.08) 0%,transparent 70%);}
+    .quality-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:32px;}
+    .quality-label{font-size:12px;font-weight:700;color:var(--accent-green);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;}
+    .quality-title{font-family:'Rajdhani',sans-serif;font-size:38px;font-weight:700;color:#fff;line-height:1.05;}
+    .quality-sub{font-size:14px;color:var(--muted);margin-top:6px;}
+    .afd-box{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:16px;padding:24px 32px;text-align:center;flex-shrink:0;}
+    .afd-num{font-family:'Rajdhani',sans-serif;font-size:64px;font-weight:700;color:var(--accent-green);line-height:1;}
+    .afd-label{font-size:13px;color:rgba(34,197,94,0.7);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:0.08em;}
+    .afd-since{font-size:12px;color:var(--muted);margin-top:4px;}
+    .kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+    .kpi-mini{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:18px;}
+    .kpi-mini-val{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fff;line-height:1;}
+    .kpi-mini-label{font-size:12px;color:var(--muted);margin-top:4px;}
+    .kpi-mini-sub{font-size:11px;margin-top:5px;}
+    .green{color:var(--accent-green);}
+    .yellow{color:var(--accent-yellow);}
+    .red{color:var(--accent-red);}
+
+    .section{padding:36px 48px;}
+    .section-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:20px;}
+    .chart-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+    .chart-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:24px;}
+    .chart-card h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:18px;}
+    .chart-card canvas{max-height:220px;}
+
+    /* NEAR MISS TABLE */
+    .tbl-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+    table{width:100%;border-collapse:collapse;}
+    thead{background:var(--surface);}
+    th{padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid var(--border);}
+    td{padding:13px 16px;font-size:13.5px;color:var(--text);border-bottom:1px solid var(--border);}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:rgba(255,255,255,0.02);}
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+    .badge.r{background:rgba(239,68,68,0.12);color:var(--accent-red);}
+    .badge.y{background:rgba(245,158,11,0.12);color:var(--accent-yellow);}
+    .badge.g{background:rgba(34,197,94,0.12);color:var(--accent-green);}
+    .badge.b{background:rgba(59,130,246,0.12);color:var(--accent-blue);}
+
+    /* COMPLIANCE BARS */
+    .compliance-list{display:flex;flex-direction:column;gap:16px;}
+    .compliance-item label{display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-bottom:7px;}
+    .compliance-item label span{font-weight:700;}
+    .cbar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+    .cbar-fill{height:100%;border-radius:4px;transition:width 1.2s ease;}
+
+    /* ===== FOOTER ===== */
+footer{background:var(--bg2);color:#8fa0b8;padding:44px 40px 0;margin-top:auto}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:36px;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08)}
+.ft-brand{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:9px}
+.ft-brand span{color:var(--brand)}
+.ft-desc{font-size:13px;line-height:1.7;max-width:270px}
+.ft-col h4{color:#fff;font-size:12px;font-weight:700;margin-bottom:13px;text-transform:uppercase;letter-spacing:.8px}
+.ft-col a{text-decoration: none;display:block;font-size:13px;margin-bottom:8px;transition:color var(--tr);color:#8fa0b8}
+.ft-col a:hover{color:var(--brand-light)}
+/* Subscribe */
+.sub-box{display:flex;flex-direction:column;gap:9px}
+.sub-box p{font-size:12px;color:#8fa0b8}
+.sub-form{display:flex;gap:7px}
+.sub-input{flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font-size:13px;outline:none;font-family:'Inter',sans-serif}
+.sub-input::placeholder{color:#6b7a99}
+.sub-input:focus{border-color:var(--brand)}
+.sub-btn{padding:8px 16px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background var(--tr);font-family:'Inter',sans-serif}
+.sub-btn:hover{background:var(--brand-dark)}
+.ft-bottom{display:flex;align-items:center;justify-content:space-between;padding:14px 0;font-size:11px;flex-wrap:wrap;gap:8px}
+.ft-links{display:flex;gap:14px}
+.ft-links a{text-decoration: none;color:#8fa0b8;transition:color var(--tr)}.ft-links a:hover{color:var(--brand-light)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1100px){.feat-grid{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.hero{flex-direction:column}.hero-visual{width:100%;flex:none}.hero-title{font-size:3rem}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);width:258px}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0!important}.nav-links{display:none}
+  .g2,.g4,.feat-grid{grid-template-columns:1fr}
+  .ft-grid{grid-template-columns:1fr}.content{padding:14px}
+}
+  </style>
+</head>
+<body>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <button class="nav-toggle" id="sidebarToggle">☰</button>
+  <a href="index.html" class="nav-brand">
+        <div class="logo">🚜</div>
+
+        <div class="brand-text">
+            <span class="brand-name">Agri<span class="brand-nameX">Centre</span></span>
+            <span class="brand-subtitle">Smart India Hackathon 2026</span>
+        </div>
+    </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="features.html">Features</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="team.html">Team</a>
+    <a href="contact.html">Contact</a>
+    <a id="profile-link" href="profile.html" style="display: none;">Profile</a>
+        <a id="logout-link" href="#" style="display: none;" onclick="logout()">Logout</a>
+        <a id="login-link" href="login.html">Login</a>
+        <a id="signup-link" href="signup.html">Sign Up</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="location.href='alerts.html'" title="Alerts">🔔<span class="nav-badge">3</span></button>
+    <button class="nav-btn" onclick="location.href='ai-assistant.html'" title="AI Assistant">🤖</button>
+    
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-section">
+    <div class="sb-label">Main</div>
+    <a href="index.html" class="sb-link"><span class="si">🏠</span><span class="sl">Home</span></a>
+    <a href="about.html" class="sb-link"><span class="si">ℹ️</span><span class="sl">About</span></a>
+    <a href="features.html" class="sb-link"><span class="si">⭐</span><span class="sl">Features</span></a>
+    <a href="team.html" class="sb-link"><span class="si">👥</span><span class="sl">Team</span></a>
+    <a href="contact.html" class="sb-link"><span class="si">📬</span><span class="sl">Contact</span></a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Analytics</div>
+    <a href="dashboard.html" class="sb-link"><span class="si">📊</span><span class="sl">Farmer Dashboard</span></a>
+    <a href="quality.html" class="sb-link active"><span class="si">🛡️</span><span class="sl">Quality &amp; Certification</span></a>
+    <a href="farmer_logistics.html" class="sb-link"><span class="si">🚚</span><span class="sl">Logistics Tracking</span></a>
+    <a href="sustainability.html" class="sb-link"><span class="si">🌿</span><span class="sl">Sustainability Score</span></a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Operations</div>
+    <a href="add-produce.html" class="sb-link"><span class="si">🚚</span><span class="sl">Fleet & Storage</span></a>
+    <a href="orders.html" class="sb-link"><span class="si">📦</span><span class="sl">Order Management</span></a>
+    <a href="demand-forecasting.html" class="sb-link"><span class="si">📈</span><span class="sl">AI Market Insights</span></a>
+    <a href="alerts.html" class="sb-link"><span class="si">🔔</span><span class="sl">Alert Center</span><span class="sb-badge">3</span></a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">More</div>
+    <a href="reports.html" class="sb-link"><span class="si">📄</span><span class="sl">Reports Center</span></a>
+    <a href="innovation.html" class="sb-link"><span class="si">🚀</span><span class="sl">Innovation Hub</span></a>
+    <a href="profile.html" class="sb-link"><span class="si">🔐</span><span class="sl">Profile</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main" id="mainArea">
+    <!-- HERO SAFETY BANNER -->
+    <div class="quality-hero">
+      <div class="quality-top">
+        <div>
+          <div class="quality-label">🛡️ Quality &amp; Certification · Guwahati Marketplace</div>
+          <div class="quality-title">Quality &amp; Compliance<br>Overview</div>
+          <div class="quality-sub">Real-time quality KPIs, order issue trends, near miss tracking, and compliance scores</div>
+        </div>
+        <div class="afd-box">
+          <div class="afd-num" id="afd-counter">0</div>
+          <div class="afd-label">Accident-Free Days</div>
+          <div class="afd-since">Since 17 Jun 2023</div>
+        </div>
+      </div>
+      <div class="kpi-strip">
+        <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--accent-green)">97.3</div><div class="kpi-mini-label">Quality Score / 100</div><div class="kpi-mini-sub green">↑ 1.2 this month</div></div>
+        <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--accent-yellow)">2</div><div class="kpi-mini-label">Near Misses (Jun)</div><div class="kpi-mini-sub green">↓ 3 vs last month</div></div>
+        <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--accent-red)">3</div><div class="kpi-mini-label">Open Order Issues</div><div class="kpi-mini-sub yellow">Under investigation</div></div>
+        <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--accent-blue)">4</div><div class="kpi-mini-label">Unsafe Conditions</div><div class="kpi-mini-sub green">↓ 2 resolved today</div></div>
+        <div class="kpi-mini"><div class="kpi-mini-val" style="color:var(--accent-green)">100%</div><div class="kpi-mini-label">PTW Compliance</div><div class="kpi-mini-sub green">↑ All permits in order</div></div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW 1 -->
+    <div class="section">
+      <div class="section-title">Order Issue &amp; Quality Trends</div>
+      <div class="chart-grid-2">
+        <div class="chart-card"><h3>📈 Monthly Order Issue Trend (Jan–Jun 2026)</h3><canvas id="incTrend"></canvas></div>
+        <div class="chart-card"><h3>🥧 Order Issue Category Breakdown</h3><canvas id="incCat"></canvas></div>
+      </div>
+    </div>
+
+    <!-- COMPLIANCE BARS + CHART -->
+    <div class="section" style="padding-top:0;">
+      <div class="chart-grid-2">
+        <div class="chart-card">
+          <h3>✅ Compliance Scores by Category</h3>
+          <div class="compliance-list" id="compList"></div>
+        </div>
+        <div class="chart-card"><h3>📊 Near Miss vs Unsafe Conditions (Weekly)</h3><canvas id="nearMissChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW 2 -->
+    <div class="section" style="padding-top:0;">
+      <div class="chart-grid-3">
+        <div class="chart-card"><h3>🔥 Order Issue Severity Split</h3><canvas id="sevChart"></canvas></div>
+        <div class="chart-card"><h3>🏭 Order Issues by Unit</h3><canvas id="unitChart"></canvas></div>
+        <div class="chart-card"><h3>📅 Quality Trainings Completed</h3><canvas id="trainChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- NEAR MISS LOG TABLE -->
+    <div class="section" style="padding-top:0;">
+      <div class="section-title">Recent Near Miss &amp; Unsafe Condition Log</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Type</th><th>Location</th><th>Description</th><th>Severity</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>26 Jun 2026</td><td>Near Miss</td><td>Nashik Cluster – Warehouse WH-101 area</td><td>Worker slipped near loading dock</td><td><span class="badge y">Medium</span></td><td><span class="badge b">Reported</span></td></tr>
+            <tr><td>24 Jun 2026</td><td>Unsafe Condition</td><td>Tank Farm – Entry Gate</td><td>Quality barrier missing at T-601 access</td><td><span class="badge y">Medium</span></td><td><span class="badge g">Resolved</span></td></tr>
+            <tr><td>22 Jun 2026</td><td>Near Miss</td><td>Punjab Cluster</td><td>Hot line contacted without proper PPE</td><td><span class="badge r">High</span></td><td><span class="badge b">Investigating</span></td></tr>
+            <tr><td>19 Jun 2026</td><td>Unsafe Condition</td><td>Utilities – Boiler House</td><td>Steam leak from flange, area unmarked</td><td><span class="badge r">High</span></td><td><span class="badge g">Resolved</span></td></tr>
+            <tr><td>15 Jun 2026</td><td>Unsafe Condition</td><td>Maintenance Workshop</td><td>Fire extinguisher past service date</td><td><span class="badge y">Low</span></td><td><span class="badge g">Resolved</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+  <footer>
+    <div class="ft-grid">
+      <div>
+        <div class="ft-brand">Agri<span class="brand-nameX">Centre</span></div>
+        <p class="ft-desc">A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.</p>
+      </div>
+      <div class="ft-col">
+        <h4>Platform</h4>
+        <a href="dashboard.html">Farmer Dashboard</a>
+        <a href="reports.html">Harvest Reports</a>
+        <a href="add-produce.html">Fleet & Storage</a>
+        <a href="quality.html">Quality &amp; Certification</a>
+      </div>
+      <div class="ft-col">
+        <h4>AI & Tools</h4>
+        <a href="demand-forecasting.html">AI Market Insights</a>
+        <a href="ai-assistant.html">AI Assistant</a>
+        <a href="reports.html">Reports Center</a>
+      </div>
+      <div class="ft-col">
+        <h4>Stay Updated</h4>
+        <div class="sub-box">
+          <p>Get alerts and platform updates via email.</p>
+          <form class="sub-form" id="subForm">
+            <input type="email" class="sub-input" placeholder="Your email address" id="subEmail"/>
+            <button type="submit" class="sub-btn">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution</span>
+      <div class="ft-links"><a href="privacy.html">Privacy & Terms</a><a href="contact.html">Contact</a></div>
+    </div>
+  </footer>
+
+</main>
+</div><!-- /layout -->
+
+<script>
+  // AFD Counter animation
+  let target=1102,current=0;
+  const counter=document.getElementById('afd-counter');
+  const step=Math.ceil(target/60);
+  const interval=setInterval(()=>{current=Math.min(current+step,target);counter.textContent=current.toLocaleString();if(current>=target)clearInterval(interval);},20);
+
+  const cOpts={responsive:true,plugins:{legend:{labels:{color:'#8b909e',font:{size:11}}}},scales:{x:{ticks:{color:'#8b909e',font:{size:10}},grid:{color:'#2e3340'}},y:{ticks:{color:'#8b909e',font:{size:10}},grid:{color:'#2e3340'}}}};
+  const months=['Jan','Feb','Mar','Apr','May','Jun'];
+
+  new Chart(document.getElementById('incTrend'),{type:'line',data:{labels:months,datasets:[
+    {label:'Total Order Issues',data:[5,3,4,2,1,3],borderColor:'#2f9e5c',backgroundColor:'rgba(47,158,92,0.08)',tension:0.4,fill:true},
+    {label:'Near Misses',data:[3,2,3,1,1,2],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.06)',tension:0.4,fill:true}
+  ]},options:cOpts});
+
+  new Chart(document.getElementById('incCat'),{type:'doughnut',data:{labels:['Near Miss','Unsafe Condition','Minor Injury','Process Deviation','Marketplace Failure'],datasets:[{data:[8,12,2,5,3],backgroundColor:['#f59e0b','#3b82f6','#ef4444','#2f9e5c','#a855f7'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,plugins:{legend:{labels:{color:'#8b909e',font:{size:11}},position:'right'}}}});
+
+  new Chart(document.getElementById('nearMissChart'),{type:'bar',data:{labels:['W1','W2','W3','W4'],datasets:[
+    {label:'Near Misses',data:[1,2,0,1],backgroundColor:'rgba(245,158,11,0.7)',borderRadius:4},
+    {label:'Unsafe Conditions',data:[2,1,3,1],backgroundColor:'rgba(59,130,246,0.7)',borderRadius:4}
+  ]},options:{...cOpts,plugins:{legend:{labels:{color:'#8b909e'}}}}});
+
+  new Chart(document.getElementById('sevChart'),{type:'doughnut',data:{labels:['Low','Medium','High','Critical'],datasets:[{data:[14,18,7,3],backgroundColor:['#22c55e','#f59e0b','#ef4444','#7f1d1d'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{labels:{color:'#8b909e',font:{size:11}},position:'bottom'}}}});
+
+  new Chart(document.getElementById('unitChart'),{type:'bar',data:{labels:['Wheat Farms','Rice Farms','Vegetable Farms','Cold Storage','Warehousing','Distribution Hub'],datasets:[{label:'Order Issues',data:[8,5,3,2,6,4],backgroundColor:'rgba(47,158,92,0.7)',borderRadius:4}]},options:cOpts});
+
+  new Chart(document.getElementById('trainChart'),{type:'line',data:{labels:months,datasets:[{label:'Trainings Completed',data:[12,18,15,22,19,24],borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.08)',tension:0.4,fill:true}]},options:cOpts});
+
+  // Compliance bars
+  const compliance=[
+    {label:'Permit to Work (PTW)',val:100,color:'#22c55e'},
+    {label:'PPE Usage',val:98,color:'#22c55e'},
+    {label:'Quality Training',val:94,color:'#22c55e'},
+    {label:'HAZOP Completion',val:88,color:'#f59e0b'},
+    {label:'Emergency Drill',val:82,color:'#f59e0b'},
+    {label:'Fire Quality Audit',val:76,color:'#f59e0b'},
+  ];
+  const list=document.getElementById('compList');
+  compliance.forEach(c=>{
+    list.innerHTML+=`<div class="compliance-item"><label>${c.label}<span style="color:${c.color}">${c.val}%</span></label><div class="cbar"><div class="cbar-fill" style="width:0%;background:${c.color}" data-w="${c.val}%"></div></div></div>`;
+  });
+  setTimeout(()=>{document.querySelectorAll('.cbar-fill').forEach(b=>b.style.width=b.dataset.w);},200);
+</script>
+<script>
+// ── Sidebar Toggle ──
+const sidebar = document.getElementById('sidebar');
+const mainArea = document.getElementById('mainArea');
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+  if (window.innerWidth <= 768) { sidebar.classList.toggle('open'); }
+  else { sidebar.classList.toggle('collapsed'); mainArea.classList.toggle('expanded'); }
+});
+document.addEventListener('click', e => {
+  if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !document.getElementById('sidebarToggle').contains(e.target))
+    sidebar.classList.remove('open');
+});
+
+// ── Login & Logout ──
+document.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      document.getElementById("profile-link").style.display = token ? "inline-block" : "none";
+      document.getElementById("logout-link").style.display = token ? "inline-block" : "none";
+      document.getElementById("login-link").style.display = token ? "none" : "inline-block";
+      document.getElementById("signup-link").style.display = token ? "none" : "inline-block";
+    });
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+</script>
+</body>
+</html>

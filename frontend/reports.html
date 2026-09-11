@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriCentre – Reports Center | Smart India Hackathon 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {  
+            margin: 0;
+            padding: 0;
+            color: #333; 
+            font-family: 'Roboto', sans-serif;  
+        }
+
+/* ===== VARIABLES ===== */
+:root{
+  --brand:#2f9e5c;
+  --brand-dark:#1f7a44;
+  --brand-light:#5cc98a;
+  --brand-faint:#eafaf0;
+  --dark:#1a1a2e;
+  --dark-mid:#16213e;
+  --text:#1e293b;
+  --muted:#64748b;
+  --light:#94a3b8;
+  --border: #2e3340;
+  --surface:#f8fafc;
+  --white:#ffffff;
+  --success:#10b981;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --info:#3b82f6;
+  --sidebar-w:258px;
+  --nav-h:64px;
+  --radius:10px;
+  --radius-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+  --tr:.22s cubic-bezier(.4,0,.2,1);
+  --bg: #0d0e10;
+  --bg2: #14161a;
+  --bg3: #1c1f25;
+}
+
+/* ===== NAVBAR ===== */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.nav-toggle{background:none;border:none;cursor:pointer;color:#fff;font-size:20px;padding:6px 8px;border-radius:6px;transition:background var(--tr);flex-shrink:0}
+.nav-toggle:hover{background:rgba(255,255,255,.1)}
+.nav-brand{text-decoration:none;display:flex;align-items:center;gap:10px;font-family:'Rajdhani',sans-serif;font-size:1.45rem;font-weight:700;color:#fff}
+.nav-brand .logo{width:34px;height:34px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:auto}
+.nav-links a{text-decoration:none;color:#9aaac4;font-size:13px;font-weight:500;padding:6px 11px;border-radius:6px;transition:all var(--tr)}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(47,158,92,.22)}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:12px}
+.nav-btn{width:36px;height:36px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#ccc;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);position:relative}
+.nav-btn:hover{background:var(--brand);color:#fff}
+.nav-badge{position:absolute;top:-4px;right:-4px;background:var(--brand);color:#fff;font-size:9px;font-weight:700;padding:1px 4px;border-radius:10px;min-width:16px;text-align:center}
+.nav-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border-radius:8px;padding:5px 10px;cursor:pointer}
+.nav-avatar{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.nav-uname{color:#ddd;font-size:12px;font-weight:500}
+
+.brand-text{display:flex;flex-direction:column;}
+.brand-name{ font-size:32px;font-weight:700;font-family:'Poppins', sans-serif;line-height:1;}
+.brand-nameX{color:var(--brand)}
+.brand-subtitle{font-size:11px;font-weight:500;font-family:'Montserrat', sans-serif; /* Change this */color:#ddd7d7;letter-spacing:1px;text-transform: uppercase;}
+
+
+/* ===== LAYOUT ===== */
+.layout{display:flex;margin-top:var(--nav-h);flex:1}
+
+/* ===== SIDEBAR ===== */
+.sidebar{width:var(--sidebar-w);background:var(--bg2);position:fixed;top:var(--nav-h);bottom:0;left:0;overflow-y:auto;overflow-x:hidden;transition:width var(--tr);z-index:900;display:flex;flex-direction:column}
+.sidebar.collapsed{width:62px}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
+.sb-section{padding:6px 0}
+.sb-label{padding:6px 18px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#4a5a74;white-space:nowrap;overflow:hidden}
+.sidebar.collapsed .sb-label{opacity:0}
+.sb-link{display:flex;align-items:center;gap:11px;padding:9px 18px;color:#7a90aa;font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all var(--tr);white-space:nowrap;cursor:pointer;text-decoration:none}
+.sb-link .si{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.sb-link .sl{overflow:hidden;transition:opacity var(--tr)}
+.sidebar.collapsed .sl{opacity:0;width:0}
+.sb-link:hover{color:#fff;background:rgba(47,158,92,.12)}
+.sb-link.active{color:var(--brand-light);border-left-color:var(--brand);background:rgba(47,158,92,.15)}
+.sb-badge{margin-left:auto;background:var(--brand);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;flex-shrink:0}
+.sidebar.collapsed .sb-badge{display:none}
+
+/* ===== MAIN ===== */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;
+    transition:margin-left var(--tr)}
+.main.expanded{margin-left:62px}
+
+        /* Main Section Styling */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* ==============================
+   REPORTS CENTER
+============================== */
+    .reports-wrapper{padding:30px;background:#f5f7fb;min-height:100vh;}
+    .reports-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;}
+    .reports-header h1{ margin:0; font-size:34px; color:#1f2937; }
+    .reports-header p{margin-top:8px;color:#6b7280;}
+    .refresh-btn{background:#2f9e5c;color:white;border:none;padding:12px 22px;
+            border-radius:10px;cursor:pointer;font-weight:600;transition:.3s;}
+    .refresh-btn:hover{background:#1f7a44;}
+
+    .dashboard-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-bottom:35px;}
+    .dashboard-card{background:white;border-radius:18px;padding:22px;display:flex;gap:18px;
+                align-items:center;box-shadow:0 8px 20px rgba(0,0,0,.08);transition:.3s;}
+    .dashboard-card:hover{transform:translateY(-6px); box-shadow:0 15px 30px rgba(0,0,0,.15); }
+
+    .card-icon{ width:65px;height:65px;border-radius:15px;display:flex;justify-content:center;
+                align-items:center;font-size:30px;color:white;}
+
+    .total .card-icon{background:#2563eb;}
+
+    .healthy .card-icon{background:#16a34a;}
+    .warning .card-icon{ background:#f59e0b;}
+    .critical .card-icon{background:#dc2626;}
+    
+    .dashboard-card h2{margin:0;font-size:30px;color:#111827;}
+    .dashboard-card p{margin-top:5px;color:#6b7280;}
+    .filter-box{display:grid;grid-template-columns:2fr 1fr 1fr;gap:18px;margin-bottom:20px;}
+    .filter-box input,
+        .filter-box select{padding:14px 16px;border:1px solid #d1d5db;border-radius:10px;
+            font-size:15px;background:white;outline:none;transition:.3s;}
+    .filter-box input:focus,
+    .filter-box select:focus{border-color:#2f9e5c;box-shadow:0 0 0 3px rgba(47,158,92,.15);}
+
+    .report-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;
+                color:#6b7280;}
+    .report-card{background:white;border-radius:18px;padding:22px;box-shadow:0 8px 18px rgba(0,0,0,.08);
+                transition:.3s; position:relative; overflow:hidden;}
+    .report-card:hover{transform:translateY(-5px);box-shadow:0 18px 35px rgba(0,0,0,.16);}
+    .report-card::before{content:"";position:absolute;left:0;top:0;width:7px;height:100%;}
+    .report-card.Healthy::before{background:#16a34a;}
+    .report-card.Warning::before{ background:#f59e0b;}
+    .report-card.Critical::before{background:#dc2626;}
+    .report-top{display:flex; justify-content:space-between;align-items:center; margin-bottom:18px; }
+    .report-top h3{margin:0;color:#1f2937;}
+
+    .status{padding:6px 12px;border-radius:20px;color:white;font-size:12px;font-weight:600;}
+    .status.Healthy{background:#16a34a;}
+    .status.Warning{background:#f59e0b;}
+    .status.Critical{background:#dc2626;
+    }
+    .report-details{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+    .report-item span{display:block;}
+    .label{color:#9ca3af;font-size:13px;}
+    .value{color:#111827;font-weight:600;margin-top:4px;}
+    .report-actions{display:flex;gap:12px;}
+    .report-actions button{flex:1;border:none;padding:12px;border-radius:10px;cursor:pointer;
+                        font-weight:600;transition:.3s;}
+
+    .summary-btn{background:#eef2ff;color:#2563eb;}
+    .summary-btn:hover{background:#2563eb;color:white;}
+    .download-btn{background:#2f9e5c;color:white;}
+    .download-btn:hover{background:#1f7a44;}
+    .pagination{display:flex;justify-content:center;align-items:center;gap:12px;}
+    .pagination button{border:none;background:#2f9e5c;color:white;padding:10px 18px;
+                    border-radius:8px;cursor:pointer;}
+
+    #pageNumbers{display:flex;gap:8px;}
+
+        @media(max-width:1200px){
+            .dashboard-cards{grid-template-columns:repeat(2,1fr);}
+            .reports-grid{grid-template-columns:1fr;}
+        }
+
+        @media(max-width:768px){
+
+        .filter-box{
+
+        grid-template-columns:1fr;
+
+        }
+
+        .dashboard-cards{
+
+        grid-template-columns:1fr;
+
+        }
+
+        }
+    .page-btn{ width:40px; height:40px; border:none; border-radius:8px; cursor:pointer;
+                 background:white;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+    .modal{display:none;position:fixed;left:0;top:0;width:100%;
+        height:100%;background:rgba(0,0,0,.45);z-index:9999;}
+
+    .modal-content{
+        background:#fff;
+        width:850px;
+        max-width:95%;
+        margin:35px auto;
+        border-radius:18px;
+        overflow:hidden;
+        max-height:90vh;
+        overflow-y:auto;
+        box-shadow:0 20px 50px rgba(0,0,0,.25);
+        animation:fadeIn .3s ease;
+    }
+
+    @keyframes fadeIn{
+        from{
+            opacity:0;
+            transform:translateY(-20px);
+        }
+        to{
+            opacity:1;
+            transform:translateY(0);
+        }
+    }
+
+    .close-modal{
+        position:absolute;
+        right:25px;
+        top:18px;
+        font-size:28px;
+        cursor:pointer;
+        color:#666;
+    }
+
+    .summary-body{  padding:30px;}
+    .close-modal{float:right;font-size:28px;cursor:pointer;}
+    .summary-header{
+        background:linear-gradient(135deg,#2f9e5c,#f07a3c);
+        color:white;
+        padding:25px 30px;
+    }
+
+    .summary-header h2{
+        margin:0;
+        font-size:28px;
+    }
+
+    .summary-subtitle{
+        opacity:.9;
+        margin-top:6px;
+    }
+
+    .summary-status{
+        display:inline-block;
+        margin-top:12px;
+        padding:8px 18px;
+        border-radius:25px;
+        background:white;
+        color:#2f9e5c;
+        font-weight:bold;
+    }
+
+    .summary-section{
+        margin-top:30px;
+    }
+
+    .summary-section h3{
+        color:#2f9e5c;
+        border-left:5px solid #2f9e5c;
+        padding-left:12px;
+        margin-bottom:18px;
+    }
+
+    .summary-grid{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:18px;
+    }
+
+    .summary-card{
+        background:#f8fafc;
+        border-radius:12px;
+        padding:16px;
+        border:1px solid #e5e7eb;
+    }
+
+    .summary-card label{
+        display:block;
+        color:#6b7280;
+        font-size:13px;
+    }
+
+    .summary-card span{
+        display:block;
+        margin-top:6px;
+        font-weight:700;
+        color:#111827;
+        font-size:17px;
+    }
+
+    .action-box{
+        background:#fff6ef;
+        border-left:6px solid #2f9e5c;
+        padding:18px;
+        border-radius:10px;
+        margin-top:20px;
+    }
+
+    .metric-good{
+        color:#16a34a;
+        font-weight:bold;
+    }
+
+    .metric-warning{
+        color:#f59e0b;
+        font-weight:bold;
+    }
+
+    .metric-critical{
+        color:#dc2626;
+        font-weight:bold;
+    }
+    .summary-top{
+        display:grid;
+        grid-template-columns:320px 1fr;
+        gap:25px;
+        align-items:start;
+    }
+
+    .summary-image{ border-radius:16px;overflow:hidden; border:1px solid #ddd; background:#fafafa;}
+    .summary-image img{width:100%;height:300px;object-fit:cover;display:block;}
+    .summary-info{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+    .summary-image img{cursor:pointer; transition:.3s; }
+    .summary-image img:hover{transform:scale(1.04);}
+
+        /* ===== FOOTER ===== */
+        footer{background:var(--bg2);color:#8fa0b8;padding:44px 40px 0;margin-top:auto}
+        .ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:36px;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08)}
+        .ft-brand{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:9px}
+        .ft-brand span{color:var(--brand)}
+        .ft-desc{font-size:13px;line-height:1.7;max-width:270px}
+        .ft-col h4{color:#fff;font-size:12px;font-weight:700;margin-bottom:13px;text-transform:uppercase;letter-spacing:.8px}
+        .ft-col a{text-decoration: none;display:block;font-size:13px;margin-bottom:8px;transition:color var(--tr);color:#8fa0b8}
+        .ft-col a:hover{color:var(--brand-light)}
+
+
+        /* Subscribe */
+        .sub-box{display:flex;flex-direction:column;gap:9px}
+        .sub-box p{font-size:12px;color:#8fa0b8}
+        .sub-form{display:flex;gap:7px}
+        .sub-input{flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font-size:13px;outline:none;font-family:'Inter',sans-serif}
+        .sub-input::placeholder{color:#6b7a99}
+        .sub-input:focus{border-color:var(--brand)}
+        .sub-btn{padding:8px 16px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background var(--tr);font-family:'Inter',sans-serif}
+        .sub-btn:hover{background:var(--brand-dark)}
+        .ft-bottom{display:flex;align-items:center;justify-content:space-between;padding:14px 0;font-size:11px;flex-wrap:wrap;gap:8px}
+        .ft-links{display:flex;gap:14px}
+        .ft-links a{text-decoration: none;color:#8fa0b8;transition:color var(--tr)}.ft-links a:hover{color:var(--brand-light)}
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:1100px){.feat-grid{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:900px){.hero{flex-direction:column}.hero-visual{width:100%;flex:none}.hero-title{font-size:3rem}}
+        @media(max-width:768px){
+        .sidebar{transform:translateX(-100%);width:258px}.sidebar.open{transform:translateX(0)}
+        .main{margin-left:0!important}.nav-links{display:none}
+        .g2,.g4,.feat-grid{grid-template-columns:1fr}
+        .ft-grid{grid-template-columns:1fr}.content{padding:14px}
+        }
+
+
+    </style>
+</head>
+
+<body>
+<!-- Header -->
+<!-- NAVBAR -->
+<nav class="navbar">
+  <button class="nav-toggle" id="sidebarToggle">☰</button>
+  <a href="index.html" class="nav-brand">
+        <div class="logo">🚜</div>
+
+        <div class="brand-text">
+            <span class="brand-name">Agri<span class="brand-nameX">Centre</span></span>
+            <span class="brand-subtitle">Smart India Hackathon 2026</span>
+        </div>
+    </a>
+  <div class="nav-links">
+    <a href="index.html" >Home</a>
+    <a href="about.html">About</a>
+    <a href="features.html">Features</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="team.html">Team</a>
+    <a href="contact.html" >Contact</a>
+    <a id="profile-link" href="profile.html" style="display: none;">Profile</a>
+        <a id="logout-link" href="#" style="display: none;" onclick="logout()">Logout</a>
+        <a id="login-link" href="login.html">Login</a>
+        <a id="signup-link" href="signup.html">Sign Up</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="location.href='alerts.html'" title="Alerts">🔔<span class="nav-badge">3</span></button>
+    <button class="nav-btn" onclick="location.href='ai-assistant.html'" title="AI Assistant">🤖</button>
+    
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-section">
+    <div class="sb-label">Main</div>
+    <a href="index.html" class="sb-link"><span class="si">🏠</span><span class="sl">Home</span></a>
+    <a href="about.html" class="sb-link"><span class="si">ℹ️</span><span class="sl">About</span></a>
+    <a href="features.html" class="sb-link"><span class="si">⭐</span><span class="sl">Features</span></a>
+    <a href="team.html" class="sb-link"><span class="si">👥</span><span class="sl">Team</span></a>
+    <a href="contact.html" class="sb-link"><span class="si">📬</span><span class="sl">Contact</span></a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Analytics</div>
+    <a href="dashboard.html" class="sb-link"><span class="si">📊</span><span class="sl">Farmer Dashboard</span></a>
+    <a href="quality.html" class="sb-link"><span class="si">🛡️</span><span class="sl">Quality &amp; Certification</span></a>
+    <a href="farmer_logistics.html" class="sb-link"><span class="si">🚚</span><span class="sl">Logistics Tracking</span></a>
+    <a href="sustainability.html" class="sb-link"><span class="si">🌿</span><span class="sl">Sustainability Score</span></a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Operations</div>
+    <a href="add-produce.html" class="sb-link"><span class="si">🚚</span><span class="sl">Fleet & Storage</span></a>
+    <a href="orders.html" class="sb-link"><span class="si">📦</span><span class="sl">Order Management</span></a>
+ <a href="demand-forecasting.html" class="sb-link"><span class="si">📈</span><span class="sl">AI Market Insights</span></a>
+        <a href="alerts.html" class="sb-link"><span class="si">🔔</span><span class="sl">Alert Center</span><span class="sb-badge">3</span></a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">More</div>
+    <a href="reports.html" class="sb-link active"><span class="si">📄</span><span class="sl">Reports Center</span></a>
+    <a href="innovation.html" class="sb-link"><span class="si">🚀</span><span class="sl">Innovation Hub</span></a>
+    <a href="profile.html" class="sb-link"><span class="si">🔐</span><span class="sl">Profile</span></a>
+  </div>
+</aside>
+
+<!-- main-->
+<main class="main" id="mainArea">
+
+
+<div class="reports-wrapper"> 
+    <div class="reports-header">
+        <div>
+            <h1> Reports Center</h1>
+            <p> Search, monitor and download predictive maintenance reports.</p>
+        </div>
+        <button class="refresh-btn"> 🔄 Refresh</button>
+    </div>
+    <!-- Dashboard Cards -->
+    <div class="dashboard-cards">
+        <div class="dashboard-card total">
+            <div class="card-icon">📄</div>
+            <div>
+                <h2 id="totalReports">0</h2>
+                <p>Total Reports</p>
+            </div>
+        </div>
+        <div class="dashboard-card healthy">
+            <div class="card-icon">🟢</div>
+            <div>
+                <h2 id="healthyReports">0</h2>
+                <p>Healthy</p>
+            </div>
+        </div>
+        <div class="dashboard-card warning">
+            <div class="card-icon">🟠</div>
+            <div>
+                <h2 id="warningReports">0</h2>
+                <p>Warning</p>
+            </div>
+        </div>
+        <div class="dashboard-card critical">
+            <div class="card-icon">🔴</div>
+            <div>
+                <h2 id="criticalReports">0</h2>
+                <p>Critical</p>
+            </div>
+        </div>
+
+    </div>
+    <!-- Search & Filters -->
+
+    <div class="filter-box">
+        <input
+            type="text" id="searchInput" placeholder="🔍 Search by Marketplace Name or ID">
+            <select id="statusFilter">
+                <option value="">All Status</option>
+                <option>Healthy</option>
+                <option>Warning</option>
+                <option>Critical</option>
+            </select>
+
+            <select id="categoryFilter">
+                <option value="">All Marketplace</option>    
+            </select>
+        
+            <select id="sortFilter">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>    
+            </select>
+
+    </div>
+
+    <div class="report-info">
+        <span id="reportCounter">Showing 0-0 of 0 Reports</span>
+
+    </div>
+    <!-- Reports Grid -->
+    <div id="reportsGrid" class="reports-grid"></div>
+    <!-- Pagination -->
+    <div class="pagination">
+        <button id="previousBtn"> ◀ Previous </button>
+        <div id="pageNumbers"></div>
+        <button id="nextBtn"> Next ▶ </button>
+    </div>
+    </div>
+
+        <div id="summaryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="summaryContent"></div>
+        </div>
+    </div>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft-grid">
+      <div>
+        <div class="ft-brand">Agri<span class="brand-nameX">Centre</span></div>
+        <p class="ft-desc">A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.</p>
+      </div>
+      <div class="ft-col">
+        <h4>Platform</h4>
+        <a href="dashboard.html">Farmer Dashboard</a>
+        <a href="reports.html">Harvest Reports</a>
+        <a href="add-produce.html">Fleet & Storage</a>
+        <a href="quality.html">Quality &amp; Certification</a>
+      </div>
+      <div class="ft-col">
+        <h4>AI & Tools</h4>
+        <a href="demand-forecasting.html">AI Market Insights</a>
+        <a href="ai-assistant.html">AI Assistant</a>
+        <a href="reports.html">Reports Center</a>
+      </div>
+      <div class="ft-col">
+        <h4>Stay Updated</h4>
+        <div class="sub-box">
+          <p>Get alerts and platform updates via email.</p>
+          <form class="sub-form" id="subForm">
+            <input type="email" class="sub-input" placeholder="Your email address" id="subEmail"/>
+            <button type="submit" class="sub-btn">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution</span>
+      <div class="ft-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="contact.html">Contact</a></div>
+    </div>
+  </footer>
+
+</main>
+</div><!-- /layout -->
+<script>
+  // Check if user is logged in by checking for the token in localStorage
+document.addEventListener("DOMContentLoaded", () => {
+const token = localStorage.getItem("token");
+
+if (token) {
+// If user is logged in, hide login/signup and show profile/logout buttons
+document.getElementById("profile-link").style.display = "inline-block";
+document.getElementById("logout-link").style.display = "inline-block";
+document.getElementById("login-link").style.display = "none";
+document.getElementById("signup-link").style.display = "none";
+} else {
+// If not logged in, show login/signup
+document.getElementById("login-link").style.display = "inline-block";
+document.getElementById("signup-link").style.display = "inline-block";
+document.getElementById("profile-link").style.display = "none";
+document.getElementById("logout-link").style.display = "none";
+}
+});
+
+// Logout function to clear localStorage and redirect to login page
+function logout() {
+localStorage.clear();
+window.location.href = "login.html";  // Redirect to login page after logout
+}
+</script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const currentPage = window.location.pathname.split("/").pop(); // Get the file name
+          const navLinks = document.querySelectorAll("nav a");
+      
+          navLinks.forEach(link => {
+            if (link.getAttribute("href") === currentPage) {
+              link.classList.add("active");
+            }
+          });
+      
+          // Token-based login check
+          const token = localStorage.getItem("token");
+          document.getElementById("profile-link").style.display = token ? "inline-block" : "none";
+          document.getElementById("logout-link").style.display = token ? "inline-block" : "none";
+          document.getElementById("login-link").style.display = token ? "none" : "inline-block";
+          document.getElementById("signup-link").style.display = token ? "none" : "inline-block";
+        });
+      </script>
+      <script>
+                // ── Sidebar Toggle ──
+            const sidebar = document.getElementById('sidebar');
+            const mainArea = document.getElementById('mainArea');
+            document.getElementById('sidebarToggle').addEventListener('click', () => {
+            if (window.innerWidth <= 768) { sidebar.classList.toggle('open'); }
+            else { sidebar.classList.toggle('collapsed'); mainArea.classList.toggle('expanded'); }
+            });
+            document.addEventListener('click', e => {
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !document.getElementById('sidebarToggle').contains(e.target))
+                sidebar.classList.remove('open');
+            });
+
+            // ── Login & Logout ──
+            document.addEventListener("DOMContentLoaded", () => {
+                const token = localStorage.getItem("token");
+                document.getElementById("profile-link").style.display = token ? "inline-block" : "none";
+                document.getElementById("logout-link").style.display = token ? "inline-block" : "none";
+                document.getElementById("login-link").style.display = token ? "none" : "inline-block";
+                document.getElementById("signup-link").style.display = token ? "none" : "inline-block";
+                });
+
+            function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+            }
+    </script>
+    <script>
+
+        const API="http://127.0.0.1:5000";
+        
+        let currentPage=1;
+        
+        let totalPages=1;
+        
+        let currentStatus="";
+        
+        let currentCategory="";
+        
+        let currentSearch="";
+        
+        let currentSort="newest";
+        async function loadStatistics(){
+
+const response=await fetch(
+
+    `${API}/api/reports/stats`
+
+);
+
+const data=await response.json();
+
+document.getElementById("totalReports").textContent=data.total;
+
+document.getElementById("healthyReports").textContent=data.healthy;
+
+document.getElementById("warningReports").textContent=data.warning;
+
+document.getElementById("criticalReports").textContent=data.critical;
+
+}
+async function loadReports(page=1){
+
+const url=
+
+`${API}/api/reports?page=${page}
+
+&limit=10
+
+&status=${currentStatus}
+
+&category=${currentCategory}
+
+&search=${currentSearch}
+
+&sort=${currentSort}`;
+
+const response=await fetch(url);
+
+const data=await response.json();
+
+currentPage=data.page;
+
+totalPages=data.pages;
+
+createCards(data.reports);
+
+updatePagination(data);
+
+}
+function createCards(reports){
+
+const grid=document.getElementById("reportsGrid");
+
+grid.innerHTML="";
+
+reports.forEach(report=>{
+
+const card=document.createElement("div");
+
+card.className=`report-card ${report.prediction}`;
+
+card.innerHTML=`
+
+<div class="report-top">
+
+<h3>${report.equipment_name}</h3>
+
+<span class="status ${report.prediction}">
+
+${report.prediction}
+
+</span>
+
+</div>
+
+<div class="report-details">
+
+<div class="report-item">
+
+<span class="label">
+
+Marketplace ID
+
+</span>
+
+<span class="value">
+
+${report.equipment_id}
+
+</span>
+
+</div>
+
+<div class="report-item">
+
+<span class="label">
+
+Category
+
+</span>
+
+<span class="value">
+
+${report.category}
+
+</span>
+
+</div>
+
+<div class="report-item">
+
+<span class="label">
+
+Confidence
+
+</span>
+
+<span class="value">
+
+${report.confidence.toFixed(2)}%
+
+</span>
+
+</div>
+
+<div class="report-item">
+
+<span class="label">
+
+Remaining Life
+
+</span>
+
+<span class="value">
+
+${report.remaining_life}
+
+</span>
+
+</div>
+
+<div class="report-item">
+
+<span class="label">
+
+Recommended Action
+
+</span>
+
+<span class="value">
+
+${report.recommended_action}
+
+</span>
+
+</div>
+
+<div class="report-item">
+
+<span class="label">
+
+Generated
+
+</span>
+
+<span class="value">
+
+${new Date(
+
+report.created_at
+
+).toLocaleDateString()}
+
+</span>
+
+</div>
+
+</div>
+
+<div class="report-actions">
+
+<button
+
+class="summary-btn"
+
+onclick="showSummary('${report._id}')">
+
+Summary
+
+</button>
+
+<button
+
+class="download-btn"
+
+onclick="downloadReport('${report._id}')">
+
+Download PDF
+
+</button>
+
+</div>
+
+`;
+
+grid.appendChild(card);
+
+});
+
+}
+function updatePagination(data){
+
+    document.getElementById("reportCounter").textContent =
+
+        `Showing ${(data.page-1)*10+1} - ${Math.min(data.page*10,data.total)} of ${data.total} Reports`;
+
+    const pageContainer = document.getElementById("pageNumbers");
+
+    pageContainer.innerHTML="";
+
+    currentPage=data.page;
+
+    totalPages=data.pages;
+
+    for(let i=1;i<=totalPages;i++){
+
+        const btn=document.createElement("button");
+
+        btn.innerText=i;
+
+        btn.className="page-btn";
+
+        if(i===currentPage){
+
+            btn.style.background="#2f9e5c";
+
+            btn.style.color="white";
+
+        }
+
+        btn.onclick=()=>{
+
+            loadReports(i);
+
+        };
+
+        pageContainer.appendChild(btn);
+
+    }
+
+    document.getElementById("previousBtn").disabled=currentPage===1;
+
+    document.getElementById("nextBtn").disabled=currentPage===totalPages;
+
+}
+document.getElementById("previousBtn").addEventListener("click",()=>{
+
+    if(currentPage>1){
+
+        loadReports(currentPage-1);
+
+    }
+
+});
+
+document.getElementById("nextBtn").addEventListener("click",()=>{
+
+    if(currentPage<totalPages){
+
+        loadReports(currentPage+1);
+
+    }
+
+});
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+loadStatistics();
+loadCategories();
+
+loadReports();
+
+});
+document.getElementById("searchInput")
+
+.addEventListener(
+
+"keyup",
+
+function(){
+
+currentSearch=this.value;
+
+loadReports(1);
+
+});
+document.getElementById("statusFilter")
+
+.addEventListener(
+
+"change",
+
+function(){
+
+currentStatus=this.value;
+
+loadReports(1);
+
+});
+document.getElementById("categoryFilter")
+
+.addEventListener(
+
+"change",
+
+function(){
+
+currentCategory=this.value;
+
+loadReports(1);
+
+});
+document.getElementById("sortFilter")
+
+.addEventListener(
+
+"change",
+
+function(){
+
+currentSort=this.value;
+
+loadReports(1);
+
+});
+document.querySelector(".refresh-btn")
+
+.addEventListener(
+
+"click",
+
+()=>{
+
+loadStatistics();
+
+loadReports(1);
+
+});
+async function loadCategories(){
+
+const response = await fetch(`${API}/api/reports/categories`);
+
+const categories = await response.json();
+
+const select = document.getElementById("categoryFilter");
+
+categories.forEach(category=>{
+
+    const option=document.createElement("option");
+
+    option.value=category;
+
+    option.innerText=category;
+
+    select.appendChild(option);
+
+});
+
+}
+async function showSummary(id){
+
+const response = await fetch(`${API}/api/reports/${id}`);
+
+const report = await response.json();
+
+document.getElementById("summaryContent").innerHTML = `
+
+<div class="summary-header">
+
+    <h2>📄 Predictive Maintenance Report</h2>
+
+    <div class="summary-subtitle">
+        ${report.equipment_name}
+    </div>
+
+    <div class="summary-status">
+        ${report.prediction}
+    </div>
+
+</div>
+
+<div class="summary-body">
+
+<div class="summary-section">
+
+<h3>🏭 Marketplace Information</h3>
+
+<div class="summary-grid">
+
+<div class="summary-card">
+<label>Marketplace ID</label>
+<span>${report.equipment_id}</span>
+</div>
+
+<div class="summary-card">
+<label>Category</label>
+<span>${report.category}</span>
+</div>
+
+<div class="summary-card">
+<label>Manufacturer</label>
+<span>${report.manufacturer}</span>
+</div>
+
+<div class="summary-card">
+<label>Model</label>
+<span>${report.model}</span>
+</div>
+
+<div class="summary-card">
+<label>Unit</label>
+<span>${report.unit}</span>
+</div>
+
+<div class="summary-card">
+<label>Section</label>
+<span>${report.section}</span>
+</div>
+
+</div>
+
+</div>
+<div class="summary-section">
+
+<h3>📷 Marketplace Image</h3>
+
+<div style="text-align:center;">
+
+<img
+    src="${API}/${report.image_path}"
+    alt="Marketplace Image"
+    style="
+        width:100%;
+        max-width:450px;
+        border-radius:15px;
+        border:1px solid #ddd;
+        box-shadow:0 8px 20px rgba(0,0,0,.12);
+        object-fit:cover;
+    "
+    onerror="this.src='images/no-image.png';"
+/>
+
+</div>
+
+</div>
+<div class="summary-section">
+
+<h3>🤖 AI Prediction</h3>
+
+<div class="summary-grid">
+
+<div class="summary-card">
+<label>Prediction</label>
+<span class="metric-${report.prediction.toLowerCase()}">
+${report.prediction}
+</span>
+</div>
+
+<div class="summary-card">
+<label>Confidence</label>
+<span>${report.confidence}%</span>
+</div>
+
+<div class="summary-card">
+<label>Failure Probability</label>
+<span>${report.failure_probability}%</span>
+</div>
+
+<div class="summary-card">
+<label>Remaining Useful Life</label>
+<span>${report.remaining_life}</span>
+</div>
+
+<div class="summary-card">
+<label>Operating Hours</label>
+<span>${report.operating_hours}</span>
+</div>
+
+</div>
+
+</div>
+
+<div class="summary-section">
+
+<h3>📊 Sensor Readings</h3>
+
+<div class="summary-grid">
+
+<div class="summary-card">
+<label>🌡 Temperature</label>
+<span>${report.temperature}</span>
+</div>
+
+<div class="summary-card">
+<label>⚙ Pressure</label>
+<span>${report.pressure}</span>
+</div>
+
+<div class="summary-card">
+<label>📈 Vibration</label>
+<span>${report.vibration}</span>
+</div>
+
+</div>
+
+</div>
+
+<div class="summary-section">
+
+<h3>🔧 Recommended Action</h3>
+
+<div class="action-box">
+
+${report.recommended_action}
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+document.getElementById("summaryModal").style.display="block";
+
+}
+document.querySelector(".close-modal").onclick=function(){
+
+document.getElementById("summaryModal").style.display="none";
+
+}
+
+window.onclick=function(e){
+
+if(e.target.id=="summaryModal"){
+
+document.getElementById("summaryModal").style.display="none";
+
+}
+
+}
+async function downloadReport(id){
+
+const response = await fetch(`${API}/api/reports/${id}`);
+
+const report = await response.json();
+
+generatePDF(report);
+
+}
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+        
+        <script src="/static/js/pdfReport1.js"></script>
+</body>
+</html>

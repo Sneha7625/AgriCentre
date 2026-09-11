@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alert Centre – AgriCentre</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);}
+    /* ===== VARIABLES ===== */
+        :root{
+
+        --primary:#2f9e5c;
+        --primary-dark:#b8440f;
+        --surface:#22262e;
+        --border:#2e3340;
+        --text:#e8eaf0;
+        --muted:#8b909e;
+        --accent-green:#22c55e;
+        --accent-yellow:#f59e0b;
+        --accent-red:#ef4444;
+        --accent-blue:#3b82f6;
+
+        --brand:#2f9e5c;
+        --brand-dark:#1f7a44;
+        --brand-light:#5cc98a;
+        --brand-faint:#eafaf0;
+        --dark:#1a1a2e;
+        --dark-mid:#16213e;
+        --white:#ffffff;
+        --success:#10b981;
+        --warning:#f59e0b;
+        --danger:#ef4444;
+        --info:#3b82f6;
+        --sidebar-w:258px;
+        --nav-h:64px;
+        --radius:10px;
+        --radius-lg:16px;
+        --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+        --tr:.22s cubic-bezier(.4,0,.2,1);
+        --bg: #0d0e10;
+        --bg2: #14161a;
+        --bg3: #1c1f25;
+        }
+
+/* ===== NAVBAR ===== */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.nav-toggle{background:none;border:none;cursor:pointer;color:#fff;font-size:20px;padding:6px 8px;border-radius:6px;transition:background var(--tr);flex-shrink:0}
+.nav-toggle:hover{background:rgba(255,255,255,.1)}
+.nav-brand{text-decoration: none;display:flex;align-items:center;gap:10px;font-family:'Rajdhani',sans-serif;font-size:1.45rem;font-weight:700;color:#fff}
+.nav-brand .logo{width:34px;height:34px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:auto}
+.nav-links a{text-decoration: none;color:#9aaac4;font-size:13px;font-weight:500;padding:6px 11px;border-radius:6px;transition:all var(--tr)}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(47,158,92,.22)}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:12px}
+.nav-btn{width:36px;height:36px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#ccc;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);position:relative}
+.nav-btn:hover{background:var(--brand);color:#fff}
+.nav-badge{position:absolute;top:-4px;right:-4px;background:var(--brand);color:#fff;font-size:9px;font-weight:700;padding:1px 4px;border-radius:10px;min-width:16px;text-align:center}
+.nav-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border-radius:8px;padding:5px 10px;cursor:pointer}
+.nav-avatar{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.nav-uname{color:#ddd;font-size:12px;font-weight:500}
+
+.brand-text{display:flex;flex-direction:column;}
+.brand-name{ font-size:32px;font-weight:700;font-family:'Poppins', sans-serif;line-height:1;}
+.brand-nameX{color:var(--brand)}
+.brand-subtitle{font-size:11px;font-weight:500;font-family:'Montserrat', sans-serif; /* Change this */color:#ddd7d7;letter-spacing:1px;text-transform: uppercase;}
+
+
+/* ===== LAYOUT ===== */
+.layout{display:flex;margin-top:var(--nav-h);flex:1}
+
+/* ===== SIDEBAR ===== */
+.sidebar{width:var(--sidebar-w);background:var(--bg2);position:fixed;top:var(--nav-h);bottom:0;left:0;overflow-y:auto;overflow-x:hidden;transition:width var(--tr);z-index:900;display:flex;flex-direction:column}
+.sidebar.collapsed{width:62px}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
+.sb-section{padding:6px 0}
+.sb-label{padding:6px 18px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#4a5a74;white-space:nowrap;overflow:hidden}
+.sidebar.collapsed .sb-label{opacity:0}
+.sb-link{display:flex;align-items:center;gap:11px;padding:9px 18px;color:#7a90aa;font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all var(--tr);white-space:nowrap;cursor:pointer;text-decoration:none}
+.sb-link .si{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.sb-link .sl{overflow:hidden;transition:opacity var(--tr)}
+.sidebar.collapsed .sl{opacity:0;width:0}
+.sb-link:hover{color:#fff;background:rgba(47,158,92,.12)}
+.sb-link.active{color:var(--brand-light);border-left-color:var(--brand);background:rgba(47,158,92,.15)}
+.sb-badge{margin-left:auto;background:var(--brand);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;flex-shrink:0}
+.sidebar.collapsed .sb-badge{display:none}
+
+/* ===== MAIN ===== */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;transition:margin-left var(--tr)}
+.main.expanded{margin-left:62px}
+
+    /* HEADER */
+    .alert-header{padding:28px 48px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#130808 0%,#0d0e10 100%);display:flex;align-items:center;justify-content:space-between;gap:20px;}
+    .alert-header-left h1{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fff;}
+    .alert-header-left p{font-size:13px;color:var(--muted);margin-top:2px;}
+    .live-pill{display:flex;align-items:center;gap:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:600;color:var(--accent-red);}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:var(--accent-red);animation:pulse 1.5s infinite;}
+
+    /* SUMMARY STRIP */
+    .summary-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border);}
+    .summary-box{background:var(--bg2);padding:20px 24px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:background .2s;}
+    .summary-box:hover,.summary-box.active{background:var(--bg3);}
+    .summary-box.active{border-bottom:2px solid var(--primary);}
+    .s-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .s-dot.critical{background:var(--accent-red);box-shadow:0 0 8px var(--accent-red);}
+    .s-dot.high{background:var(--accent-yellow);}
+    .s-dot.medium{background:var(--accent-blue);}
+    .s-dot.low{background:var(--accent-green);}
+    .s-dot.all{background:var(--muted);}
+    .s-num{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fff;line-height:1;}
+    .s-label{font-size:12px;color:var(--muted);}
+
+    /* TOOLBAR */
+    .toolbar{padding:16px 48px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--bg2);}
+    .search-input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:8px;font-size:13px;outline:none;min-width:240px;}
+    .search-input:focus{border-color:var(--primary);}
+    .search-input::placeholder{color:var(--muted);}
+    .filter-select{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:8px;font-size:13px;outline:none;cursor:pointer;}
+    .filter-select:focus{border-color:var(--primary);}
+    .ack-all-btn{margin-left:auto;background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+    .ack-all-btn:hover{border-color:var(--accent-green);color:var(--accent-green);}
+
+    /* ALERT LAYOUT */
+    .alert-layout{display:grid;grid-template-columns:1fr 320px;gap:0;}
+    .alert-feed{padding:24px 48px;display:flex;flex-direction:column;gap:12px;}
+    .alert-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:20px 22px;display:flex;align-items:flex-start;gap:16px;transition:all .25s;cursor:pointer;position:relative;overflow:hidden;}
+    .alert-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+    .alert-card.critical{border-color:rgba(239,68,68,0.25);}
+    .alert-card.critical::before{background:var(--accent-red);}
+    .alert-card.high{border-color:rgba(245,158,11,0.25);}
+    .alert-card.high::before{background:var(--accent-yellow);}
+    .alert-card.medium{border-color:rgba(59,130,246,0.2);}
+    .alert-card.medium::before{background:var(--accent-blue);}
+    .alert-card.low{border-color:rgba(34,197,94,0.2);}
+    .alert-card.low::before{background:var(--accent-green);}
+    .alert-card:hover{transform:translateX(4px);}
+    .alert-card.acked{opacity:0.5;}
+    .alert-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+    .alert-body{flex:1;}
+    .alert-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+    .sev-pill{font-size:10px;font-weight:800;padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.07em;}
+    .sev-pill.critical{background:rgba(239,68,68,0.15);color:var(--accent-red);}
+    .sev-pill.high{background:rgba(245,158,11,0.15);color:var(--accent-yellow);}
+    .sev-pill.medium{background:rgba(59,130,246,0.15);color:var(--accent-blue);}
+    .sev-pill.low{background:rgba(34,197,94,0.15);color:var(--accent-green);}
+    .alert-unit{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
+    .alert-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+    .alert-desc{font-size:13px;color:var(--muted);line-height:1.45;}
+    .alert-footer{display:flex;align-items:center;gap:12px;margin-top:10px;}
+    .alert-time{font-size:11.5px;color:var(--muted);}
+    .ack-btn{font-size:12px;font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:4px 12px;border-radius:6px;cursor:pointer;transition:all .2s;}
+    .ack-btn:hover{border-color:var(--accent-green);color:var(--accent-green);}
+    .ack-btn.acked{color:var(--accent-green);border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.05);cursor:default;}
+    .view-btn-sm{font-size:12px;color:var(--primary);background:none;border:none;cursor:pointer;font-weight:600;padding:4px 0;}
+
+    /* SIDE PANEL */
+    .side-panel{border-left:1px solid var(--border);background:var(--bg2);padding:24px 20px;display:flex;flex-direction:column;gap:20px;min-height:100%;}
+    .panel-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:20px;}
+    .panel-card h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;}
+    .panel-card canvas{max-height:180px;}
+    .recent-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;}
+    .recent-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .recent-text{color:var(--text);flex:1;line-height:1.3;}
+    .recent-time{font-size:11px;color:var(--muted);}
+
+    /* ===== FOOTER ===== */
+footer{background:var(--bg2);color:#8fa0b8;padding:44px 40px 0;margin-top:auto}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:36px;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08)}
+.ft-brand{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:9px}
+.ft-brand span{color:var(--brand)}
+.ft-desc{font-size:13px;line-height:1.7;max-width:270px}
+.ft-col h4{color:#fff;font-size:12px;font-weight:700;margin-bottom:13px;text-transform:uppercase;letter-spacing:.8px}
+.ft-col a{text-decoration: none;display:block;font-size:13px;margin-bottom:8px;transition:color var(--tr);color:#8fa0b8}
+.ft-col a:hover{color:var(--brand-light)}
+/* Subscribe */
+.sub-box{display:flex;flex-direction:column;gap:9px}
+.sub-box p{font-size:12px;color:#8fa0b8}
+.sub-form{display:flex;gap:7px}
+.sub-input{flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font-size:13px;outline:none;font-family:'Inter',sans-serif}
+.sub-input::placeholder{color:#6b7a99}
+.sub-input:focus{border-color:var(--brand)}
+.sub-btn{padding:8px 16px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background var(--tr);font-family:'Inter',sans-serif}
+.sub-btn:hover{background:var(--brand-dark)}
+.ft-bottom{display:flex;align-items:center;justify-content:space-between;padding:14px 0;font-size:11px;flex-wrap:wrap;gap:8px}
+.ft-links{display:flex;gap:14px}
+.ft-links a{text-decoration: none;color:#8fa0b8;transition:color var(--tr)}.ft-links a:hover{color:var(--brand-light)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1100px){.feat-grid{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.hero{flex-direction:column}.hero-visual{width:100%;flex:none}.hero-title{font-size:3rem}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);width:258px}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0!important}.nav-links{display:none}
+  .g2,.g4,.feat-grid{grid-template-columns:1fr}
+  .ft-grid{grid-template-columns:1fr}.content{padding:14px}
+}
+  </style>
+</head>
+<body>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <button class="nav-toggle" id="sidebarToggle">☰</button>
+  <a href="index.html" class="nav-brand">
+        <div class="logo">🚜</div>
+
+        <div class="brand-text">
+            <span class="brand-name">Agri<span class="brand-nameX">Centre</span></span>
+            <span class="brand-subtitle">Smart India Hackathon 2026</span>
+        </div>
+    </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="features.html">Features</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="team.html">Team</a>
+    <a href="contact.html">Contact</a>
+    <a id="profile-link" href="profile.html" style="display: none;">Profile</a>
+        <a id="logout-link" href="#" style="display: none;" onclick="logout()">Logout</a>
+        <a id="login-link" href="login.html">Login</a>
+        <a id="signup-link" href="signup.html">Sign Up</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="location.href='alerts.html'" title="Alerts">🔔<span class="nav-badge">3</span></button>
+    <button class="nav-btn" onclick="location.href='ai-assistant.html'" title="AI Assistant">🤖</button>
+    
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-section">
+    <div class="sb-label">Main</div>
+    <a href="index.html" class="sb-link"><span class="si">🏠</span><span class="sl">Home</span></a>
+    <a href="about.html" class="sb-link"><span class="si">ℹ️</span><span class="sl">About</span></a>
+    <a href="features.html" class="sb-link"><span class="si">⭐</span><span class="sl">Features</span></a>
+    <a href="team.html" class="sb-link"><span class="si">👥</span><span class="sl">Team</span></a>
+    <a href="contact.html" class="sb-link"><span class="si">📬</span><span class="sl">Contact</span></a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Analytics</div>
+    <a href="dashboard.html" class="sb-link"><span class="si">📊</span><span class="sl">Farmer Dashboard</span></a>
+    <a href="quality.html" class="sb-link"><span class="si">🛡️</span><span class="sl">Quality &amp; Certification</span></a>
+    <a href="farmer_logistics.html" class="sb-link"><span class="si">🚚</span><span class="sl">Logistics Tracking</span></a>
+    <a href="sustainability.html" class="sb-link"><span class="si">🌿</span><span class="sl">Sustainability Score</span></a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Operations</div>
+    <a href="add-produce.html" class="sb-link"><span class="si">🚚</span><span class="sl">Fleet & Storage</span></a>
+    <a href="orders.html" class="sb-link"><span class="si">📦</span><span class="sl">Order Management</span></a>
+    <a href="demand-forecasting.html" class="sb-link"><span class="si">📈</span><span class="sl">AI Market Insights</span></a>
+    <a href="alerts.html" class="sb-link active"><span class="si">🔔</span><span class="sl">Alert Center</span><span class="sb-badge">3</span></a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">More</div>
+    <a href="reports.html" class="sb-link"><span class="si">📄</span><span class="sl">Reports Center</span></a>
+    <a href="innovation.html" class="sb-link"><span class="si">🚀</span><span class="sl">Innovation Hub</span></a>
+    <a href="profile.html" class="sb-link"><span class="si">🔐</span><span class="sl">Profile</span></a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main" id="mainArea">
+
+    <!-- HEADER -->
+    <div class="alert-header">
+      <div class="alert-header-left">
+        <h1>🔔 Smart Alert Center</h1>
+        <p>Real-time alerts from marketplace sensors, AI models, and process monitors · Auto-refreshes every 60s</p>
+      </div>
+      <div class="live-pill"><div class="live-dot"></div> LIVE MONITORING</div>
+    </div>
+
+    <!-- SUMMARY STRIP -->
+    <div class="summary-strip">
+      <div class="summary-box active" onclick="filterAlerts('all',this)"><div class="s-dot all"></div><div><div class="s-num" id="cnt-all">7</div><div class="s-label">All Active</div></div></div>
+      <div class="summary-box" onclick="filterAlerts('critical',this)"><div class="s-dot critical"></div><div><div class="s-num" id="cnt-critical">1</div><div class="s-label">Critical</div></div></div>
+      <div class="summary-box" onclick="filterAlerts('high',this)"><div class="s-dot high"></div><div><div class="s-num" id="cnt-high">2</div><div class="s-label">High</div></div></div>
+      <div class="summary-box" onclick="filterAlerts('medium',this)"><div class="s-dot medium"></div><div><div class="s-num" id="cnt-medium">3</div><div class="s-label">Medium</div></div></div>
+      <div class="summary-box" onclick="filterAlerts('low',this)"><div class="s-dot low"></div><div><div class="s-num" id="cnt-low">1</div><div class="s-label">Low</div></div></div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <input class="search-input" placeholder="🔍  Search alerts..." oninput="searchAlerts(this.value)"/>
+      <select class="filter-select" onchange="filterByUnit(this.value)">
+        <option value="">All Units</option>
+        <option>Wheat Farms</option><option>Rice Farms</option><option>Vegetable Farms</option>
+        <option>Cold Storage</option><option>Warehousing</option><option>Distribution Hub</option>
+      </select>
+      <select class="filter-select" onchange="filterByType(this.value)">
+        <option value="">All Types</option>
+        <option>Marketplace</option><option>Process</option><option>Quality</option><option>Logistics</option>
+      </select>
+      <button class="ack-all-btn" onclick="acknowledgeAll()">✓ Acknowledge All</button>
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <div class="alert-layout">
+      <!-- ALERT FEED -->
+      <div class="alert-feed" id="alertFeed"></div>
+
+      <!-- SIDE PANEL -->
+      <div class="side-panel">
+        <div class="panel-card">
+          <h4>📊 Alert Distribution</h4>
+          <canvas id="alertPieChart"></canvas>
+        </div>
+        <div class="panel-card">
+          <h4>📈 Alert Volume (7 Days)</h4>
+          <canvas id="alertTrendChart"></canvas>
+        </div>
+        <div class="panel-card">
+          <h4>⏱ Recent Activity</h4>
+          <div id="recentActivity"></div>
+        </div>
+        <div class="panel-card">
+          <h4>🏭 Alerts by Unit</h4>
+          <canvas id="unitAlertChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+  <footer>
+    <div class="ft-grid">
+      <div>
+        <div class="ft-brand">Agri<span class="brand-nameX">Centre</span></div>
+        <p class="ft-desc">A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.</p>
+      </div>
+      <div class="ft-col">
+        <h4>Platform</h4>
+        <a href="dashboard.html">Farmer Dashboard</a>
+        <a href="reports.html">Harvest Reports</a>
+        <a href="add-produce.html">Fleet & Storage</a>
+        <a href="quality.html">Quality &amp; Certification</a>
+      </div>
+      <div class="ft-col">
+        <h4>AI & Tools</h4>
+        <a href="demand-forecasting.html">AI Market Insights</a>
+        <a href="ai-assistant.html">AI Assistant</a>
+        <a href="reports.html">Reports Center</a>
+      </div>
+      <div class="ft-col">
+        <h4>Stay Updated</h4>
+        <div class="sub-box">
+          <p>Get alerts and platform updates via email.</p>
+          <form class="sub-form" id="subForm">
+            <input type="email" class="sub-input" placeholder="Your email address" id="subEmail"/>
+            <button type="submit" class="sub-btn">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution</span>
+      <div class="ft-links"><a href="privacy.html">Privacy & Terms</a><a href="contact.html">Contact</a></div>
+    </div>
+  </footer>
+
+</main>
+</div><!-- /layout -->
+
+<script>
+const alerts = [
+  {id:'ALT-071',sev:'critical',icon:'🔴',unit:'Nashik Cluster',type:'Delivery',title:'Truck TR-101 – Critical Delivery Delay',desc:'Delay reading at 14.8 hrs — 2.3× the warning threshold of 6.5 hrs. Immediate follow-up required. Risk of produce spoilage within 24–48 hrs based on AI prediction.',time:'12 min ago',acked:false},
+  {id:'ALT-070',sev:'high',icon:'🟡',unit:'Nashik Cluster',type:'Cold Storage',title:'Cold Storage CS-204 – Temperature Anomaly',desc:'Storage temperature increased from 4°C to 9°C over 48 hrs. Likely equipment fault. Schedule inspection during next planned maintenance window.',time:'1 hr 10 min ago',acked:false},
+  {id:'ALT-069',sev:'high',icon:'🟡',unit:'Warehousing',type:'Logistics',title:'Warehouse WH-501 – Stock Level Elevated',desc:'Stock reading 42.8 tonnes vs capacity setpoint of 40 tonnes. Overflow risk if not corrected. Adjust intake rate and check dispatch schedule.',time:'2 hrs ago',acked:false},
+  {id:'ALT-068',sev:'medium',icon:'🔵',unit:'Punjab Cluster',type:'Quality',title:'Grading Rejection Rate – Upper Limit Approaching',desc:'Wheat grading rejection rate at 6.94% vs maximum acceptable limit of 7.2%. Trending upward. Monitor quality checks and adjust grading process if needed.',time:'3 hrs ago',acked:false},
+  {id:'ALT-067',sev:'medium',icon:'🔵',unit:'Cold Storage',type:'Quality',title:'Vegetable Cold Chain – High Level Warning',desc:'Storage unit S-4 stock level at 88% vs high alarm at 90%. Reduce inbound flow or activate transfer to backup storage.',time:'4 hrs 30 min ago',acked:false},
+  {id:'ALT-066',sev:'medium',icon:'🔵',unit:'Distribution Hub',type:'Marketplace',title:'Batch T-602 – Weight Discrepancy',desc:'Discrepancy of 12% between farmer-reported and warehouse-scale readings for Wheat batch T-602. Verify actual weight manually and calibrate suspect scale.',time:'6 hrs ago',acked:false},
+  {id:'ALT-065',sev:'low',icon:'🟢',unit:'Vegetable Farms',type:'Delivery',title:'Delivery Van – Minor Route Deviation Detected',desc:'Single route deviation event detected at 08:45. System auto-recovered. No impact on delivery time. Log for trend monitoring and inform logistics team.',time:'8 hrs ago',acked:false},
+];
+
+let filtered = [...alerts];
+
+function renderAlerts(data) {
+  const feed = document.getElementById('alertFeed');
+  if(data.length === 0){
+    feed.innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted);font-size:14px;">No alerts match your filter.</div>';
+    return;
+  }
+  feed.innerHTML = data.map((a,i) => `
+    <div class="alert-card ${a.sev} ${a.acked?'acked':''}" id="card-${a.id}">
+      <div class="alert-icon">${a.icon}</div>
+      <div class="alert-body">
+        <div class="alert-top">
+          <span class="sev-pill ${a.sev}">${a.sev}</span>
+          <span class="alert-unit">${a.unit} · ${a.type}</span>
+          <span style="font-size:11px;color:var(--muted);margin-left:auto;">${a.id}</span>
+        </div>
+        <div class="alert-title">${a.title}</div>
+        <div class="alert-desc">${a.desc}</div>
+        <div class="alert-footer">
+          <span class="alert-time">🕐 ${a.time}</span>
+          <button class="ack-btn ${a.acked?'acked':''}" id="ack-${a.id}" onclick="acknowledgeOne('${a.id}')">${a.acked?'✓ Acknowledged':'Acknowledge'}</button>
+          <button class="view-btn-sm">View Details →</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function acknowledgeOne(id) {
+  const a = alerts.find(x=>x.id===id);
+  if(!a||a.acked) return;
+  a.acked = true;
+  document.getElementById('card-'+id).classList.add('acked');
+  const btn = document.getElementById('ack-'+id);
+  btn.textContent = '✓ Acknowledged'; btn.classList.add('acked');
+}
+
+function acknowledgeAll() {
+  alerts.forEach(a => { a.acked = true; });
+  renderAlerts(filtered);
+}
+
+function filterAlerts(sev, el) {
+  document.querySelectorAll('.summary-box').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  filtered = sev==='all' ? [...alerts] : alerts.filter(a=>a.sev===sev);
+  renderAlerts(filtered);
+}
+
+function searchAlerts(q) {
+  filtered = alerts.filter(a => a.title.toLowerCase().includes(q.toLowerCase()) || a.desc.toLowerCase().includes(q.toLowerCase()) || a.unit.toLowerCase().includes(q.toLowerCase()));
+  renderAlerts(filtered);
+}
+
+function filterByUnit(u) {
+  filtered = u ? alerts.filter(a=>a.unit===u) : [...alerts];
+  renderAlerts(filtered);
+}
+
+function filterByType(t) {
+  filtered = t ? alerts.filter(a=>a.type===t) : [...alerts];
+  renderAlerts(filtered);
+}
+
+renderAlerts(alerts);
+
+// Charts
+const cOpts = {responsive:true,plugins:{legend:{labels:{color:'#8b909e',font:{size:10}}}},scales:{x:{ticks:{color:'#8b909e',font:{size:9}},grid:{color:'#2e3340'}},y:{ticks:{color:'#8b909e',font:{size:9}},grid:{color:'#2e3340'}}}};
+
+new Chart(document.getElementById('alertPieChart'),{type:'doughnut',data:{labels:['Critical','High','Medium','Low'],datasets:[{data:[1,2,3,1],backgroundColor:['#ef4444','#f59e0b','#3b82f6','#22c55e'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,plugins:{legend:{labels:{color:'#8b909e',font:{size:11}},position:'bottom'}}}});
+
+new Chart(document.getElementById('alertTrendChart'),{type:'line',data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],datasets:[{label:'Alerts',data:[12,9,14,8,11,6,7],borderColor:'#2f9e5c',backgroundColor:'rgba(47,158,92,0.08)',tension:0.4,fill:true}]},options:cOpts});
+
+new Chart(document.getElementById('unitAlertChart'),{type:'bar',data:{labels:['Nashik','Punjab','Vegetable','ColdStg','Wareh.','DistHub'],datasets:[{data:[3,1,1,1,1,1],backgroundColor:['#ef4444','#f59e0b','#22c55e','#22c55e','#f59e0b','#3b82f6'],borderRadius:4}]},options:{...cOpts,plugins:{legend:{display:false}}}});
+
+// Recent activity
+const recent = [
+  {dot:'#ef4444',text:'P-101 vibration alert triggered',time:'12m ago'},
+  {dot:'#f59e0b',text:'HE-204 pressure drop logged',time:'1h ago'},
+  {dot:'#f59e0b',text:'Boiler B-501 pressure elevated',time:'2h ago'},
+  {dot:'#3b82f6',text:'Punjab cluster rejection rate trending up',time:'3h ago'},
+  {dot:'#22c55e',text:'Delivery route deviation auto-recovered',time:'8h ago'},
+];
+const act = document.getElementById('recentActivity');
+act.innerHTML = recent.map(r=>`<div class="recent-row"><div class="recent-dot" style="background:${r.dot}"></div><div class="recent-text">${r.text}</div><div class="recent-time">${r.time}</div></div>`).join('');
+
+// Auto-refresh simulation
+setInterval(() => {
+  const ts = new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata'});
+  document.querySelector('.alert-header-left p').textContent = `Real-time alerts from marketplace sensors, AI models, and process monitors · Last refreshed: ${ts}`;
+}, 60000);
+</script>
+
+<script>
+// ── Sidebar Toggle ──
+const sidebar = document.getElementById('sidebar');
+const mainArea = document.getElementById('mainArea');
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+  if (window.innerWidth <= 768) { sidebar.classList.toggle('open'); }
+  else { sidebar.classList.toggle('collapsed'); mainArea.classList.toggle('expanded'); }
+});
+document.addEventListener('click', e => {
+  if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !document.getElementById('sidebarToggle').contains(e.target))
+    sidebar.classList.remove('open');
+});
+
+// ── Login & Logout ──
+document.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      document.getElementById("profile-link").style.display = token ? "inline-block" : "none";
+      document.getElementById("logout-link").style.display = token ? "inline-block" : "none";
+      document.getElementById("login-link").style.display = token ? "none" : "inline-block";
+      document.getElementById("signup-link").style.display = token ? "none" : "inline-block";
+    });
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+</script>
+</body>
+</html>

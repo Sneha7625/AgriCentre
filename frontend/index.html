@@ -1,0 +1,1889 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AgriCentre – Home | Smart India Hackathon 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-size:14px;color:#1e293b;background:var(--bg);display:flex;flex-direction:column;min-height:100vh}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+h1,h2,h3,h4,h5{font-family:'Rajdhani',sans-serif;font-weight:700;line-height:1.2}
+p{line-height:1.65;color:#64748b}
+ 
+/* ===== VARIABLES ===== */
+:root{
+  --brand:#2f9e5c;
+  --brand-dark:#1f7a44;
+  --brand-light:#5cc98a;
+  --brand-faint:#eafaf0;
+  --dark:#1a1a2e;
+  --dark-mid:#16213e;
+  --text:#1e293b;
+  --muted:#64748b;
+  --light:#94a3b8;
+  --border: #2e3340;
+  --surface:#f8fafc;
+  --white:#ffffff;
+  --success:#10b981;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --info:#3b82f6;
+  --sidebar-w:258px;
+  --nav-h:64px;
+  --radius:10px;
+  --radius-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+  --tr:.22s cubic-bezier(.4,0,.2,1);
+  --bg: #0d0e10;
+  --bg2: #14161a;
+  --bg3: #1c1f25;
+}
+ 
+/* ===== NAVBAR ===== */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.nav-toggle{background:none;border:none;cursor:pointer;color:#fff;font-size:20px;padding:6px 8px;border-radius:6px;transition:background var(--tr);flex-shrink:0}
+.nav-toggle:hover{background:rgba(255,255,255,.1)}
+.nav-brand{display:flex;align-items:center;gap:10px;font-family:'Rajdhani',sans-serif;font-size:1.45rem;font-weight:700;color:#fff}
+.nav-brand .logo{width:34px;height:34px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:auto}
+.nav-links a{color:#9aaac4;font-size:13px;font-weight:500;padding:6px 11px;border-radius:6px;transition:all var(--tr)}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(47,158,92,.22)}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:12px}
+.nav-btn{width:36px;height:36px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#ccc;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);position:relative}
+.nav-btn:hover{background:var(--brand);color:#fff}
+.nav-badge{position:absolute;top:-4px;right:-4px;background:var(--brand);color:#fff;font-size:9px;font-weight:700;padding:1px 4px;border-radius:10px;min-width:16px;text-align:center}
+.nav-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border-radius:8px;padding:5px 10px;cursor:pointer}
+.nav-avatar{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.nav-uname{color:#ddd;font-size:12px;font-weight:500}
+ 
+.brand-text{display:flex;flex-direction:column;}
+.brand-name{ font-size:32px;font-weight:700;font-family:'Poppins', sans-serif;line-height:1;}
+.brand-nameX{color:var(--brand)}
+.brand-subtitle{font-size:11px;font-weight:500;font-family:'Montserrat', sans-serif; /* Change this */color:#ddd7d7;letter-spacing:1px;text-transform: uppercase;}
+ 
+ 
+/* ===== LAYOUT ===== */
+.layout{display:flex;margin-top:var(--nav-h);flex:1}
+ 
+/* ===== SIDEBAR ===== */
+.sidebar{width:var(--sidebar-w);background:var(--bg2);position:fixed;top:var(--nav-h);bottom:0;left:0;overflow-y:auto;overflow-x:hidden;transition:width var(--tr);z-index:900;display:flex;flex-direction:column}
+.sidebar.collapsed{width:62px}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
+.sb-section{padding:6px 0}
+.sb-label{padding:6px 18px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#4a5a74;white-space:nowrap;overflow:hidden}
+.sidebar.collapsed .sb-label{opacity:0}
+.sb-link{display:flex;align-items:center;gap:11px;padding:9px 18px;color:#7a90aa;font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all var(--tr);white-space:nowrap;cursor:pointer;text-decoration:none}
+.sb-link .si{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.sb-link .sl{overflow:hidden;transition:opacity var(--tr)}
+.sidebar.collapsed .sl{opacity:0;width:0}
+.sb-link:hover{color:#fff;background:rgba(47,158,92,.12)}
+.sb-link.active{color:var(--brand-light);border-left-color:var(--brand);background:rgba(47,158,92,.15)}
+.sb-badge{margin-left:auto;background:var(--brand);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;flex-shrink:0}
+.sidebar.collapsed .sb-badge{display:none}
+ 
+/* ===== MAIN ===== */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;transition:margin-left var(--tr)}
+.main.expanded{margin-left:62px}
+ 
+/* ===== HERO ===== */
+.hero{background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:36px;padding:56px 40px 48px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 80% at 80% 50%,rgba(47,158,92,.2) 0%,transparent 70%)}
+.hero-content{flex:1;max-width:510px;position:relative;z-index:1}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.hero-tag{background:rgba(47,158,92,.18);color:var(--brand-light);border:1px solid rgba(47,158,92,.3);border-radius:6px;padding:4px 11px;font-size:12px;font-weight:600}
+.hero-title{font-size:4.4rem;color:#fff;line-height:1;margin-bottom:16px}
+.hero-title span{color:var(--brand)}
+.hero-desc{color:#94a3b8;font-size:15px;line-height:1.7;margin-bottom:28px}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.btn-hero-primary{background:var(--brand);color:#fff;border:none;padding:10px 22px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;transition:all var(--tr);display:inline-flex;align-items:center;gap:7px}
+.btn-hero-primary:hover{background:var(--brand-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(47,158,92,.4)}
+.btn-hero-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);padding:10px 22px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;transition:all var(--tr);display:inline-flex;align-items:center;gap:7px}
+.btn-hero-outline:hover{border-color:#fff;background:rgba(255,255,255,.07)}
+.hero-live{display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8}
+.hero-live strong{color:var(--success)}
+.live-dot{width:9px;height:9px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px rgba(16,185,129,.25);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(16,185,129,.25)}50%{box-shadow:0 0 0 6px rgba(16,185,129,.08)}}
+ 
+/* Farm card */
+.hero-visual{flex:0 0 350px;position:relative;z-index:1}
+.farm-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-lg);padding:20px;backdrop-filter:blur(10px)}
+.pc-header{color:#fff;font-weight:700;font-size:14px;margin-bottom:14px;font-family:'Rajdhani',sans-serif}
+.farm-units{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.pu{background:rgba(255,255,255,.05);border-radius:8px;padding:10px 12px;border:1px solid rgba(255,255,255,.07)}
+.pu-n{font-weight:700;font-size:12px;color:#fff;font-family:'Rajdhani',sans-serif}
+.pu-s{font-size:11px;margin-top:3px}
+.pu.g .pu-s{color:var(--success)}
+.pu.y .pu-s{color:var(--warning)}
+.chart-wrap{height:100px}
+ 
+/* ===== PAGE CONTENT ===== */
+.content{flex:1;padding:26px}
+ 
+/* KPI Grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:14px;margin-bottom:22px}
+.kpi{background:var(--bg2);border-radius:var(--radius);padding:17px 18px;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform var(--tr)}
+.kpi:hover{transform:translateY(-2px)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--brand)}
+.kpi.s::before{background:var(--success)}.kpi.w::before{background:var(--warning)}.kpi.i::before{background:var(--info)}.kpi.d::before{background:var(--danger)}
+.kpi-lbl{font-size:11px;font-weight:600;color:var(--white);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.kpi-val{font-size:1.8rem;font-weight:700;font-family:'Rajdhani',sans-serif;color:var(--light);line-height:1}
+.kpi-val span{font-size:1rem;color:var(--muted)}
+.kpi-delta{font-size:12px;margin-top:6px}
+.kpi-delta.up{color:var(--success)}.kpi-delta.dn{color:var(--danger)}
+.kpi-ico{position:absolute;right:14px;top:50%;color:translateY(-50%);font-size:30px;}
+ 
+/* Cards */
+.card{background:var(--bg2);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;border:1px solid var(--border)}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.card-title{font-size:1rem;font-weight:700;color:var(--white);font-family:'Rajdhani',sans-serif}
+.card-sub{font-size:11px;color:var(--light);margin-top:2px}
+ 
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+ 
+/* Alerts */
+.al-item{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;border-radius:8px;margin-bottom:9px;border-left:3px solid}
+.al-item.crit{background:#fff1f2;border-color:var(--danger)}.al-item.high{background:#fffbeb;border-color:var(--warning)}.al-item.med{background:#eff6ff;border-color:var(--info)}
+.al-ico{font-size:17px;flex-shrink:0}
+.al-title{font-weight:600;font-size:13px;color:var(--text)}
+.al-meta{font-size:11px;color:var(--muted);margin-top:2px}
+ 
+/* Insight list */
+.ins-list{display:flex;flex-direction:column;gap:11px}
+.ins-item{display:flex;align-items:flex-start;gap:11px}
+.ins-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ins-title{font-weight:600;font-size:13px;color:var(--white)}
+.ins-meta{font-size:11px;color:var(--light);margin-top:2px}
+ 
+/* Feature cards */
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
+.feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:17px 15px;box-shadow:var(--shadow);transition:all var(--tr);display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.feat-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(47,158,92,.15);border-color:var(--brand)}
+.fc-ico{font-size:25px}
+.fc-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;color:var(--white)}
+.fc-desc{font-size:12px;color:var(--light);line-height:1.5;flex:1}
+.fc-stars{font-size:11px;margin-top:4px}
+ 
+/* Quick Nav */
+.qn-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:all var(--tr);box-shadow:var(--shadow);cursor:pointer}
+.qn-card:hover{background:var(--brand);border-color:var(--brand);transform:translateY(-2px)}
+.qn-card:hover .qn-lbl{color:#fff}
+.qn-ico{font-size:26px}
+.qn-lbl{font-weight:700;font-size:13px;color:var(--light);font-family:'Rajdhani',sans-serif;transition:color var(--tr)}
+ 
+/* Section title */
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--light)}
+ 
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all var(--tr)}
+.btn-primary{background:var(--brand);color:#fff}.btn-primary:hover{background:var(--brand-dark)}
+.btn-outline{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}.btn-outline:hover{background:var(--brand);color:#fff}
+.btn-sm{padding:5px 12px;font-size:12px}
+ 
+/* ===== FOOTER ===== */
+footer{background:var(--bg2);color:#8fa0b8;padding:44px 40px 0;margin-top:auto}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:36px;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08)}
+.ft-brand{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:9px}
+.ft-brand span{color:var(--brand)}
+.ft-desc{font-size:13px;line-height:1.7;max-width:270px}
+.ft-col h4{color:#fff;font-size:12px;font-weight:700;margin-bottom:13px;text-transform:uppercase;letter-spacing:.8px}
+.ft-col a{display:block;font-size:13px;margin-bottom:8px;transition:color var(--tr);color:#8fa0b8}
+.ft-col a:hover{color:var(--brand-light)}
+/* Subscribe */
+.sub-box{display:flex;flex-direction:column;gap:9px}
+.sub-box p{font-size:12px;color:#8fa0b8}
+.sub-form{display:flex;gap:7px}
+.sub-input{flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font-size:13px;outline:none;font-family:'Inter',sans-serif}
+.sub-input::placeholder{color:#6b7a99}
+.sub-input:focus{border-color:var(--brand)}
+.sub-btn{padding:8px 16px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background var(--tr);font-family:'Inter',sans-serif}
+.sub-btn:hover{background:var(--brand-dark)}
+.ft-bottom{display:flex;align-items:center;justify-content:space-between;padding:14px 0;font-size:11px;flex-wrap:wrap;gap:8px}
+.ft-links{display:flex;gap:14px}
+.ft-links a{color:#8fa0b8;transition:color var(--tr)}.ft-links a:hover{color:var(--brand-light)}
+ 
+/* ===== RESPONSIVE ===== */
+@media(max-width:1100px){.feat-grid{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.hero{flex-direction:column}.hero-visual{width:100%;flex:none}.hero-title{font-size:3rem}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);width:258px}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0!important}.nav-links{display:none}
+  .g2,.g4,.feat-grid{grid-template-columns:1fr}
+  .ft-grid{grid-template-columns:1fr}.content{padding:14px}
+}
+</style>
+</head>
+<body>
+ 
+<!-- NAVBAR -->
+<nav class="navbar">
+  <button class="nav-toggle" id="sidebarToggle">☰</button>
+  <a href="index.html" class="nav-brand">
+        <div class="logo">🚜</div>
+ 
+        <div class="brand-text">
+            <span class="brand-name">Agri<span class="brand-nameX">Centre</span></span>
+            <span class="brand-subtitle">Smart India Hackathon 2026</span>
+        </div>
+    </a>
+    <div class="nav-links" id="navLinks">
+
+      <!-- PUBLIC PAGES — ALWAYS VISIBLE -->
+      <div id="publicNav">
+  
+          <a href="index.html" class="active">
+              Home
+          </a>
+  
+          <a href="about.html">
+              About
+          </a>
+  
+          <a href="features.html">
+              Features
+          </a>
+          <a href="team.html">
+            Team
+        </a>
+          <a href="contact.html">
+              Contact
+          </a>
+  
+      </div>
+  
+  
+      <!-- LOGIN / PROFILE -->
+      <div id="loginNav">
+  
+          <a href="login.html" id="loginLink">
+              Login
+          </a>
+  
+          <a href="profile.html"
+             id="profileLink"
+             style="display:none;">
+              Profile
+          </a>
+  
+      </div>
+  
+  
+      <!-- SIGN UP / LOGOUT -->
+      <div id="accountNav">
+  
+          <a href="signup.html" id="signupLink">
+              Sign Up
+          </a>
+  
+          <a href="#"
+             id="logoutLink"
+             style="display:none;"
+             onclick="logout(); return false;">
+              Logout
+          </a>
+  
+      </div>
+  
+  </div>
+  </div>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="location.href='alerts.html'" title="Alerts">🔔<span class="nav-badge">3</span></button>
+    <button class="nav-btn" onclick="location.href='ai-assistant.html'" title="AI Assistant">🤖</button>
+    
+  </div>
+</nav>
+ 
+<!-- LAYOUT -->
+<div class="layout">
+ 
+<!-- SIDEBAR --><aside class="sidebar" id="sidebar">
+
+    <div id="publicSidebar">
+
+        <div class="sb-section">
+    
+            <div class="sb-label">Main</div>
+    
+            <a href="index.html" class="sb-link active">
+                <span class="si">🏠</span>
+                <span class="sl">Home</span>
+            </a>
+    
+            <a href="about.html" class="sb-link">
+                <span class="si">ℹ️</span>
+                <span class="sl">About</span>
+            </a>
+    
+            <a href="features.html" class="sb-link">
+                <span class="si">⭐</span>
+                <span class="sl">Features</span>
+            </a>
+    
+            <a href="team.html" class="sb-link">
+                <span class="si">👥</span>
+                <span class="sl">Team</span>
+            </a>
+    
+            <a href="contact.html" class="sb-link">
+                <span class="si">📬</span>
+                <span class="sl">Contact</span>
+            </a>
+    
+        </div>
+    
+        <div class="sb-section">
+    
+            <div class="sb-label">Account</div>
+    
+            <a href="login.html" class="sb-link">
+                <span class="si">🔐</span>
+                <span class="sl">Login</span>
+            </a>
+    
+            <a href="signup.html" class="sb-link">
+                <span class="si">📝</span>
+                <span class="sl">Sign Up</span>
+            </a>
+    
+        </div>
+    
+    </div>
+
+
+  <!-- =========================
+       FARMER SIDEBAR
+  ========================== -->
+  <div id="farmerSidebar" style="display:none;">
+
+      <div class="sb-section">
+
+          <div class="sb-label">Main</div>
+
+          <a href="dashboard.html" class="sb-link">
+              <span class="si">📊</span>
+              <span class="sl">Dashboard</span>
+          </a>
+
+      </div>
+
+
+      <div class="sb-section">
+
+          <div class="sb-label">Produce</div>
+
+          <a href="add-produce.html" class="sb-link">
+              <span class="si">🌾</span>
+              <span class="sl">Add Produce</span>
+          </a>
+
+          <a href="my-listings.html" class="sb-link">
+              <span class="si">📋</span>
+              <span class="sl">View Listed Produce</span>
+          </a>
+
+          <a href="offers.html" class="sb-link">
+              <span class="si">🤝</span>
+              <span class="sl">View Offers</span>
+          </a>
+
+          <a href="buyers.html" class="sb-link">
+              <span class="si">🔎</span>
+              <span class="sl">Find Buyers</span>
+          </a>
+
+      </div>
+
+
+      <div class="sb-section">
+
+          <div class="sb-label">Orders & Delivery</div>
+
+          <a href="orders.html" class="sb-link">
+              <span class="si">📦</span>
+              <span class="sl">View Orders</span>
+          </a>
+
+          <a href="farmer_logistics.html" class="sb-link">
+              <span class="si">🚚</span>
+              <span class="sl">Logistics</span>
+          </a>
+          <a
+          href="meeting.html"
+          class="sb-link"
+      >
+          <span class="si">🎥</span>
+          <span class="sl">Meeting Centre</span>
+      </a>
+
+      </div>
+
+
+      <div class="sb-section">
+
+          <div class="sb-label">Reports & Quality</div>
+
+          <a href="reports.html" class="sb-link">
+              <span class="si">📄</span>
+              <span class="sl">Reports Centre</span>
+          </a>
+
+          <a href="quality.html" class="sb-link">
+              <span class="si">🛡️</span>
+              <span class="sl">Quality & Certification</span>
+          </a>
+
+      </div>
+
+
+      <div class="sb-section">
+
+          <div class="sb-label">Account</div>
+
+          <a href="profile.html" class="sb-link">
+              <span class="si">👤</span>
+              <span class="sl">Profile</span>
+          </a>
+
+          <a href="#" class="sb-link"
+             onclick="logout(); return false;">
+              <span class="si">🚪</span>
+              <span class="sl">Logout</span>
+          </a>
+
+      </div>
+
+  </div>
+
+
+  <div id="wholesalerSidebar" style="display:none;">
+
+    <div class="sb-section">
+
+        <div class="sb-label">Main</div>
+
+        <a href="dashboard.html" class="sb-link">
+            <span class="si">📊</span>
+            <span class="sl">Dashboard</span>
+        </a>
+
+    </div>
+
+    <div class="sb-section">
+
+        <div class="sb-label">Bulk Buying</div>
+
+        <a href="marketplace.html" class="sb-link">
+            <span class="si">🛒</span>
+            <span class="sl">Marketplace</span>
+        </a>
+
+        <a href="wholesaler-offers.html" class="sb-link">
+            <span class="si">🤝</span>
+            <span class="sl">My Offers</span>
+        </a>
+
+        <a href="cart.html" class="sb-link">
+            <span class="si">📦</span>
+            <span class="sl">Bulk Cart</span>
+        </a>
+
+    </div>
+
+    <div class="sb-section">
+
+        <div class="sb-label">Orders</div>
+
+        <a href="buyer-orders.html" class="sb-link">
+            <span class="si">📋</span>
+            <span class="sl">Bulk Orders</span>
+        </a>
+
+        <a href="buyer-logistics.html" class="sb-link">
+            <span class="si">🚚</span>
+            <span class="sl">Delivery Tracking</span>
+        </a>
+
+        <a href="payments.html" class="sb-link">
+            <span class="si">💳</span>
+            <span class="sl">Payments & Invoices</span>
+        </a>
+
+    </div>
+
+    <div class="sb-section">
+
+        <div class="sb-label">Communication</div>
+
+        <a href="meeting.html" class="sb-link">
+            <span class="si">🎥</span>
+            <span class="sl">Meeting Centre</span>
+        </a>
+
+    </div>
+
+    <div class="sb-section">
+
+        <div class="sb-label">AI & Insights</div>
+
+        <a href="demand-forecasting.html" class="sb-link">
+            <span class="si">🤖</span>
+            <span class="sl">Demand Forecasting</span>
+        </a>
+
+    </div>
+
+    <div class="sb-section">
+
+        <div class="sb-label">Account</div>
+
+        <a href="profile.html" class="sb-link">
+            <span class="si">🏢</span>
+            <span class="sl">Business Profile</span>
+        </a>
+
+        <a href="alerts.html" class="sb-link">
+            <span class="si">🔔</span>
+            <span class="sl">Notifications</span>
+        </a>
+
+        <a href="#" class="sb-link"
+           onclick="logout(); return false;">
+            <span class="si">🚪</span>
+            <span class="sl">Logout</span>
+        </a>
+
+    </div>
+
+</div>
+
+<div id="consumerSidebar" style="display:none;">
+
+    <div class="sb-section">
+
+        <div class="sb-label">Main</div>
+
+        <a href="dashboard.html" class="sb-link">
+            <span class="si">📊</span>
+            <span class="sl">Dashboard</span>
+        </a>
+
+    </div>
+
+    <div class="sb-section">
+
+        <div class="sb-label">Shop</div>
+
+        <a href="marketplace.html" class="sb-link">
+            <span class="si">🛒</span>
+            <span class="sl">Marketplace</span>
+        </a>
+
+        <a href="cart.html" class="sb-link">
+            <span class="si">🛍️</span>
+            <span class="sl">My Cart</span>
+        </a>
+
+        <a href="favorites.html" class="sb-link">
+            <span class="si">❤️</span>
+            <span class="sl">Favorites</span>
+        </a>
+
+    </div>
+
+    <div class="sb-section">
+
+        <div class="sb-label">Orders</div>
+
+        <a href="buyer-orders.html" class="sb-link">
+            <span class="si">📦</span>
+            <span class="sl">My Orders</span>
+        </a>
+
+        <a href="buyer-logistics.html" class="sb-link">
+            <span class="si">🚚</span>
+            <span class="sl">Delivery Tracking</span>
+        </a>
+
+    </div>
+
+    <div class="sb-section">
+
+        <div class="sb-label">Communication</div>
+
+        <a href="meeting.html" class="sb-link">
+            <span class="si">🎥</span>
+            <span class="sl">Meeting Centre</span>
+        </a>
+
+    </div>
+
+    <div class="sb-section">
+
+        <div class="sb-label">AI & Insights</div>
+
+        <a href="demand-forecasting.html" class="sb-link">
+            <span class="si">🤖</span>
+            <span class="sl">Demand Forecasting</span>
+        </a>
+
+    </div>
+
+    <div class="sb-section">
+
+        <div class="sb-label">Account</div>
+
+        <a href="profile.html" class="sb-link">
+            <span class="si">👤</span>
+            <span class="sl">Profile</span>
+        </a>
+
+        <a href="alerts.html" class="sb-link">
+            <span class="si">🔔</span>
+            <span class="sl">Notifications</span>
+        </a>
+
+        <a href="#" class="sb-link"
+           onclick="logout(); return false;">
+            <span class="si">🚪</span>
+            <span class="sl">Logout</span>
+        </a>
+
+    </div>
+
+</div>
+
+</aside>
+ 
+<!-- MAIN -->
+<main class="main" id="mainArea">
+ 
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-tags">
+        <span class="hero-tag">🌾 Farmer-to-Market Program</span>
+        <span class="hero-tag">Smart India Hackathon 2026</span>
+      </div>
+      <h1 class="hero-title">Agri<span class="brand-nameX">Centre</span></h1>
+      <p class="hero-desc">A smart digital marketplace connecting farmers directly with consumers &amp; bulk buyers — fair prices for farmers, fresh produce for everyone, zero middlemen.</p>
+      <div class="hero-btns">
+        <a href="dashboard.html" class="btn-hero-primary">📊 Open Dashboard</a>
+        <a href="features.html" class="btn-hero-outline">Explore Features</a>
+      </div>
+      <div class="hero-live"><div class="live-dot"></div><span>Live Marketplace Status: <strong>All Markets Active</strong></span></div>
+    </div>
+    <div class="hero-visual">
+      <div class="farm-card">
+        <div class="pc-header">⚙ Live Market Overview</div>
+        <div class="farm-units">
+          <div class="pu g"><div class="pu-n">Wheat Farms</div><div class="pu-s">● Operational</div></div>
+          <div class="pu g"><div class="pu-n">Rice Farms</div><div class="pu-s">● Operational</div></div>
+          <div class="pu y"><div class="pu-n">Vegetable Farms</div><div class="pu-s">⚠ Maintenance</div></div>
+          <div class="pu g"><div class="pu-n">Cold Storage</div><div class="pu-s">● Operational</div></div>
+          <div class="pu g"><div class="pu-n">Warehousing</div><div class="pu-s">● Operational</div></div>
+          <div class="pu g"><div class="pu-n">Distribution Hub</div><div class="pu-s">● Operational</div></div>
+        </div>
+        <div class="chart-wrap"><canvas id="heroChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- CONTENT -->
+  <div class="content">
+ 
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-lbl">Today's Total Produce Sold</div><div class="kpi-val" id="harvest-value">-- <span>MT</span></div>
+<div class="kpi-delta up" id="harvest-change">Loading...</div><div class="kpi-ico">🏭</div></div>
+      <div class="kpi s"><div class="kpi-lbl">Farmer Satisfaction</div><div class="kpi-val" id="efficiency-value">--<span>%</span></div>
+<div class="kpi-delta up" id="efficiency-change">Loading...</div><div class="kpi-ico">📈</div></div>
+      <div class="kpi i"><div class="kpi-lbl">Quality Index</div><div class="kpi-val" id="quality-value">--<span>%</span></div>
+<div class="kpi-delta up" id="quality-change">Loading...</div><div class="kpi-ico">🛡️</div></div>
+      <div class="kpi w"><div class="kpi-lbl">Delivery Health</div><div class="kpi-val" id="marketplace-value">--<span>%</span></div>
+<div class="kpi-delta dn" id="marketplace-change">Loading...</div><div class="kpi-ico">⚙️</div></div>
+    </div>
+ 
+    <!-- AI Insights + Alerts -->
+    <div class="g2">
+      <div class="card">
+        <div class="card-hd">
+          <div><div class="card-title">💡 Latest AI Insights</div><div class="card-sub">Auto-generated by AgriCentre AI Engine</div></div>
+          <a href="demand-forecasting.html" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="ins-list">
+          <div class="ins-item"><div class="ins-ico" style="background:#eafaf0;color:#2f9e5c">🧠</div><div><div class="ins-title">Tomato prices in Nashik cluster rising 8% this week</div><div class="ins-meta">Price Forecast · Confidence 91%</div></div></div>
+          <div class="ins-item"><div class="ins-ico" style="background:#dcfce7;color:#166534">📈</div><div><div class="ins-title">Farmer payouts settled 4.8% faster this week</div><div class="ins-meta">Harvest Reports · 2 hours ago</div></div></div>
+          <div class="ins-item"><div class="ins-ico" style="background:#fef9c3;color:#854d0e">⚡</div><div><div class="ins-title">Logistics cost 7% above target on Route 3</div><div class="ins-meta">Logistics Tracking · Action recommended</div></div></div>
+          <div class="ins-item"><div class="ins-ico" style="background:#dbeafe;color:#1e40af">🌿</div><div><div class="ins-title">Sustainability score within target range</div><div class="ins-meta">Sustainability Dashboard · Score: 82/100</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd">
+          <div><div class="card-title">🚨 Critical Alerts</div><div class="card-sub">3 active alerts require attention</div></div>
+          <a href="alerts.html" class="btn btn-sm btn-outline">Manage</a>
+        </div>
+        <div class="al-item crit"><div class="al-ico">🔴</div><div><div class="al-title">Delivery delay — Truck TR-201</div><div class="al-meta">Critical · Nashik Cluster · 14 mins ago</div></div></div>
+        <div class="al-item high"><div class="al-ico">🟡</div><div><div class="al-title">Cold storage temperature drop — Warehouse WH-08</div><div class="al-meta">High · Punjab Cluster · 1 hour ago</div></div></div>
+        <div class="al-item med"><div class="al-ico">🔵</div><div><div class="al-title">Quality check overdue — Batch HE-14</div><div class="al-meta">Medium · Maintenance · 6 hours ago</div></div></div>
+      </div>
+    </div>
+ 
+    <!-- Feature Highlights -->
+    <div class="sec-title">Platform Features</div>
+    <div class="feat-grid">
+      <a href="add-produce.html" class="feat-card"><div class="fc-ico">🚚</div><div class="fc-title">Fleet &amp; Storage Health</div><div class="fc-desc">AI predicts delivery truck and cold storage failures before they disrupt supply.</div><div class="fc-stars">⭐⭐⭐⭐⭐</div></a>
+      <a href="ai-assistant.html" class="feat-card"><div class="fc-ico">🤖</div><div class="fc-title">AI Assistant</div><div class="fc-desc">Ask in plain language about crop prices, orders, weather and logistics.</div><div class="fc-stars">⭐⭐⭐⭐⭐</div></a>
+      <a href="demand-forecasting.html" class="feat-card"><div class="fc-ico">📈</div><div class="fc-title">AI Market Insights</div><div class="fc-desc">AI-based daily, weekly and monthly mandi price forecasts.</div><div class="fc-stars">⭐⭐⭐⭐⭐</div></a>
+      <a href="dashboard.html" class="feat-card"><div class="fc-ico">📊</div><div class="fc-title">Farmer Dashboard</div><div class="fc-desc">All your crop sales, earnings and AI summaries in one view.</div><div class="fc-stars">⭐⭐⭐⭐</div></a>
+      <a href="quality.html" class="feat-card"><div class="fc-ico">🛡️</div><div class="fc-title">Quality Analytics</div><div class="fc-desc">Monitor produce quality, certification and grading compliance.</div><div class="fc-stars">⭐⭐⭐⭐</div></a>
+      <a href="orders.html" class="feat-card"><div class="fc-ico">📦</div><div class="fc-title">Order Management</div><div class="fc-desc">Track orders, delivery issues and disputes with priority prediction.</div><div class="fc-stars">⭐⭐⭐⭐</div></a>
+      <a href="innovation.html" class="feat-card"><div class="fc-ico">🚀</div><div class="fc-title">Innovation Hub</div><div class="fc-desc">Submit, vote, and collaborate on farming &amp; market improvement ideas.</div><div class="fc-stars">⭐⭐⭐</div></a>
+    </div>
+ 
+    <!-- Quick Nav -->
+    <div class="sec-title">Quick Navigation</div>
+    <div class="g4">
+      <a href="dashboard.html" class="qn-card"><div class="qn-ico">📊</div><div class="qn-lbl">Dashboard</div></a>
+      <a href="add-produce.html" class="qn-card"><div class="qn-ico">🚚</div><div class="qn-lbl">Fleet Health</div></a>
+      <a href="demand-forecasting.html" class="qn-card"><div class="qn-ico">📈</div><div class="qn-lbl">Forecasting</div></a>
+      <a href="reports.html" class="qn-card"><div class="qn-ico">📄</div><div class="qn-lbl">Reports</div></a>
+    </div>
+ 
+  </div><!-- /content -->
+ 
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft-grid">
+      <div>
+        <div class="ft-brand">Agri<span class="brand-nameX">Centre</span></div>
+        <p class="ft-desc">A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.</p>
+      </div>
+      <div class="ft-col">
+        <h4>Platform</h4>
+        <a href="dashboard.html">Farmer Dashboard</a>
+        <a href="reports.html">Harvest Reports</a>
+        <a href="add-produce.html">Fleet & Storage</a>
+        <a href="quality.html">Quality &amp; Certification</a>
+      </div>
+      <div class="ft-col">
+        <h4>AI & Tools</h4>
+        <a href="demand-forecasting.html">AI Market Insights</a>
+        <a href="ai-assistant.html">AI Assistant</a>
+        <a href="reports.html">Reports Center</a>
+      </div>
+      <div class="ft-col">
+        <h4>Stay Updated</h4>
+        <div class="sub-box">
+          <p>Get alerts and platform updates via email.</p>
+          <form class="sub-form" id="subForm">
+            <input type="email" class="sub-input" placeholder="Your email address" id="subEmail"/>
+            <button type="submit" class="sub-btn">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution</span>
+      <div class="ft-links"><a href="privacy.html">Privacy & Terms</a><a href="contact.html">Contact</a></div>
+    </div>
+  </footer>
+ 
+</main>
+</div><!-- /layout -->
+ 
+<script>
+
+  /* ============================================================
+     AGRICENTRE HOME PAGE
+     ============================================================ */
+  
+  const API_BASE = "http://127.0.0.1:5000";
+  
+  
+  /* ============================================================
+     AUTH HELPERS
+     ============================================================ */
+  
+  function getToken() {
+      return localStorage.getItem("token");
+  }
+  
+  
+  function logout() {
+  
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+  
+      window.location.href = "login.html";
+  }
+  
+  
+  /* ============================================================
+     NAVIGATION + ROLE BASED SIDEBAR
+     ============================================================ */
+  
+  async function updateNavigation() {
+  
+      const token = getToken();
+  
+  
+      /* ========================================================
+         NAVBAR ELEMENTS
+         ======================================================== */
+  
+      const publicNav =
+          document.getElementById("publicNav");
+  
+      const loginNav =
+          document.getElementById("loginNav");
+  
+      const accountNav =
+          document.getElementById("accountNav");
+  
+  
+      /* ========================================================
+         SIDEBAR ELEMENTS
+         ======================================================== */
+  
+      const publicSidebar =
+          document.getElementById("publicSidebar");
+  
+      const farmerSidebar =
+          document.getElementById("farmerSidebar");
+  
+      const wholesalerSidebar =
+          document.getElementById("wholesalerSidebar");
+  
+      const consumerSidebar =
+          document.getElementById("consumerSidebar");
+  
+  
+      /* ========================================================
+         SAFETY CHECK
+         ======================================================== */
+  
+      if (!publicNav) {
+          console.error("publicNav not found.");
+      }
+  
+      if (!loginNav) {
+          console.error("loginNav not found.");
+      }
+  
+      if (!accountNav) {
+          console.error("accountNav not found.");
+      }
+  
+  
+      /* ========================================================
+         RESET SIDEBARS
+         ======================================================== */
+  
+      if (publicSidebar) {
+          publicSidebar.style.display = "none";
+      }
+  
+      if (farmerSidebar) {
+          farmerSidebar.style.display = "none";
+      }
+  
+      if (wholesalerSidebar) {
+          wholesalerSidebar.style.display = "none";
+      }
+  
+      if (consumerSidebar) {
+          consumerSidebar.style.display = "none";
+      }
+  
+  
+      /* ========================================================
+         PUBLIC NAVBAR
+         
+         ALWAYS VISIBLE
+         
+         Home | About | Features | Contact
+         ======================================================== */
+  
+      if (publicNav) {
+          publicNav.style.display = "flex";
+      }
+  
+  
+      /* ========================================================
+         LOGGED OUT
+         ======================================================== */
+  
+      if (!token) {
+  
+          /*
+           * Show Login
+           */
+          if (loginNav) {
+              loginNav.style.display = "flex";
+          }
+  
+          /*
+           * Show Sign Up
+           */
+          if (accountNav) {
+              accountNav.style.display = "flex";
+          }
+  
+          /*
+           * Show public sidebar
+           */
+          if (publicSidebar) {
+              publicSidebar.style.display = "block";
+          }
+  
+          return;
+      }
+  
+  
+      /* ========================================================
+         LOGGED IN
+         ======================================================== */
+  
+      /*
+       * Public pages remain visible:
+       *
+       * Home
+       * About
+       * Features
+       * Contact
+       */
+  
+      if (publicNav) {
+          publicNav.style.display = "flex";
+      }
+  
+  
+      /*
+       * LoginNav changes:
+       *
+       * Login  -> hidden
+       * Profile -> visible
+       *
+       * The actual elements are handled below.
+       */
+  
+      if (loginNav) {
+          loginNav.style.display = "flex";
+      }
+  
+  
+      /*
+       * AccountNav changes:
+       *
+       * Sign Up -> hidden
+       * Logout -> visible
+       */
+  
+      if (accountNav) {
+          accountNav.style.display = "flex";
+      }
+  
+  
+      /* ========================================================
+         HANDLE LOGIN / PROFILE
+         ======================================================== */
+  
+      const loginLink =
+          document.getElementById("loginLink");
+  
+      const profileLink =
+          document.getElementById("profileLink");
+  
+  
+      if (loginLink) {
+          loginLink.style.display = "none";
+      }
+  
+      if (profileLink) {
+          profileLink.style.display = "inline-block";
+      }
+  
+  
+      /* ========================================================
+         HANDLE SIGN UP / LOGOUT
+         ======================================================== */
+  
+      const signupLink =
+          document.getElementById("signupLink");
+  
+      const logoutLink =
+          document.getElementById("logoutLink");
+  
+  
+      if (signupLink) {
+          signupLink.style.display = "none";
+      }
+  
+      if (logoutLink) {
+          logoutLink.style.display = "inline-block";
+      }
+  
+  
+      /* ========================================================
+         GET USER ROLE
+         ======================================================== */
+  
+      try {
+  
+          const response = await fetch(
+              API_BASE + "/api/auth/profile",
+              {
+                  method: "GET",
+  
+                  headers: {
+                      "Authorization":
+                          "Bearer " + token,
+  
+                      "Content-Type":
+                          "application/json"
+                  }
+              }
+          );
+  
+  
+          /* ====================================================
+             TOKEN EXPIRED / INVALID
+             ==================================================== */
+  
+          if (response.status === 401) {
+  
+              console.warn(
+                  "Token expired or invalid."
+              );
+  
+              localStorage.removeItem("token");
+              localStorage.removeItem("user");
+  
+              window.location.href = "login.html";
+  
+              return;
+          }
+  
+  
+          /* ====================================================
+             READ RESPONSE
+             ==================================================== */
+  
+          const data =
+              await response.json();
+  
+  
+          if (
+              !response.ok ||
+              !data.success ||
+              !data.user
+          ) {
+  
+              throw new Error(
+                  data.message ||
+                  "Unable to retrieve user profile."
+              );
+          }
+  
+  
+          /* ====================================================
+             SAVE USER
+             ==================================================== */
+  
+          const user =
+              data.user;
+  
+          localStorage.setItem(
+              "user",
+              JSON.stringify(user)
+          );
+  
+  
+          /* ====================================================
+             NORMALIZE ROLE
+             ==================================================== */
+  
+          const role =
+              String(
+                  user.role || ""
+              )
+              .trim()
+              .toUpperCase();
+  
+  
+          console.log(
+              "AgriCentre logged-in role:",
+              role
+          );
+  
+  
+          /* ====================================================
+             FARMER
+             ==================================================== */
+  
+          if (role === "FARMER") {
+  
+              if (farmerSidebar) {
+  
+                  farmerSidebar.style.display =
+                      "block";
+  
+              }
+  
+          }
+  
+  
+          /* ====================================================
+             WHOLESALER / BULK BUYER
+             ==================================================== */
+  
+          else if (
+              role === "WHOLESALER" ||
+              role === "BULK_BUYER" ||
+              role === "BULK BUYER"
+          ) {
+  
+              if (wholesalerSidebar) {
+  
+                  wholesalerSidebar.style.display =
+                      "block";
+  
+              }
+  
+          }
+  
+  
+          /* ====================================================
+             CONSUMER
+             ==================================================== */
+  
+          else if (
+              role === "CONSUMER" ||
+              role === "VENDOR"
+          ) {
+  
+              if (consumerSidebar) {
+  
+                  consumerSidebar.style.display =
+                      "block";
+  
+              }
+  
+          }
+  
+  
+          /* ====================================================
+             UNKNOWN ROLE
+             ==================================================== */
+  
+          else {
+  
+              console.warn(
+                  "Unknown role:",
+                  user.role
+              );
+  
+              if (publicSidebar) {
+  
+                  publicSidebar.style.display =
+                      "block";
+  
+              }
+  
+          }
+  
+      }
+  
+      catch (error) {
+  
+          console.error(
+              "Role detection failed:",
+              error
+          );
+  
+  
+          /*
+           * Navbar should still remain correct.
+           */
+  
+          if (publicNav) {
+              publicNav.style.display = "flex";
+          }
+  
+  
+          /*
+           * If role cannot be verified,
+           * don't expose protected sidebar.
+           */
+  
+          if (publicSidebar) {
+              publicSidebar.style.display = "block";
+          }
+  
+  
+          if (farmerSidebar) {
+              farmerSidebar.style.display = "none";
+          }
+  
+          if (wholesalerSidebar) {
+              wholesalerSidebar.style.display = "none";
+          }
+  
+          if (consumerSidebar) {
+              consumerSidebar.style.display = "none";
+          }
+  
+      }
+  
+  }
+  
+  
+  /* ============================================================
+     SIDEBAR TOGGLE
+     ============================================================ */
+  
+  function initializeSidebar() {
+  
+      const sidebar =
+          document.getElementById(
+              "sidebar"
+          );
+  
+      const mainArea =
+          document.getElementById(
+              "mainArea"
+          );
+  
+      const sidebarToggle =
+          document.getElementById(
+              "sidebarToggle"
+          );
+  
+  
+      if (
+          !sidebar ||
+          !sidebarToggle
+      ) {
+  
+          console.error(
+              "Sidebar elements not found."
+          );
+  
+          return;
+      }
+  
+  
+      /* ========================================================
+         TOGGLE
+         ======================================================== */
+  
+      sidebarToggle.addEventListener(
+          "click",
+          () => {
+  
+              if (
+                  window.innerWidth <= 768
+              ) {
+  
+                  sidebar.classList.toggle(
+                      "open"
+                  );
+  
+              }
+  
+              else {
+  
+                  sidebar.classList.toggle(
+                      "collapsed"
+                  );
+  
+  
+                  if (mainArea) {
+  
+                      mainArea.classList.toggle(
+                          "expanded"
+                      );
+  
+                  }
+  
+              }
+  
+          }
+      );
+  
+  
+      /* ========================================================
+         CLOSE MOBILE SIDEBAR
+         ======================================================== */
+  
+      document.addEventListener(
+          "click",
+          event => {
+  
+              if (
+                  window.innerWidth <= 768 &&
+                  sidebar.classList.contains("open") &&
+                  !sidebar.contains(event.target) &&
+                  !sidebarToggle.contains(event.target)
+              ) {
+  
+                  sidebar.classList.remove(
+                      "open"
+                  );
+  
+              }
+  
+          }
+      );
+  
+  }
+  
+  
+  /* ============================================================
+     SUBSCRIBE FORM
+     ============================================================ */
+  
+  function initializeSubscribe() {
+  
+      const form =
+          document.getElementById(
+              "subForm"
+          );
+  
+  
+      if (!form) {
+          return;
+      }
+  
+  
+      form.addEventListener(
+          "submit",
+          event => {
+  
+              event.preventDefault();
+  
+  
+              const input =
+                  document.getElementById(
+                      "subEmail"
+                  );
+  
+  
+              if (
+                  !input ||
+                  !input.checkValidity()
+              ) {
+  
+                  if (input) {
+                      input.reportValidity();
+                  }
+  
+                  return;
+              }
+  
+  
+              input.value = "";
+  
+  
+              alert(
+                  "Thanks! You have been subscribed to AgriCentre updates."
+              );
+  
+          }
+      );
+  
+  }
+  
+  
+  /* ============================================================
+     HOME DASHBOARD DATA
+     ============================================================ */
+  
+  async function loadHomeDashboard() {
+  
+      try {
+  
+          const response =
+              await fetch(
+                  API_BASE +
+                  "/api/home-dashboard"
+              );
+  
+  
+          if (!response.ok) {
+  
+              throw new Error(
+                  "Failed to load home dashboard."
+              );
+  
+          }
+  
+  
+          const data =
+              await response.json();
+  
+  
+          /* ====================================================
+             TODAY'S PRODUCE SOLD
+             ==================================================== */
+  
+          const harvestValue =
+              document.getElementById(
+                  "harvest-value"
+              );
+  
+          const harvestChange =
+              document.getElementById(
+                  "harvest-change"
+              );
+  
+  
+          if (harvestValue) {
+  
+              harvestValue.innerHTML =
+                  `${data.produce_sold_today} <span>MT</span>`;
+  
+          }
+  
+  
+          if (harvestChange) {
+  
+              harvestChange.innerHTML =
+                  `▲ ${data.produce_change}% vs yesterday`;
+  
+          }
+  
+  
+          /* ====================================================
+             FARMER SATISFACTION
+             ==================================================== */
+  
+          const efficiencyValue =
+              document.getElementById(
+                  "efficiency-value"
+              );
+  
+          const efficiencyChange =
+              document.getElementById(
+                  "efficiency-change"
+              );
+  
+  
+          if (efficiencyValue) {
+  
+              efficiencyValue.innerHTML =
+                  `${data.farmer_satisfaction}<span>%</span>`;
+  
+          }
+  
+  
+          if (efficiencyChange) {
+  
+              efficiencyChange.innerHTML =
+                  `▲ ${data.satisfaction_change}% this week`;
+  
+          }
+  
+  
+          /* ====================================================
+             QUALITY INDEX
+             ==================================================== */
+  
+          const qualityValue =
+              document.getElementById(
+                  "quality-value"
+              );
+  
+          const qualityChange =
+              document.getElementById(
+                  "quality-change"
+              );
+  
+  
+          if (qualityValue) {
+  
+              qualityValue.innerHTML =
+                  `${data.quality_index}<span>%</span>`;
+  
+          }
+  
+  
+          if (qualityChange) {
+  
+              qualityChange.innerHTML =
+                  `▲ ${data.quality_change}% this month`;
+  
+          }
+  
+  
+          /* ====================================================
+             DELIVERY HEALTH
+             ==================================================== */
+  
+          const marketplaceValue =
+              document.getElementById(
+                  "marketplace-value"
+              );
+  
+          const marketplaceChange =
+              document.getElementById(
+                  "marketplace-change"
+              );
+  
+  
+          if (marketplaceValue) {
+  
+              marketplaceValue.innerHTML =
+                  `${data.delivery_health}<span>%</span>`;
+  
+          }
+  
+  
+          if (marketplaceChange) {
+  
+              marketplaceChange.innerHTML =
+                  `▼ ${data.delayed_orders} orders delayed`;
+  
+          }
+  
+      }
+  
+      catch (error) {
+  
+          console.error(
+              "Home dashboard error:",
+              error
+          );
+  
+      }
+  
+  }
+  
+  
+  /* ============================================================
+     HERO CHART
+     ============================================================ */
+  
+  function initializeHeroChart() {
+  
+      const canvas =
+          document.getElementById(
+              "heroChart"
+          );
+  
+  
+      if (
+          !canvas ||
+          typeof Chart === "undefined"
+      ) {
+  
+          return;
+      }
+  
+  
+      const ctx =
+          canvas.getContext("2d");
+  
+  
+      new Chart(ctx, {
+  
+          type: "line",
+  
+          data: {
+  
+              labels: [
+                  "08:00",
+                  "10:00",
+                  "12:00",
+                  "14:00",
+                  "16:00",
+                  "18:00"
+              ],
+  
+              datasets: [
+  
+                  {
+  
+                      label:
+                          "Produce Sold (Quintals/hr)",
+  
+                      data: [
+                          1820,
+                          1950,
+                          2100,
+                          2080,
+                          2200,
+                          2150
+                      ],
+  
+                      borderColor:
+                          "#2f9e5c",
+  
+                      backgroundColor:
+                          "rgba(47,158,92,.15)",
+  
+                      pointBackgroundColor:
+                          "#2f9e5c",
+  
+                      pointRadius: 4,
+  
+                      borderWidth: 2.5,
+  
+                      tension: 0.4,
+  
+                      fill: true
+  
+                  }
+  
+              ]
+  
+          },
+  
+          options: {
+  
+              responsive: true,
+  
+              maintainAspectRatio: false,
+  
+              plugins: {
+  
+                  legend: {
+                      display: false
+                  }
+  
+              },
+  
+              scales: {
+  
+                  x: {
+  
+                      grid: {
+                          display: false
+                      },
+  
+                      ticks: {
+  
+                          color:
+                              "#94a3b8",
+  
+                          font: {
+                              size: 10
+                          }
+  
+                      }
+  
+                  },
+  
+                  y: {
+  
+                      grid: {
+  
+                          color:
+                              "rgba(255,255,255,.06)"
+  
+                      },
+  
+                      ticks: {
+  
+                          color:
+                              "#94a3b8",
+  
+                          font: {
+                              size: 10
+                          }
+  
+                      }
+  
+                  }
+  
+              }
+  
+          }
+  
+      });
+  
+  }
+
+/* ============================================================
+   NEWSLETTER SUBSCRIPTION
+   Public feature — no login required.
+   ============================================================ */
+
+function initializeSubscribe() {
+
+    const form = document.getElementById("subForm");
+
+    if (!form) {
+        return;
+    }
+
+    const input = document.getElementById("subEmail");
+    const button = form.querySelector(".sub-btn");
+
+    form.addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+        if (!input || !button) {
+            return;
+        }
+
+        const email = input.value.trim();
+
+        // Frontend email validation
+        const emailPattern =
+            /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/;
+
+
+        if (!emailPattern.test(email)) {
+
+            alert("Please enter a valid email address.");
+
+            input.focus();
+
+            return;
+        }
+
+
+        // Prevent multiple clicks while request is running
+        button.disabled = true;
+        button.textContent = "Subscribing...";
+
+
+        try {
+
+            const response = await fetch(
+                API_BASE + "/api/subscribe",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        email: email
+                    })
+                }
+            );
+
+
+            const data = await response.json();
+
+
+            if (response.ok && data.success) {
+
+                // Clear the input after successful submission
+                input.value = "";
+
+
+                alert(
+                    data.message ||
+                    "You are now subscribed to AgriCentre updates."
+                );
+
+
+            } else {
+
+                alert(
+                    data.message ||
+                    "Unable to complete your subscription. Please try again."
+                );
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Newsletter subscription error:",
+                error
+            );
+
+
+            alert(
+                "Unable to connect to the AgriCentre server. Please try again later."
+            );
+
+
+        } finally {
+
+            button.disabled = false;
+            button.textContent = "Subscribe";
+
+        }
+
+    });
+
+}
+
+
+  /* ============================================================
+     PAGE INITIALIZATION
+     ============================================================ */
+  
+  document.addEventListener(
+      "DOMContentLoaded",
+      async () => {
+  
+          /* Sidebar */
+  
+          initializeSidebar();
+  
+  
+          /* Subscribe */
+  
+          initializeSubscribe();
+  
+  
+          /* Chart */
+  
+          initializeHeroChart();
+  
+  
+          /* Homepage KPI data */
+  
+          loadHomeDashboard();
+  
+  
+          /* Navbar + role sidebar */
+  
+          await updateNavigation();
+  
+      }
+  );
+  
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders — AgriCentre</title>
+<style>
+:root{
+    --brand:#2f9e5c;--brand-dark:#1f7a44;--brand-light:#5cc98a;
+    --bg:#0d0e10;--bg2:#14161a;--bg3:#1c1f25;--surface:#22262e;
+    --border:#2e3340;--text:#e8eaf0;--muted:#8b909e;
+    --sidebar-w:258px;--nav-h:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+body.modal-open{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+button{cursor:pointer}
+
+/* NAVBAR */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);
+background:var(--bg2);display:flex;align-items:center;padding:0 20px;gap:12px;box-shadow:0 2px 12px #0005}
+.nav-toggle{background:none;border:0;color:#fff;font-size:20px;padding:6px 8px}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.logo{width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--brand);border-radius:8px;font-size:20px}
+.brand-text{display:flex;flex-direction:column}
+.brand-name{font:700 30px Rajdhani,Arial,sans-serif;line-height:1;color:#fff}
+.brand-nameX{color:var(--brand)}
+.brand-subtitle{font-size:10px;color:#ddd;letter-spacing:1px;text-transform:uppercase}
+.nav-links{margin-left:auto;display:flex;gap:5px}
+.nav-links a{color:#9aa7bb;padding:9px 11px;border-radius:7px;font-size:13px}
+.nav-links a:hover{color:#fff;background:#ffffff0f}
+.nav-right{display:flex;gap:7px;margin-left:8px}
+.nav-btn{width:38px;height:38px;border:0;border-radius:8px;background:var(--surface);color:#fff;position:relative}
+.nav-badge{position:absolute;top:-5px;right:-4px;background:var(--brand);font-size:9px;min-width:16px;height:16px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;padding-top:var(--nav-h)}
+.sidebar{width:var(--sidebar-w);background:var(--bg2);position:fixed;top:var(--nav-h);bottom:0;left:0;overflow-y:auto;z-index:900;transition:.22s}
+.sidebar.collapsed{width:62px}
+.sb-section{padding:6px 0}
+.sb-label{padding:6px 18px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#4a5a74}
+.sb-link{display:flex;align-items:center;gap:11px;padding:9px 18px;color:#7a90aa;font-size:13px;border-left:3px solid transparent;white-space:nowrap}
+.sb-link:hover{color:#fff;background:#2f9e5c1f}
+.sb-link.active{color:var(--brand-light);border-left-color:var(--brand);background:#2f9e5c26}
+.si{width:20px;text-align:center;flex-shrink:0}
+.sl{overflow:hidden}
+.sidebar.collapsed .sb-label,.sidebar.collapsed .sl{opacity:0;width:0}
+.main{width:calc(100% - var(--sidebar-w));min-height:calc(100vh - var(--nav-h));margin-left:var(--sidebar-w);display:flex;flex-direction:column;transition:.22s}
+.main.expanded{width:calc(100% - 62px);margin-left:62px}
+
+/* PAGE */
+.page-content{flex:1;padding:34px 48px 42px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:25px}
+.eyebrow{color:var(--brand-light);font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;margin-bottom:6px}
+.title{color:#fff;font:700 32px Rajdhani,Arial,sans-serif;line-height:1.1}
+.subtitle{color:var(--muted);font-size:13px;margin-top:7px}
+.head-tools{display:flex;gap:9px;align-items:center}
+.search{width:255px;padding:11px 13px;border:1px solid var(--border);border-radius:9px;background:var(--bg3);color:var(--text);outline:none;font-size:13px}
+.search:focus{border-color:var(--brand)}
+.refresh{height:40px;padding:0 14px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:#fff;font-size:12px;font-weight:750}
+.refresh:hover{border-color:var(--brand);background:#2f9e5c15}
+
+/* SUMMARY */
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.summary{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden}
+.summary:after{content:"";position:absolute;right:-22px;bottom:-35px;width:90px;height:90px;border-radius:50%;background:#2f9e5c12}
+.summary-label{color:#7f8b9e;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:800}
+.summary-value{color:#fff;font-size:25px;font-weight:850;margin-top:7px}
+.summary-note{color:#657082;font-size:10px;margin-top:3px}
+
+/* FILTERS */
+.filters{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.filter{border:1px solid var(--border);background:var(--bg3);color:#9da7b7;border-radius:20px;padding:7px 13px;font-size:11px;font-weight:750}
+.filter:hover,.filter.active{background:#2f9e5c18;border-color:#2f9e5c70;color:var(--brand-light)}
+
+/* ORDERS */
+.orders{display:grid;gap:12px}
+.order-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:.22s}
+.order-card:hover{border-color:#3d8f62;box-shadow:0 14px 35px #0003;transform:translateY(-2px)}
+.order-top{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 17px;border-bottom:1px solid #ffffff0a}
+.order-id{font-size:12px;font-weight:850;color:#fff}
+.order-date{font-size:10px;color:#697587;margin-top:4px}
+.status{padding:6px 10px;border-radius:20px;font-size:9px;font-weight:850;letter-spacing:.5px;text-transform:uppercase}
+.status.pending{color:#e9c36a;background:#e9c36a18;border:1px solid #e9c36a35}
+.status.confirmed,.status.accepted,.status.processing{color:#62d18c;background:#2f9e5c18;border:1px solid #2f9e5c40}
+.status.shipped,.status.in_transit{color:#72b8ff;background:#3d9cff15;border:1px solid #3d9cff35}
+.status.delivered,.status.completed{color:#76dfba;background:#40cfa015;border:1px solid #40cfa035}
+.status.cancelled,.status.rejected{color:#ff7f8c;background:#ff647418;border:1px solid #ff647435}
+.order-body{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(120px,.65fr));gap:18px;padding:17px}
+.product-name{font-size:16px;font-weight:850;color:#fff}
+.product-sub{font-size:11px;color:var(--muted);margin-top:5px}
+.detail-label{display:block;color:#697587;font-size:9px;text-transform:uppercase;letter-spacing:.7px;font-weight:800;margin-bottom:5px}
+.detail-value{color:#dce1e8;font-size:12px;font-weight:700}
+.total{color:var(--brand-light);font-size:15px;font-weight:850}
+.order-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 17px;background:#17191e;border-top:1px solid #ffffff08}
+.farmer{font-size:11px;color:#8d98a8}
+.actions{display:flex;gap:8px}
+.btn{border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:#e8eaf0;padding:9px 12px;font-size:11px;font-weight:800}
+.btn:hover{border-color:var(--brand)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{background:var(--brand-dark)}
+.empty,.loading{background:var(--surface);border:1px solid var(--border);border-radius:14px;text-align:center;padding:70px 20px}
+.empty-icon{font-size:42px;margin-bottom:10px}
+.empty h3{font-size:18px;color:#fff;margin-bottom:7px}
+.empty p,.loading{font-size:13px;color:var(--muted)}
+.empty .browse{display:inline-block;margin-top:15px;background:var(--brand);color:#fff;border-radius:8px;padding:10px 15px;font-size:12px;font-weight:800}
+
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:22px;background:#000b;backdrop-filter:blur(7px)}
+.modal.show{display:flex;animation:fade .18s ease}
+.modal-box{position:relative;width:min(760px,100%);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#252a32,#1b1e24);border:1px solid #383f4b;border-radius:18px;box-shadow:0 30px 100px #000b;padding:25px}
+.modal-close{position:absolute;right:15px;top:15px;width:36px;height:36px;border-radius:50%;border:1px solid #3b424e;background:#15181d;color:#dce2ea;font-size:23px;z-index:2}
+.modal-close:hover{background:var(--brand);transform:rotate(90deg)}
+.modal-title{font-size:24px;color:#fff;font-weight:850;padding-right:45px}
+.modal-subtitle{color:#7f8999;font-size:11px;margin-top:5px}
+.modal-status{margin-top:16px}
+.modal-section{margin-top:20px}
+.modal-section-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--brand-light);font-weight:850;margin-bottom:9px}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.modal-item{background:#15181d;border:1px solid #2c313b;border-radius:9px;padding:12px}
+.modal-item span{display:block;color:#6f7a8b;font-size:9px;text-transform:uppercase;font-weight:800;letter-spacing:.6px;margin-bottom:5px}
+.modal-item strong{color:#e6eaf0;font-size:12px}
+.modal-total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:14px;border-radius:10px;background:#2f9e5c12;border:1px solid #2f9e5c35}
+.modal-total span{color:#8c98a8;font-size:11px}.modal-total strong{color:var(--brand-light);font-size:18px}
+.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:22px;padding-top:17px;border-top:1px solid #ffffff0d}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* FOOTER */
+footer{background:var(--bg2);color:#8fa0b8;padding:38px 40px 0}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:36px;padding-bottom:30px;border-bottom:1px solid #ffffff14}
+.ft-brand{color:#fff;font:700 1.4rem Rajdhani,Arial,sans-serif;margin-bottom:9px}.ft-brand span{color:var(--brand)}
+.ft-desc{max-width:330px;font-size:13px;line-height:1.7}.ft-col h4{color:#fff;font-size:12px;margin-bottom:13px;text-transform:uppercase}
+.ft-col a{display:block;color:#8fa0b8;font-size:13px;margin-bottom:8px}.ft-col a:hover{color:var(--brand-light)}
+.sub-box{display:flex;flex-direction:column;gap:9px}.sub-box p{font-size:12px}.sub-form{display:flex;gap:7px}
+.sub-input{flex:1;min-width:0;padding:9px 12px;border:1px solid #ffffff1f;border-radius:8px;background:#ffffff0f;color:#fff;outline:none}
+.sub-btn{padding:9px 16px;border:0;border-radius:8px;background:var(--brand);color:#fff;font-weight:700}
+.ft-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 0;font-size:11px}.ft-links{display:flex;gap:14px}
+
+/* TOAST */
+.toast{position:fixed;right:24px;bottom:24px;z-index:4000;display:none;padding:12px 16px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:#fff;font-size:13px;box-shadow:0 8px 30px #0008}
+
+/* RESPONSIVE */
+@media(max-width:1050px){.summary-grid{grid-template-columns:repeat(2,1fr)}.order-body{grid-template-columns:1fr 1fr}.ft-grid{grid-template-columns:1.5fr 1fr 1fr}.ft-grid>:last-child{grid-column:1/-1}}
+@media(max-width:768px){
+.sidebar{width:var(--sidebar-w);transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+.main,.main.expanded{width:100%;margin-left:0}.nav-links{display:none}.page-content{padding:28px 20px 34px}
+.page-head{display:block}.head-tools{margin-top:15px}.search{width:100%}.refresh{width:100%}.summary-grid{grid-template-columns:1fr 1fr}
+.order-body{grid-template-columns:1fr 1fr}.order-bottom{align-items:flex-start;flex-direction:column}.actions{width:100%}.actions .btn{flex:1}
+.ft-grid{grid-template-columns:1fr;gap:28px}.ft-grid>:last-child{grid-column:auto}footer{padding:35px 20px 0}
+}
+@media(max-width:480px){.summary-grid{grid-template-columns:1fr}.order-body{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr}.modal-actions{flex-direction:column-reverse}.modal-actions .btn{width:100%}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+    <button class="nav-toggle" id="sidebarToggle">☰</button>
+    <a href="index.html" class="nav-brand">
+        <div class="logo">🚜</div>
+        <div class="brand-text">
+            <span class="brand-name">Agri<span class="brand-nameX">Centre</span></span>
+            <span class="brand-subtitle">Smart India Hackathon 2026</span>
+        </div>
+    </a>
+    <div class="nav-links">
+        <a href="index.html">Home</a><a href="about.html">About</a><a href="features.html">Features</a>
+        <a href="dashboard.html">Dashboard</a><a href="team.html">Team</a><a href="contact.html">Contact</a>
+        <a href="profile.html">Profile</a><a href="#" onclick="logout();return false;">Logout</a>
+    </div>
+    <div class="nav-right">
+        <button class="nav-btn" onclick="location.href='alerts.html'">🔔<span class="nav-badge">3</span></button>
+        <button class="nav-btn" onclick="location.href='ai-assistant.html'">🤖</button>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main" id="mainArea">
+        <section class="page-content">
+            <div class="page-head">
+                <div>
+                    <div class="eyebrow" id="eyebrow">Orders &amp; Delivery</div>
+                    <h1 class="title" id="pageTitle">My Orders</h1>
+                    <p class="subtitle" id="pageSubtitle">Track your purchases, order status and delivery progress.</p>
+                </div>
+                <div class="head-tools">
+                    <input class="search" id="search" type="search" placeholder="Search orders...">
+                    <button class="refresh" id="refreshBtn" type="button">↻ Refresh</button>
+                </div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary"><div class="summary-label">Total Orders</div><div class="summary-value" id="statTotal">0</div><div class="summary-note">All your orders</div></div>
+                <div class="summary"><div class="summary-label">Pending</div><div class="summary-value" id="statPending">0</div><div class="summary-note">Awaiting processing</div></div>
+                <div class="summary"><div class="summary-label">In Progress</div><div class="summary-value" id="statProgress">0</div><div class="summary-note">Confirmed / shipped</div></div>
+                <div class="summary"><div class="summary-label">Delivered</div><div class="summary-value" id="statDelivered">0</div><div class="summary-note">Completed orders</div></div>
+            </div>
+
+            <div class="filters" id="filters">
+                <button class="filter active" data-filter="ALL">All Orders</button>
+                <button class="filter" data-filter="PENDING">Pending</button>
+                <button class="filter" data-filter="CONFIRMED">Confirmed</button>
+                <button class="filter" data-filter="PROCESSING">Processing</button>
+                <button class="filter" data-filter="SHIPPED">Shipped</button>
+                <button class="filter" data-filter="DELIVERED">Delivered</button>
+            </div>
+
+            <div id="content">
+                <div class="loading">Loading your orders...</div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="ft-grid">
+                <div>
+                    <div class="ft-brand">Agri<span>Centre</span></div>
+                    <p class="ft-desc">A Direct-to-Market platform connecting farmers &amp; FPOs with consumers and bulk buyers — eliminating middlemen, ensuring fair prices and fresher produce. Smart India Hackathon 2026 · Problem Statement ID 26033.</p>
+                </div>
+                <div class="ft-col"><h4>Platform</h4><a href="dashboard.html">Dashboard</a><a href="marketplace.html">Marketplace</a><a href="buyer-orders.html">Orders</a><a href="quality.html">Quality &amp; Certification</a></div>
+                <div class="ft-col"><h4>AI &amp; Tools</h4><a href="dashboard.html#aiInsights">AI Market Insights</a><a href="ai-assistant.html">AI Assistant</a><a href="reports.html">Reports Center</a></div>
+                <div class="ft-col"><h4>Stay Updated</h4><div class="sub-box"><p>Get alerts and platform updates via email.</p><form class="sub-form" id="subForm"><input class="sub-input" id="subEmail" type="email" placeholder="Your email address" required><button class="sub-btn">Subscribe</button></form></div></div>
+            </div>
+            <div class="ft-bottom"><span>© 2026 AgriCentre · Smart India Hackathon 2026 · Ministry of Consumer Affairs, Food &amp; Public Distribution</span><div class="ft-links"><a href="privacy.html">Privacy &amp; Terms</a><a href="contact.html">Contact</a></div></div>
+        </footer>
+    </main>
+</div>
+
+<div class="modal" id="orderModal" onclick="modalBackground(event)">
+    <div class="modal-box">
+        <button class="modal-close" type="button" onclick="closeOrderModal()">×</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = "http://127.0.0.1:5000/api";
+
+function getToken(){ return localStorage.getItem("token"); }
+
+function authHeaders(){
+    return {"Authorization":`Bearer ${getToken()}`};
+}
+
+let user = null;
+let orders = [];
+let activeFilter = "ALL";
+
+function esc(value){
+    return String(value ?? "").replace(/[&<>"']/g,c=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
+}
+
+function isBulk(){
+    const role = String(user?.role || "VENDOR").toUpperCase();
+    return ["WHOLESALER","BULK_BUYER","BULK BUYER"].includes(role);
+}
+
+function toast(message){
+    const el=document.getElementById("toast");
+    el.textContent=message;el.style.display="block";
+    clearTimeout(window.toastTimer);
+    window.toastTimer=setTimeout(()=>el.style.display="none",2400);
+}
+
+function logout(){
+    fetch(`${API}/auth/logout`,{method:"POST",credentials:"include"}).finally(()=>location.href="login.html");
+}
+
+function renderSidebar(){
+    const vendor = `
+    <div class="sb-section"><div class="sb-label">Main</div>
+        <a class="sb-link" href="dashboard.html"><span class="si">📊</span><span class="sl">Dashboard</span></a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Shopping</div>
+        <a class="sb-link" href="marketplace.html"><span class="si">🛒</span><span class="sl">Marketplace</span></a>
+        <a class="sb-link" href="cart.html"><span class="si">🛍️</span><span class="sl">My Cart</span></a>
+        <a class="sb-link" href="favorites.html"><span class="si">❤️</span><span class="sl">Favorites</span></a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Orders &amp; Delivery</div>
+        <a class="sb-link active" href="buyer-orders.html"><span class="si">📦</span><span class="sl">My Orders</span></a>
+        <a class="sb-link" href="buyer-logistics.html"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Communication</div>
+        <a class="sb-link" href="meeting.html"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a>
+    </div>
+    <div class="sb-section"><div class="sb-label">AI &amp; Insights</div>
+        <a class="sb-link" href="dashboard.html#aiInsights"><span class="si">🤖</span><span class="sl">AI Insights</span></a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Account</div>
+        <a class="sb-link" href="profile.html"><span class="si">👤</span><span class="sl">Profile</span></a>
+        <a class="sb-link" href="alerts.html"><span class="si">🔔</span><span class="sl">Notifications</span></a>
+        <a class="sb-link" href="#" onclick="logout();return false;"><span class="si">🚪</span><span class="sl">Logout</span></a>
+    </div>`;
+
+    const bulk = `
+    <div class="sb-section"><div class="sb-label">Main</div>
+        <a class="sb-link" href="dashboard.html"><span class="si">📊</span><span class="sl">Dashboard</span></a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Bulk Buying</div>
+        <a class="sb-link" href="marketplace.html"><span class="si">🛒</span><span class="sl">Marketplace</span></a>
+        <a class="sb-link" href="wholesaler-offers.html"><span class="si">🤝</span><span class="sl">My Offers</span></a>
+        <a class="sb-link" href="cart.html"><span class="si">🛍️</span><span class="sl">Bulk Cart</span></a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Orders &amp; Delivery</div>
+        <a class="sb-link active" href="buyer-orders.html"><span class="si">📦</span><span class="sl">Bulk Orders</span></a>
+        <a class="sb-link" href="buyer-logistics.html"><span class="si">🚚</span><span class="sl">Delivery Tracking</span></a>
+        <a class="sb-link" href="payments.html"><span class="si">💳</span><span class="sl">Payments &amp; Invoices</span></a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Communication</div>
+        <a class="sb-link" href="meeting.html"><span class="si">🎥</span><span class="sl">Meeting Centre</span></a>
+    </div>
+    <div class="sb-section"><div class="sb-label">AI &amp; Insights</div>
+        <a class="sb-link" href="dashboard.html#aiInsights"><span class="si">🤖</span><span class="sl">AI Insights</span></a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Account</div>
+        <a class="sb-link" href="profile.html"><span class="si">🏢</span><span class="sl">Business Profile</span></a>
+        <a class="sb-link" href="alerts.html"><span class="si">🔔</span><span class="sl">Notifications</span></a>
+        <a class="sb-link" href="#" onclick="logout();return false;"><span class="si">🚪</span><span class="sl">Logout</span></a>
+    </div>`;
+
+    document.getElementById("sidebar").innerHTML=isBulk()?bulk:vendor;
+    document.getElementById("pageTitle").textContent=isBulk()?"Bulk Orders":"My Orders";
+    document.getElementById("pageSubtitle").textContent=isBulk()
+        ?"Orders created from your bulk purchases and accepted offers."
+        :"Track your purchases, order status and delivery progress.";
+}
+
+async function getUser(){
+    try{
+        const r=await fetch(`${API}/auth/profile`,{headers:authHeaders()});
+        if(r.status===401){logout();return;}
+        if(r.ok){
+            const data=await r.json();
+            user=data.user||data;
+            localStorage.setItem("user",JSON.stringify(user));
+        }
+    }catch(e){console.warn("Profile request failed:",e)}
+    if(!user){
+        try{user=JSON.parse(localStorage.getItem("user")||"null")}catch(e){user=null}
+    }
+    if(!user){user={role:"VENDOR",name:"Buyer"}}
+    renderSidebar();
+}
+
+function normalizeOrders(data){
+    const raw=data.orders||data.items||data.results||[];
+    return Array.isArray(raw)?raw:[];
+}
+
+async function loadOrders(){
+    const container=document.getElementById("content");
+    container.innerHTML='<div class="loading">Loading your orders...</div>';
+
+    try{
+        const r=await fetch(`${API}/orders/buyer`,{headers:authHeaders()});
+        const data=await r.json().catch(()=>({}));
+
+        if(r.status===401){logout();return;}
+        if(!r.ok) throw new Error(data.message||data.error||"Could not load orders");
+
+        orders=normalizeOrders(data);
+        updateStats();
+        renderOrders();
+    }catch(e){
+        console.error("Buyer orders loading error:",e);
+        container.innerHTML=`
+            <div class="empty">
+                <div class="empty-icon">📦</div>
+                <h3>Orders could not be loaded</h3>
+                <p>${esc(e.message||"Please try again.")}</p>
+            </div>`;
+    }
+}
+
+function statusOf(order){
+    return String(order.status||order.order_status||"PENDING").trim().toUpperCase().replace(/ /g,"_");
+}
+
+function statusClass(status){ return status.toLowerCase(); }
+
+function updateStats(){
+    document.getElementById("statTotal").textContent=orders.length;
+    document.getElementById("statPending").textContent=orders.filter(o=>statusOf(o)==="PENDING").length;
+    document.getElementById("statProgress").textContent=orders.filter(o=>["CONFIRMED","ACCEPTED","PROCESSING","SHIPPED","IN_TRANSIT"].includes(statusOf(o))).length;
+    document.getElementById("statDelivered").textContent=orders.filter(o=>["DELIVERED","COMPLETED"].includes(statusOf(o))).length;
+}
+
+function dateValue(order){
+    return order.created_at||order.order_date||order.createdAt||order.updated_at||"";
+}
+
+function formatDate(value){
+    if(!value)return "—";
+    const d=new Date(value);
+    if(Number.isNaN(d.getTime()))return esc(value);
+    return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+}
+
+function numberValue(...values){
+    for(const v of values){
+        const n=Number(v);
+        if(Number.isFinite(n))return n;
+    }
+    return 0;
+}
+
+function renderOrders(){
+    const q=document.getElementById("search").value.toLowerCase().trim();
+
+    const filtered=orders.filter(order=>{
+        const status=statusOf(order);
+        const filterMatch=activeFilter==="ALL"
+            || status===activeFilter
+            || (activeFilter==="CONFIRMED" && status==="ACCEPTED")
+            || (activeFilter==="SHIPPED" && status==="IN_TRANSIT");
+
+        const text=[
+            order.order_id,order.id,order.produce_name,order.product_name,
+            order.farmer_name,order.seller_name,status
+        ].join(" ").toLowerCase();
+
+        return filterMatch && text.includes(q);
+    });
+
+    const container=document.getElementById("content");
+
+    if(!filtered.length){
+        container.innerHTML=`
+        <div class="empty">
+            <div class="empty-icon">${q||activeFilter!=="ALL"?"🔎":"📦"}</div>
+            <h3>${q||activeFilter!=="ALL"?"No matching orders":"No orders yet"}</h3>
+            <p>${q||activeFilter!=="ALL"?"Try another search or status filter.":"Your accepted purchases will appear here."}</p>
+            <a class="browse" href="marketplace.html">Browse Marketplace</a>
+        </div>`;
+        return;
+    }
+
+    container.innerHTML=`<div class="orders">${filtered.map(renderOrderCard).join("")}</div>`;
+}
+
+function renderOrderCard(order){
+    const id=order.order_id||order.id||order._id||"—";
+    const product=order.produce_name||order.product_name||order.crop_name||"Produce";
+    const farmer=order.farmer_name||order.seller_name||"Farmer";
+    const quantity=numberValue(order.quantity,order.order_quantity);
+    const unit=order.unit||"KG";
+    const price=numberValue(order.agreed_price,order.agreed_price_per_unit,order.price_per_unit,order.price);
+    const total=numberValue(order.total_amount,order.total,order.order_total,price*quantity);
+    const status=statusOf(order);
+
+    return `
+    <article class="order-card">
+        <div class="order-top">
+            <div><div class="order-id">#${esc(id)}</div><div class="order-date">Placed ${formatDate(dateValue(order))}</div></div>
+            <span class="status ${statusClass(status)}">${esc(status.replace(/_/g," "))}</span>
+        </div>
+        <div class="order-body">
+            <div>
+                <div class="product-name">${esc(product)}</div>
+                <div class="product-sub">Farmer: ${esc(farmer)}</div>
+            </div>
+            <div><span class="detail-label">Quantity</span><span class="detail-value">${quantity.toLocaleString("en-IN")} ${esc(unit)}</span></div>
+            <div><span class="detail-label">Price</span><span class="detail-value">₹${price.toLocaleString("en-IN")} / ${esc(unit)}</span></div>
+            <div><span class="detail-label">Order Total</span><span class="total">₹${total.toLocaleString("en-IN")}</span></div>
+        </div>
+        <div class="order-bottom">
+            <div class="farmer">📍 ${esc(order.delivery_location||order.location||"Delivery details pending")}</div>
+            <div class="actions">
+                <button class="btn" type="button" onclick="viewOrder('${esc(id)}')">View Details</button>
+                <button class="btn primary" type="button" onclick="trackOrder('${esc(id)}')">🚚 Track Delivery</button>
+            </div>
+        </div>
+    </article>`;
+}
+
+function viewOrder(id){
+    const order=orders.find(o=>String(o.order_id||o.id||o._id)===String(id));
+    if(!order){toast("Order details not found.");return;}
+
+    const orderId=order.order_id||order.id||order._id||"—";
+    const product=order.produce_name||order.product_name||order.crop_name||"Produce";
+    const farmer=order.farmer_name||order.seller_name||"Farmer";
+    const quantity=numberValue(order.quantity,order.order_quantity);
+    const unit=order.unit||"KG";
+    const price=numberValue(order.agreed_price,order.agreed_price_per_unit,order.price_per_unit,order.price);
+    const total=numberValue(order.total_amount,order.total,order.order_total,price*quantity);
+    const status=statusOf(order);
+
+    document.getElementById("modalContent").innerHTML=`
+        <div class="modal-title">Order #${esc(orderId)}</div>
+        <div class="modal-subtitle">${esc(product)} · Placed ${formatDate(dateValue(order))}</div>
+        <div class="modal-status"><span class="status ${statusClass(status)}">${esc(status.replace(/_/g," "))}</span></div>
+
+        <div class="modal-section">
+            <div class="modal-section-title">Order Information</div>
+            <div class="modal-grid">
+                <div class="modal-item"><span>Produce</span><strong>${esc(product)}</strong></div>
+                <div class="modal-item"><span>Farmer</span><strong>${esc(farmer)}</strong></div>
+                <div class="modal-item"><span>Quantity</span><strong>${quantity.toLocaleString("en-IN")} ${esc(unit)}</strong></div>
+                <div class="modal-item"><span>Agreed Price</span><strong>₹${price.toLocaleString("en-IN")} / ${esc(unit)}</strong></div>
+                <div class="modal-item"><span>Order Date</span><strong>${formatDate(dateValue(order))}</strong></div>
+                <div class="modal-item"><span>Delivery Status</span><strong>${esc(order.delivery_status||status.replace(/_/g," "))}</strong></div>
+            </div>
+            <div class="modal-total"><span>Total Order Value</span><strong>₹${total.toLocaleString("en-IN")}</strong></div>
+        </div>
+
+        <div class="modal-section">
+            <div class="modal-section-title">Delivery</div>
+            <div class="modal-grid">
+                <div class="modal-item"><span>Address</span><strong>${esc(order.delivery_address||order.delivery_location||order.location||"Not assigned yet")}</strong></div>
+                <div class="modal-item"><span>Tracking ID</span><strong>${esc(order.tracking_id||order.delivery_id||"Not assigned yet")}</strong></div>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn" type="button" onclick="closeOrderModal()">Close</button>
+            <button class="btn primary" type="button" onclick="closeOrderModal();trackOrder('${esc(orderId)}')">🚚 Track Delivery</button>
+        </div>`;
+    document.getElementById("orderModal").classList.add("show");
+    document.body.classList.add("modal-open");
+}
+
+function closeOrderModal(){
+    document.getElementById("orderModal").classList.remove("show");
+    document.body.classList.remove("modal-open");
+}
+
+function modalBackground(e){
+    if(e.target.id==="orderModal")closeOrderModal();
+}
+
+function trackOrder(id){
+    location.href=`buyer-logistics.html?order=${encodeURIComponent(id)}`;
+}
+
+document.getElementById("filters").addEventListener("click",e=>{
+    const btn=e.target.closest(".filter");
+    if(!btn)return;
+    document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    activeFilter=btn.dataset.filter;
+    renderOrders();
+});
+
+document.getElementById("search").addEventListener("input",renderOrders);
+document.getElementById("refreshBtn").addEventListener("click",loadOrders);
+
+document.getElementById("sidebarToggle").addEventListener("click",()=>{
+    const sidebar=document.getElementById("sidebar"),main=document.getElementById("mainArea");
+    if(window.innerWidth<=768)sidebar.classList.toggle("open");
+    else{sidebar.classList.toggle("collapsed");main.classList.toggle("expanded")}
+});
+
+document.getElementById("subForm").addEventListener("submit",e=>{
+    e.preventDefault();toast("Thanks! You are subscribed.");e.target.reset();
+});
+
+document.addEventListener("keydown",e=>{
+    if(e.key==="Escape")closeOrderModal();
+});
+
+async function init(){
+    await getUser();
+    await loadOrders();
+}
+init();
+</script>
+</body>
+</html>

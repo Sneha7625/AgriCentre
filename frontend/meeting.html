@@ -1,0 +1,5658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meeting Centre | AgriCentre</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        /* ============================================================
+           BASE / VARIABLES
+        ============================================================ */
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0d0e10;
+            --bg2: #14161a;
+            --bg3: #1c1f25;
+
+            --brand: #2f9e5c;
+            --brand-dark: #1f7a44;
+            --brand-light: #5cc98a;
+
+            --text: #e8eaf0;
+            --muted: #8b909e;
+            --white: #ffffff;
+
+            --border: #2e3340;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+
+            --sidebar-w: 258px;
+            --nav-h: 64px;
+
+            --radius: 10px;
+            --radius-lg: 16px;
+
+            --shadow:
+                0 1px 3px rgba(0, 0, 0, .08),
+                0 4px 16px rgba(0, 0, 0, .06);
+
+            --tr: .22s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Inter", Arial, Helvetica, sans-serif;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+        }
+
+
+        /* ============================================================
+           NAVBAR
+        ============================================================ */
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: var(--nav-h);
+
+            z-index: 2000;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 20px;
+            gap: 12px;
+
+            background: var(--bg2);
+
+            border-bottom: 1px solid var(--border);
+
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .3);
+        }
+
+        .nav-toggle {
+            flex-shrink: 0;
+
+            border: 0;
+            background: transparent;
+
+            color: var(--white);
+
+            font-size: 20px;
+
+            padding: 6px 8px;
+
+            border-radius: 6px;
+
+            transition: background var(--tr);
+        }
+
+        .nav-toggle:hover {
+            background: rgba(255, 255, 255, .1);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            text-decoration: none;
+
+            font-family: "Rajdhani", sans-serif;
+
+            color: var(--white);
+        }
+
+        .nav-brand .logo {
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--brand);
+
+            border-radius: 8px;
+
+            font-size: 17px;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .brand-name {
+            font-size: 1.45rem;
+            font-weight: 700;
+        }
+
+        .brand-name span {
+            color: var(--brand);
+        }
+
+        .brand-subtitle {
+            margin-top: 4px;
+
+            color: var(--muted);
+
+            font-family: "Inter", sans-serif;
+            font-size: 8px;
+            letter-spacing: .2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+
+            gap: 2px;
+
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+
+            color: #9aaac4;
+
+            font-size: 13px;
+            font-weight: 500;
+
+            padding: 6px 11px;
+
+            border-radius: 6px;
+
+            transition: all var(--tr);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--white);
+            background: rgba(47, 158, 92, .12);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-btn {
+            position: relative;
+
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 0;
+            border-radius: 8px;
+
+            background: transparent;
+
+            color: var(--white);
+
+            font-size: 16px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .nav-badge {
+            position: absolute;
+
+            top: 1px;
+            right: 0;
+
+            min-width: 15px;
+            height: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 4px;
+
+            border-radius: 20px;
+
+            background: var(--danger);
+
+            color: white;
+
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+
+        /* ============================================================
+           SIDEBAR
+        ============================================================ */
+
+        .sidebar {
+            position: fixed;
+
+            left: 0;
+            top: var(--nav-h);
+            bottom: 0;
+
+            width: var(--sidebar-w);
+
+            padding: 20px 14px;
+
+            overflow-y: auto;
+
+            background: var(--bg2);
+
+            border-right: 1px solid var(--border);
+
+            z-index: 1500;
+
+            transition:
+                width var(--tr),
+                transform var(--tr);
+        }
+
+        .sidebar.collapsed {
+            width: 76px;
+        }
+
+        .sb-section {
+            margin-bottom: 24px;
+        }
+
+        .sb-label {
+            padding: 0 10px 8px;
+
+            color: #626b79;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: .9px;
+        }
+
+        .sb-link {
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+
+            min-height: 39px;
+
+            margin-bottom: 3px;
+            padding: 8px 10px;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            color: #9aaac4;
+
+            font-size: 12px;
+            font-weight: 500;
+
+            transition: all var(--tr);
+        }
+
+        .sb-link:hover {
+            color: var(--white);
+            background: rgba(255, 255, 255, .05);
+        }
+
+        .sb-link.active {
+            color: var(--brand-light);
+            background: rgba(47, 158, 92, .12);
+        }
+
+        .si {
+            width: 20px;
+
+            flex-shrink: 0;
+
+            text-align: center;
+
+            font-size: 15px;
+        }
+
+        .sl {
+            white-space: nowrap;
+        }
+
+        .sidebar.collapsed .sl,
+        .sidebar.collapsed .sb-label {
+            display: none;
+        }
+
+        .sidebar.collapsed .sb-link {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+
+        /* ============================================================
+           MAIN
+        ============================================================ */
+
+        .main {
+            min-height: 100vh;
+
+            margin-left: var(--sidebar-w);
+
+            padding:
+                calc(var(--nav-h) + 34px)
+                34px
+                50px;
+
+            transition: margin-left var(--tr);
+        }
+
+        .main.expanded {
+            margin-left: 76px;
+        }
+
+        .page-header {
+            max-width: 1180px;
+            margin: 0 auto 24px;
+        }
+
+        .page-eyebrow {
+            margin-bottom: 7px;
+
+            color: var(--brand-light);
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .page-title {
+            color: var(--white);
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 34px;
+            font-weight: 700;
+
+            line-height: 1.05;
+        }
+
+        .page-sub {
+            max-width: 720px;
+
+            margin-top: 9px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+
+        /* ============================================================
+           MEETING MODE SELECTOR
+        ============================================================ */
+
+        .meeting-shell {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .mode-grid {
+            display: grid;
+
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 22px;
+        }
+
+        .mode-card {
+            position: relative;
+
+            padding: 22px;
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius-lg);
+
+            background: var(--bg2);
+
+            cursor: pointer;
+
+            transition:
+                transform var(--tr),
+                border-color var(--tr),
+                background var(--tr),
+                box-shadow var(--tr);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-2px);
+
+            border-color: #3b4654;
+
+            background: #171a1f;
+        }
+
+        .mode-card.active {
+            border-color: var(--brand);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(47, 158, 92, .13),
+                    rgba(47, 158, 92, .035)
+                );
+
+            box-shadow:
+                0 0 0 1px rgba(47, 158, 92, .08),
+                0 12px 35px rgba(0, 0, 0, .18);
+        }
+
+        .mode-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .mode-icon {
+            width: 46px;
+            height: 46px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background: rgba(47, 158, 92, .12);
+
+            font-size: 22px;
+        }
+
+        .mode-card h2 {
+            color: var(--white);
+
+            font-size: 16px;
+            font-weight: 700;
+
+            margin-bottom: 5px;
+        }
+
+        .mode-card p {
+            color: var(--muted);
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .mode-check {
+            position: absolute;
+
+            top: 17px;
+            right: 17px;
+
+            width: 20px;
+            height: 20px;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: var(--brand);
+
+            color: white;
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .mode-card.active .mode-check {
+            display: flex;
+        }
+
+
+        /* ============================================================
+           FORM PANEL
+        ============================================================ */
+
+        .panel {
+            overflow: hidden;
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius-lg);
+
+            background: var(--bg2);
+
+            box-shadow: var(--shadow);
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 22px 24px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-head-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .panel-head-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: rgba(47, 158, 92, .12);
+
+            font-size: 18px;
+        }
+
+        .panel-title {
+            color: var(--white);
+
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .panel-desc {
+            margin-top: 3px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+        .secure-note {
+            color: #778291;
+
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .form-body {
+            padding: 24px;
+        }
+
+        .step-row {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            margin-bottom: 22px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid var(--border);
+
+            border-radius: 50%;
+
+            font-size: 10px;
+        }
+
+        .step.active {
+            color: var(--brand-light);
+        }
+
+        .step.active .step-number {
+            border-color: var(--brand);
+            background: rgba(47, 158, 92, .12);
+            color: var(--brand-light);
+        }
+
+        .step-line {
+            width: 30px;
+            height: 1px;
+
+            background: var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+        .field {
+            min-width: 0;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field-label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #cfd5dd;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .required {
+            color: var(--brand-light);
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+
+            left: 12px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #687383;
+
+            font-size: 14px;
+
+            pointer-events: none;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+
+            border: 1px solid var(--border);
+
+            border-radius: 8px;
+
+            outline: none;
+
+            background: var(--bg3);
+
+            color: var(--white);
+
+            font-size: 12px;
+
+            transition:
+                border-color var(--tr),
+                box-shadow var(--tr);
+        }
+
+        .field input,
+        .field select {
+            height: 42px;
+
+            padding: 0 12px;
+        }
+
+        .field input.has-icon {
+            padding-left: 36px;
+        }
+
+        .field textarea {
+            min-height: 90px;
+
+            padding: 12px;
+
+            resize: vertical;
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: #5e6877;
+        }
+
+        .field select {
+            appearance: auto;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: var(--brand);
+
+            box-shadow:
+                0 0 0 3px rgba(47, 158, 92, .09);
+        }
+
+        .field-hint {
+            margin-top: 6px;
+
+            color: #687383;
+
+            font-size: 10px;
+            line-height: 1.45;
+        }
+
+
+        /* ============================================================
+           PARTICIPANT SEARCH / SELECTION
+        ============================================================ */
+
+        .participant-box {
+            padding: 14px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            background: #111419;
+        }
+
+        .participant-search {
+            display: flex;
+            gap: 9px;
+        }
+
+        .participant-search input {
+            flex: 1;
+
+            height: 42px;
+
+            padding: 0 12px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 8px;
+
+            outline: none;
+
+            background: var(--bg3);
+
+            color: var(--white);
+
+            font-size: 12px;
+        }
+
+        .participant-search input:focus {
+            border-color: var(--brand);
+        }
+
+        .search-btn {
+            min-width: 90px;
+
+            border: 1px solid var(--brand);
+
+            border-radius: 8px;
+
+            background: rgba(47, 158, 92, .1);
+
+            color: var(--brand-light);
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .search-btn:hover {
+            background: rgba(47, 158, 92, .18);
+        }
+
+        .mock-results {
+            display: none;
+
+            margin-top: 10px;
+
+            border-top: 1px solid var(--border);
+
+            padding-top: 10px;
+        }
+
+        .mock-results.show {
+            display: grid;
+            gap: 7px;
+        }
+
+        .result-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 12px;
+
+            padding: 10px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 8px;
+
+            background: var(--bg2);
+
+            cursor: pointer;
+
+            transition: border-color var(--tr);
+        }
+
+        .result-card:hover {
+            border-color: var(--brand);
+        }
+
+        .result-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            min-width: 0;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: rgba(47, 158, 92, .12);
+
+            color: var(--brand-light);
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .result-name {
+            color: var(--white);
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .result-meta {
+            margin-top: 2px;
+
+            color: var(--muted);
+
+            font-size: 9px;
+        }
+
+        .result-role {
+            flex-shrink: 0;
+
+            padding: 4px 7px;
+
+            border-radius: 5px;
+
+            background: rgba(255, 255, 255, .05);
+
+            color: #aeb7c3;
+
+            font-size: 9px;
+        }
+
+        .selected-person {
+            display: none;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 12px;
+
+            padding: 11px;
+
+            border: 1px solid rgba(47, 158, 92, .45);
+
+            border-radius: 9px;
+
+            background: rgba(47, 158, 92, .07);
+        }
+
+        .selected-person.show {
+            display: flex;
+        }
+
+        .selected-label {
+            color: var(--brand-light);
+
+            font-size: 9px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .selected-name {
+            margin-top: 3px;
+
+            color: var(--white);
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .change-btn {
+            border: 0;
+            background: transparent;
+
+            color: var(--brand-light);
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+
+        /* ============================================================
+           ROLE CHIPS
+        ============================================================ */
+
+        .role-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .role-option {
+            position: relative;
+        }
+
+        .role-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .role-option label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            min-height: 38px;
+
+            padding: 0 12px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 8px;
+
+            background: var(--bg3);
+
+            color: #9ca5b3;
+
+            font-size: 10px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: all var(--tr);
+        }
+
+        .role-option input:checked + label {
+            border-color: var(--brand);
+
+            background: rgba(47, 158, 92, .11);
+
+            color: var(--brand-light);
+        }
+
+
+        /* ============================================================
+           FORM ACTIONS
+        ============================================================ */
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-top: 24px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .action-note {
+            color: #697383;
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            min-height: 42px;
+
+            padding: 0 18px;
+
+            border-radius: 8px;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .primary-btn {
+            border: 1px solid var(--brand);
+
+            background: var(--brand);
+
+            color: white;
+
+            box-shadow: 0 5px 16px rgba(47, 158, 92, .15);
+
+            transition: all var(--tr);
+        }
+
+        .primary-btn:hover {
+            background: var(--brand-dark);
+
+            transform: translateY(-1px);
+        }
+
+        .secondary-btn {
+            border: 1px solid var(--border);
+
+            background: var(--bg3);
+
+            color: #cbd2dc;
+        }
+
+        .secondary-btn:hover {
+            border-color: #46505d;
+            background: #20242b;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 9px;
+        }
+
+
+        /* ============================================================
+           JOIN PANEL
+        ============================================================ */
+
+        .join-layout {
+            display: grid;
+
+            grid-template-columns: 1.15fr .85fr;
+
+            gap: 24px;
+        }
+
+        .join-info {
+            padding: 20px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(47, 158, 92, .09),
+                    rgba(47, 158, 92, .02)
+                );
+        }
+
+        .join-info h3 {
+            margin-bottom: 7px;
+
+            color: var(--white);
+
+            font-size: 15px;
+        }
+
+        .join-info p {
+            color: var(--muted);
+
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .join-steps {
+            display: grid;
+            gap: 12px;
+
+            margin-top: 20px;
+        }
+
+        .join-step {
+            display: flex;
+            gap: 10px;
+        }
+
+        .join-step-num {
+            width: 24px;
+            height: 24px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: rgba(47, 158, 92, .12);
+
+            color: var(--brand-light);
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .join-step strong {
+            display: block;
+
+            margin-bottom: 2px;
+
+            color: #dce2e9;
+
+            font-size: 10px;
+        }
+
+        .join-step span {
+            color: #707a88;
+
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+
+        /* ============================================================
+           NOTICE / SUCCESS PREVIEW
+        ============================================================ */
+
+        .preview {
+            display: none;
+
+            margin-top: 22px;
+
+            padding: 18px;
+
+            border: 1px solid rgba(47, 158, 92, .4);
+
+            border-radius: 12px;
+
+            background: rgba(47, 158, 92, .06);
+        }
+
+        .preview.show {
+            display: block;
+        }
+
+        .preview-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: var(--brand-light);
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .preview-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-top: 14px;
+        }
+
+        .preview-item {
+            padding: 10px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 8px;
+
+            background: rgba(0, 0, 0, .12);
+        }
+
+        .preview-item small {
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: #6f7886;
+
+            font-size: 9px;
+        }
+
+        .preview-item strong {
+            color: #dce3ea;
+
+            font-size: 10px;
+        }
+
+
+        /* ============================================================
+           FOOTER
+        ============================================================ */
+
+        .footer {
+            max-width: 1180px;
+
+            margin: 32px auto 0;
+
+            padding-top: 18px;
+
+            border-top: 1px solid var(--border);
+
+            color: #5f6875;
+
+            font-size: 9px;
+
+            text-align: center;
+        }
+
+
+        /* ============================================================
+           MOBILE
+        ============================================================ */
+
+        @media (max-width: 1150px) {
+            .mode-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mode-grid,
+            .join-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: var(--sidebar-w);
+
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main,
+            .main.expanded {
+                margin-left: 0;
+
+                padding:
+                    calc(var(--nav-h) + 25px)
+                    18px
+                    35px;
+            }
+
+            .page-title {
+                font-size: 29px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .panel-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .secure-note {
+                white-space: normal;
+            }
+
+            .form-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .primary-btn,
+            .secondary-btn {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .mode-grid {
+                gap: 12px;
+            }
+
+            .mode-card {
+                padding: 17px;
+            }
+
+            .form-body,
+            .panel-head {
+                padding: 17px;
+            }
+
+            .participant-search {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                min-height: 40px;
+            }
+
+            .step-line {
+                width: 15px;
+            }
+        }
+/* ============================================================
+   PARTICIPANT SEARCH RESULTS
+   ============================================================ */
+
+   #mockResults {
+    margin-top: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#mockResults.show {
+    display: flex;
+}
+
+
+/* ------------------------------------------------------------
+   PARTICIPANT CARD
+   ------------------------------------------------------------ */
+
+.participant-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding: 15px 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.035),
+            rgba(255,255,255,0.015)
+        );
+
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+
+    color: inherit;
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.participant-card:hover {
+
+    transform: translateY(-2px);
+
+    border-color:
+        rgba(46, 204, 113, 0.55);
+
+    background:
+        rgba(46, 204, 113, 0.07);
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.18);
+}
+
+
+.participant-card:active {
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* ------------------------------------------------------------
+   AVATAR
+   ------------------------------------------------------------ */
+
+.participant-avatar {
+
+    width: 50px;
+    height: 50px;
+
+    min-width: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1f8f55,
+            #0d5c38
+        );
+
+    border:
+        1px solid
+        rgba(46, 204, 113, 0.35);
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* ------------------------------------------------------------
+   INFORMATION
+   ------------------------------------------------------------ */
+
+.participant-info {
+
+    flex: 1;
+    min-width: 0;
+}
+
+
+.participant-name-row {
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    margin-bottom: 3px;
+}
+
+
+.participant-name {
+
+    font-size: 15px;
+    font-weight: 700;
+
+    color: #f3f5f4;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.participant-verified {
+
+    width: 17px;
+    height: 17px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #27ae60;
+
+    color: white;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* ------------------------------------------------------------
+   ROLE
+   ------------------------------------------------------------ */
+
+.participant-role {
+
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    margin-bottom: 7px;
+
+    color: #62d995;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* ------------------------------------------------------------
+   EMAIL + LOCATION
+   ------------------------------------------------------------ */
+
+.participant-details {
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 18px;
+
+    color: #8e9792;
+
+    font-size: 11px;
+}
+
+
+.participant-details span {
+
+    max-width: 280px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* ------------------------------------------------------------
+   SELECT
+   ------------------------------------------------------------ */
+
+.participant-select {
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #69d89a;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.participant-arrow {
+
+    font-size: 18px;
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+.participant-card:hover
+.participant-arrow {
+
+    transform:
+        translateX(4px);
+}
+
+
+/* ------------------------------------------------------------
+   EMPTY STATE
+   ------------------------------------------------------------ */
+
+.participant-empty {
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 18px;
+
+    border-radius: 14px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.07);
+
+    background:
+        rgba(255,255,255,0.025);
+
+    color: #9aa39e;
+}
+
+
+.participant-empty-icon {
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,0.05);
+
+    font-size: 18px;
+}
+
+
+.participant-empty strong {
+
+    display: block;
+
+    color: #e4e8e5;
+
+    font-size: 13px;
+
+    margin-bottom: 3px;
+}
+
+
+.participant-empty span {
+
+    display: block;
+
+    font-size: 11px;
+}
+
+
+/* ------------------------------------------------------------
+   LOADING
+   ------------------------------------------------------------ */
+
+.search-loading {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 18px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(255,255,255,0.025);
+
+    color: #72d89b;
+
+    font-size: 12px;
+}
+
+
+/* ------------------------------------------------------------
+   ERROR
+   ------------------------------------------------------------ */
+
+.search-error {
+
+    padding: 15px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(220,53,69,0.08);
+
+    border:
+        1px solid
+        rgba(220,53,69,0.25);
+
+    color: #ff858f;
+
+    font-size: 12px;
+}
+
+
+/* ------------------------------------------------------------
+   MOBILE
+   ------------------------------------------------------------ */
+
+@media (max-width: 600px) {
+
+    .participant-card {
+
+        gap: 11px;
+        padding: 13px;
+    }
+
+
+    .participant-avatar {
+
+        width: 43px;
+        height: 43px;
+
+        min-width: 43px;
+
+        font-size: 13px;
+    }
+
+
+    .participant-details {
+
+        flex-direction: column;
+        gap: 3px;
+    }
+
+
+    .participant-select span:first-child {
+
+        display: none;
+    }
+
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================================
+         NAVBAR
+    ============================================================ -->
+
+    <nav class="navbar">
+
+        <button
+            class="nav-toggle"
+            id="sidebarToggle"
+            type="button"
+            aria-label="Toggle sidebar"
+        >
+            ☰
+        </button>
+
+        <a
+            href="index.html"
+            class="nav-brand"
+        >
+            <div class="logo">🚜</div>
+
+            <div class="brand-text">
+                <span class="brand-name">
+                    Agri<span>Centre</span>
+                </span>
+
+                <span class="brand-subtitle">
+                    Smart India Hackathon 2026
+                </span>
+            </div>
+        </a>
+
+        <div class="nav-links">
+
+            <a href="index.html">Home</a><a href="about.html">About</a><a href="features.html">Features</a><a href="dashboard.html">Dashboard</a><a href="team.html">Team</a><a href="contact.html">Contact</a>
+
+
+            <a href="profile.html">
+                Profile
+            </a>
+
+            <a
+                href="#"
+                onclick="logout(); return false;"
+            >
+                Logout
+            </a>
+
+        </div>
+
+        <div class="nav-right">
+
+            <button
+                class="nav-btn"
+                type="button"
+                onclick="location.href='alerts.html'"
+                title="Alerts"
+            >
+                🔔
+                <span class="nav-badge">3</span>
+            </button>
+
+            <button
+                class="nav-btn"
+                type="button"
+                onclick="location.href='ai-assistant.html'"
+                title="AI Assistant"
+            >
+                🤖
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ============================================================
+         SIDEBAR
+    ============================================================ -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <div class="sb-section">
+
+            <div class="sb-label">
+                Main
+            </div>
+
+            <a
+                href="dashboard.html"
+                class="sb-link"
+            >
+                <span class="si">📊</span>
+                <span class="sl">Dashboard</span>
+            </a>
+
+        </div>
+
+
+        <div class="sb-section">
+
+            <div class="sb-label">
+                Produce
+            </div>
+
+            <a
+                href="add-produce.html"
+                class="sb-link"
+            >
+                <span class="si">🌾</span>
+                <span class="sl">Add Produce</span>
+            </a>
+
+            <a
+                href="my-listings.html"
+                class="sb-link"
+            >
+                <span class="si">📋</span>
+                <span class="sl">My Listings</span>
+            </a>
+
+            <a
+                href="offers.html"
+                class="sb-link"
+            >
+                <span class="si">🤝</span>
+                <span class="sl">Offers</span>
+            </a>
+
+            <a
+                href="buyers.html"
+                class="sb-link"
+            >
+                <span class="si">🔎</span>
+                <span class="sl">Find Buyers</span>
+            </a>
+
+        </div>
+
+
+        <div class="sb-section">
+
+            <div class="sb-label">
+                Orders & Delivery
+            </div>
+
+            <a
+                href="orders.html"
+                class="sb-link"
+            >
+                <span class="si">📦</span>
+                <span class="sl">View Orders</span>
+            </a>
+
+            <a
+                href="farmer_logistics.html"
+                class="sb-link"
+            >
+                <span class="si">🚚</span>
+                <span class="sl">Logistics</span>
+            </a>
+
+            <a
+                href="meeting.html"
+                class="sb-link active"
+            >
+                <span class="si">🎥</span>
+                <span class="sl">Meeting Centre</span>
+            </a>
+
+        </div>
+
+
+        <div class="sb-section">
+
+            <div class="sb-label">
+                Reports & Quality
+            </div>
+
+            <a
+                href="reports.html"
+                class="sb-link"
+            >
+                <span class="si">📄</span>
+                <span class="sl">Reports Centre</span>
+            </a>
+
+            <a
+                href="quality.html"
+                class="sb-link"
+            >
+                <span class="si">🛡️</span>
+                <span class="sl">Quality & Certification</span>
+            </a>
+
+        </div>
+
+
+        <div class="sb-section">
+
+            <div class="sb-label">
+                Account
+            </div>
+
+            <a
+                href="profile.html"
+                class="sb-link"
+            >
+                <span class="si">👤</span>
+                <span class="sl">Profile</span>
+            </a>
+
+            <a
+                href="#"
+                class="sb-link"
+                onclick="logout(); return false;"
+            >
+                <span class="si">🚪</span>
+                <span class="sl">Logout</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ============================================================
+         MAIN
+    ============================================================ -->
+
+    <main
+        class="main"
+        id="mainArea"
+    >
+
+        <div class="page-header">
+
+            <div class="page-eyebrow">
+                🎥 AgriCentre · Communication
+            </div>
+
+            <div class="page-title">
+                Meeting Centre
+            </div>
+
+            <div class="page-sub">
+                Connect directly with farmers, buyers and drivers.
+                Schedule a meeting in advance or join an existing
+                AgriCentre meeting using its invitation link.
+            </div>
+
+        </div>
+
+
+        <div class="meeting-shell">
+
+            <!-- ====================================================
+                 MODE CARDS
+            ===================================================== -->
+
+            <div class="mode-grid">
+
+                <div
+                    class="mode-card active"
+                    id="scheduleMode"
+                    onclick="setMode('schedule')"
+                >
+
+                    <div class="mode-check">
+                        ✓
+                    </div>
+
+                    <div class="mode-top">
+
+                        <div class="mode-icon">
+                            📅
+                        </div>
+
+                        <div>
+                            <h2>
+                                Schedule a Meeting
+                            </h2>
+
+                            <p>
+                                Choose a participant, select a date
+                                and time, and send them a meeting
+                                invitation.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="mode-card"
+                    id="supportMode"
+                    onclick="setMode('support')"
+                >
+
+                    <div class="mode-check">
+                        ✓
+                    </div>
+
+                    <div class="mode-top">
+
+                        <div class="mode-icon">
+                            🏢
+                        </div>
+
+                        <div>
+                            <h2>
+                                Connect with AgriCentre
+                            </h2>
+
+                            <p>
+                                Get help with navigation, account,
+                                orders, listings or other platform issues.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="mode-card"
+                    id="joinMode"
+                    onclick="setMode('join')"
+                >
+
+                    <div class="mode-check">
+                        ✓
+                    </div>
+
+                    <div class="mode-top">
+
+                        <div class="mode-icon">
+                            🔗
+                        </div>
+
+                        <div>
+                            <h2>
+                                Join a Meeting
+                            </h2>
+
+                            <p>
+                                Enter the Meeting ID or invitation
+                                link you received to join directly.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ====================================================
+                 SCHEDULE PANEL
+            ===================================================== -->
+
+            <section
+                class="panel"
+                id="schedulePanel"
+            >
+
+                <div class="panel-head">
+
+                    <div class="panel-head-left">
+
+                        <div class="panel-head-icon">
+                            📅
+                        </div>
+
+                        <div>
+
+                            <div class="panel-title">
+                                Schedule a Meeting
+                            </div>
+
+                            <div class="panel-desc">
+                                Select the person you want to connect with.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="secure-note">
+                        🔒 Meeting details will be shared only with participants.
+                    </div>
+
+                </div>
+
+
+                <div class="form-body">
+
+                    <div class="step-row">
+
+                        <div class="step active">
+                            <span class="step-number">1</span>
+                            Participant
+                        </div>
+
+                        <div class="step-line"></div>
+
+                        <div class="step active">
+                            <span class="step-number">2</span>
+                            Date & Time
+                        </div>
+
+                        <div class="step-line"></div>
+
+                        <div class="step active">
+                            <span class="step-number">3</span>
+                            Details
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <!-- PARTICIPANT ROLE -->
+
+                        <div class="field full">
+
+                            <label class="field-label">
+                                Who do you want to meet?
+                                <span class="required">*</span>
+                            </label>
+
+                            <div class="role-options">
+
+                                <div class="role-option">
+
+                                    <input
+                                        type="radio"
+                                        name="participantRole"
+                                        id="roleFarmer"
+                                        value="FARMER"
+                                        checked
+                                        onchange="changeParticipantRole('FARMER')"
+                                    >
+
+                                    <label for="roleFarmer">
+                                        👨‍🌾 Farmer
+                                    </label>
+
+                                </div>
+
+                                <div class="role-option">
+
+                                    <input
+                                        type="radio"
+                                        name="participantRole"
+                                        id="roleBulkBuyer"
+                                        value="WHOLESALER"
+                                        onchange="changeParticipantRole('WHOLESALER')"
+                                    >
+                                
+                                    <label for="roleBulkBuyer">
+                                        🛒 Bulk Buyer
+                                    </label>
+                                
+                                </div>
+                                
+                                
+                                <div class="role-option">
+                                
+                                    <input
+                                        type="radio"
+                                        name="participantRole"
+                                        id="roleBuyerConsumer"
+                                        value="VENDOR"
+                                        onchange="changeParticipantRole('VENDOR')"
+                                    >
+                                
+                                    <label for="roleBuyerConsumer">
+                                        🛍️ Buyer / Consumer
+                                    </label>
+                                
+                                </div>
+
+                                <div class="role-option">
+
+                                    <input
+                                        type="radio"
+                                        name="participantRole"
+                                        id="roleDriver"
+                                        value="DRIVER"
+                                        onchange="changeParticipantRole('DRIVER')"
+                                    >
+
+                                    <label for="roleDriver">
+                                        🚚 Driver
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PARTICIPANT SEARCH -->
+
+                        <div class="field full">
+
+                            <label class="field-label">
+                                Find participant
+                                <span class="required">*</span>
+                            </label>
+
+                            <div class="participant-box">
+
+                                <div class="participant-search">
+
+                                    <input
+                                        type="text"
+                                        id="participantSearch"
+                                        placeholder="Search by name, email or phone..."
+                                        autocomplete="off"
+                                    >
+
+                                    <button
+                                        class="search-btn"
+                                        type="button"
+                                        onclick="searchParticipant()"
+                                    >
+                                        Search
+                                    </button>
+
+                                </div>
+
+                                <div class="field-hint">
+                                    If multiple people have the same name, the matching
+                                    records will be shown separately so you can select
+                                    the correct person.
+                                </div>
+
+
+                                <!-- FRONTEND DEMO RESULTS.
+                                     These will be replaced by DB results later. -->
+
+                                <div
+                                    class="mock-results"
+                                    id="mockResults"
+                                >
+
+                                    <div
+                                        class="result-card"
+                                        onclick="selectParticipant('Rahul Kumar', 'Barasat, West Bengal', 'FARMER')"
+                                    >
+
+                                        <div class="result-left">
+
+                                            <div class="avatar">
+                                                RK
+                                            </div>
+
+                                            <div>
+
+                                                <div class="result-name">
+                                                    Rahul Kumar
+                                                </div>
+
+                                                <div class="result-meta">
+                                                    Barasat, West Bengal
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <span class="result-role">
+                                            Farmer
+                                        </span>
+
+                                    </div>
+
+
+                                    <div
+                                        class="result-card"
+                                        onclick="selectParticipant('Rahul Kumar', 'Haringhata, West Bengal', 'FARMER')"
+                                    >
+
+                                        <div class="result-left">
+
+                                            <div class="avatar">
+                                                RK
+                                            </div>
+
+                                            <div>
+
+                                                <div class="result-name">
+                                                    Rahul Kumar
+                                                </div>
+
+                                                <div class="result-meta">
+                                                    Haringhata, West Bengal
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <span class="result-role">
+                                            Farmer
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="selected-person"
+                                    id="selectedPerson"
+                                >
+
+                                    <div>
+
+                                        <div class="selected-label">
+                                            Selected participant
+                                        </div>
+
+                                        <div
+                                            class="selected-name"
+                                            id="selectedPersonName"
+                                        >
+                                            —
+                                        </div>
+
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        class="change-btn"
+                                        onclick="changeParticipant()"
+                                    >
+                                        Change
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DATE -->
+
+                        <div class="field">
+
+                            <label
+                                class="field-label"
+                                for="meetingDate"
+                            >
+                                Date
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="meetingDate"
+                            >
+
+                        </div>
+
+
+                        <!-- TIME -->
+
+                        <div class="field">
+
+                            <label
+                                class="field-label"
+                                for="meetingTime"
+                            >
+                                Time
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="time"
+                                id="meetingTime"
+                            >
+
+                        </div>
+
+
+                        <!-- PURPOSE -->
+
+                        <div class="field full">
+
+                            <label
+                                class="field-label"
+                                for="meetingPurpose"
+                            >
+                                Purpose of meeting
+                                <span class="required">*</span>
+                            </label>
+
+                            <textarea
+                                id="meetingPurpose"
+                                placeholder="Briefly describe what you would like to discuss..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- ORDER ID -->
+
+                        <div class="field">
+
+                            <label
+                                class="field-label"
+                                for="orderId"
+                            >
+                                Order ID
+                                <span style="color:#687383;">(Optional)</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="orderId"
+                                placeholder="e.g. ORD-10284"
+                            >
+
+                            <div class="field-hint">
+                                Add this when the meeting is related to a specific order.
+                            </div>
+
+                        </div>
+
+
+                        <!-- MEETING TYPE -->
+
+                        <div class="field">
+
+                            <label
+                                class="field-label"
+                                for="meetingType"
+                            >
+                                Meeting type
+                            </label>
+
+                            <select id="meetingType">
+
+                                <option value="general">
+                                    General Discussion
+                                </option>
+
+                                <option value="produce">
+                                    Produce / Pricing
+                                </option>
+
+                                <option value="order">
+                                    Order Discussion
+                                </option>
+
+                                <option value="logistics">
+                                    Logistics / Delivery
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <div class="action-note">
+                            The participant will receive the scheduled
+                            meeting details through their registered
+                            AgriCentre contact email.
+                        </div>
+
+                        <div class="action-buttons">
+
+                            <button
+                                type="button"
+                                class="secondary-btn"
+                                onclick="resetScheduleForm()"
+                            >
+                                Clear
+                            </button>
+
+                            <button
+    type="button"
+    id="scheduleMeetingBtn"
+    class="primary-btn"
+    onclick="scheduleMeeting()"
+>
+    📅 Schedule Meeting
+</button>
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="preview"
+                        id="schedulePreview"
+                    >
+
+                        <div class="preview-title">
+                            ✓ Meeting ready to schedule
+                        </div>
+
+                        <div class="preview-grid">
+
+                            <div class="preview-item">
+                                <small>Participant</small>
+                                <strong id="previewParticipant">—</strong>
+                            </div>
+
+                            <div class="preview-item">
+                                <small>Date</small>
+                                <strong id="previewDate">—</strong>
+                            </div>
+
+                            <div class="preview-item">
+                                <small>Time</small>
+                                <strong id="previewTime">—</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ====================================================
+                 AGRICENTRE SUPPORT PANEL
+            ===================================================== -->
+
+            <section
+                class="panel"
+                id="supportPanel"
+                style="display:none;"
+            >
+
+                <div class="panel-head">
+
+                    <div class="panel-head-left">
+
+                        <div class="panel-head-icon">
+                            🏢
+                        </div>
+
+                        <div>
+
+                            <div class="panel-title">
+                                Connect with AgriCentre
+                            </div>
+
+                            <div class="panel-desc">
+                                Request a meeting with the AgriCentre support team.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="secure-note">
+                        🔒 Your account details will be used automatically.
+                    </div>
+
+                </div>
+
+
+                <div class="form-body">
+
+                    <div class="join-layout">
+
+                        <div>
+
+                            <div class="form-grid">
+
+                                <div class="field">
+
+                                    <label
+                                        class="field-label"
+                                        for="supportName"
+                                    >
+                                        Your name
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="supportName"
+                                        placeholder="Your registered name"
+                                    >
+
+                                    <div class="field-hint">
+                                        Later this will be filled automatically from your AgriCentre account.
+                                    </div>
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label
+                                        class="field-label"
+                                        for="supportEmail"
+                                    >
+                                        Email
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <input
+                                        type="email"
+                                        id="supportEmail"
+                                        placeholder="your@email.com"
+                                    >
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label
+                                        class="field-label"
+                                        for="supportIssue"
+                                    >
+                                        What do you need help with?
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <select id="supportIssue">
+
+                                        <option value="">
+                                            Select an issue
+                                        </option>
+
+                                        <option value="navigation">
+                                            🧭 NAV / Navigation
+                                        </option>
+
+                                        <option value="account">
+                                            👤 Account / Profile
+                                        </option>
+
+                                        <option value="produce">
+                                            🌾 Produce / Listing
+                                        </option>
+
+                                        <option value="offers">
+                                            🤝 Offers / Buyer connection
+                                        </option>
+
+                                        <option value="orders">
+                                            📦 Orders
+                                        </option>
+
+                                        <option value="logistics">
+                                            🚚 Logistics / Delivery
+                                        </option>
+
+                                        <option value="technical">
+                                            ⚙️ Technical issue
+                                        </option>
+
+                                        <option value="other">
+                                            💬 Other
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label
+                                        class="field-label"
+                                        for="supportOrderId"
+                                    >
+                                        Related Order ID
+                                        <span style="color:#687383;">(Optional)</span>
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="supportOrderId"
+                                        placeholder="e.g. ORD-10284"
+                                    >
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label
+                                        class="field-label"
+                                        for="supportDate"
+                                    >
+                                        Preferred date
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        id="supportDate"
+                                    >
+
+                                </div>
+
+
+                                <div class="field">
+
+                                    <label
+                                        class="field-label"
+                                        for="supportTime"
+                                    >
+                                        Preferred time
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <input
+                                        type="time"
+                                        id="supportTime"
+                                    >
+
+                                </div>
+
+
+                                <div class="field full">
+
+                                    <label
+                                        class="field-label"
+                                        for="supportDescription"
+                                    >
+                                        Describe your issue
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <textarea
+                                        id="supportDescription"
+                                        placeholder="Tell the AgriCentre support team what you need help with..."
+                                    ></textarea>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-actions">
+
+                                <div class="action-note">
+                                    A support representative will receive
+                                    your request and the meeting details
+                                    will be sent to your registered email.
+                                </div>
+
+                                <div class="action-buttons">
+
+                                    <button
+                                        type="button"
+                                        class="secondary-btn"
+                                        onclick="resetSupportForm()"
+                                    >
+                                        Clear
+                                    </button>
+
+                                    <button
+    type="button"
+    class="primary-btn"
+    onclick="requestSupportMeeting()"
+>
+    🏢 Request Support Meeting
+</button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="preview"
+                                id="supportPreview"
+                            >
+
+                                <div class="preview-title">
+                                    ✓ Support meeting request ready
+                                </div>
+
+                                <div class="preview-grid">
+
+                                    <div class="preview-item">
+                                        <small>Issue</small>
+                                        <strong id="previewSupportIssue">—</strong>
+                                    </div>
+
+                                    <div class="preview-item">
+                                        <small>Date</small>
+                                        <strong id="previewSupportDate">—</strong>
+                                    </div>
+
+                                    <div class="preview-item">
+                                        <small>Time</small>
+                                        <strong id="previewSupportTime">—</strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="join-info">
+
+                            <h3>
+                                What can we help with?
+                            </h3>
+
+                            <p>
+                                Use an AgriCentre support meeting when
+                                you need help that is easier to resolve
+                                through a live conversation.
+                            </p>
+
+                            <div class="join-steps">
+
+                                <div class="join-step">
+
+                                    <div class="join-step-num">
+                                        1
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            Tell us the issue
+                                        </strong>
+
+                                        <span>
+                                            Choose a category and describe what happened.
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="join-step">
+
+                                    <div class="join-step-num">
+                                        2
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            Choose a preferred slot
+                                        </strong>
+
+                                        <span>
+                                            Select a convenient date and time.
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="join-step">
+
+                                    <div class="join-step-num">
+                                        3
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            Meet the support team
+                                        </strong>
+
+                                        <span>
+                                            Your meeting invitation will contain the joining details.
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ====================================================
+                 JOIN PANEL
+            ===================================================== -->
+
+            <section
+                class="panel"
+                id="joinPanel"
+                style="display:none;"
+            >
+
+                <div class="panel-head">
+
+                    <div class="panel-head-left">
+
+                        <div class="panel-head-icon">
+                            🔗
+                        </div>
+
+                        <div>
+
+                            <div class="panel-title">
+                                Join a Meeting
+                            </div>
+
+                            <div class="panel-desc">
+                                Use the Meeting ID or link from your invitation.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="secure-note">
+                        🎥 Jitsi Meet will handle the video connection.
+                    </div>
+
+                </div>
+
+
+                <div class="form-body">
+
+                    <div class="join-layout">
+
+                        <div>
+
+                            <div class="field">
+
+                                <label
+                                    class="field-label"
+                                    for="meetingId"
+                                >
+                                    Meeting ID
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="meetingId"
+                                    placeholder="e.g. AGRI-8F29K2"
+                                >
+
+                                <div class="field-hint">
+                                    Enter the Meeting ID exactly as it appears
+                                    in your invitation.
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                style="
+                                    display:flex;
+                                    align-items:center;
+                                    gap:10px;
+                                    margin:18px 0;
+                                    color:#606a77;
+                                    font-size:9px;
+                                    text-transform:uppercase;
+                                    letter-spacing:.7px;
+                                "
+                            >
+                                <span style="height:1px;background:var(--border);flex:1;"></span>
+                                OR
+                                <span style="height:1px;background:var(--border);flex:1;"></span>
+                            </div>
+
+
+                            <div class="field">
+
+                                <label
+                                    class="field-label"
+                                    for="meetingLink"
+                                >
+                                    Meeting Link
+                                </label>
+
+                                <input
+                                    type="url"
+                                    id="meetingLink"
+                                    placeholder="Paste your AgriCentre meeting link"
+                                >
+
+                            </div>
+
+
+                            <div class="form-actions">
+
+                                <div class="action-note">
+                                    You can use either the Meeting ID
+                                    or the complete invitation link.
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="primary-btn"
+                                    onclick="joinMeeting()"
+                                >
+                                    🎥 Join Meeting
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="join-info">
+
+                            <h3>
+                                How joining works
+                            </h3>
+
+                            <p>
+                                Your invitation contains everything
+                                needed to join the meeting.
+                            </p>
+
+                            <div class="join-steps">
+
+                                <div class="join-step">
+
+                                    <div class="join-step-num">
+                                        1
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            Find your invitation
+                                        </strong>
+
+                                        <span>
+                                            Check the email sent by AgriCentre.
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="join-step">
+
+                                    <div class="join-step-num">
+                                        2
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            Enter the Meeting ID
+                                        </strong>
+
+                                        <span>
+                                            Or paste the meeting link directly.
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="join-step">
+
+                                    <div class="join-step-num">
+                                        3
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            Join the call
+                                        </strong>
+
+                                        <span>
+                                            The video meeting opens through Jitsi Meet.
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <div class="footer">
+                AgriCentre · Direct farmer, buyer & logistics communication
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script>
+        /* ============================================================
+           AGRICENTRE MEET — COMPLETE FRONTEND SCRIPT
+           ============================================================ */
+        
+        const API_BASE =
+            window.API_BASE ||
+            "http://127.0.0.1:5000";
+        
+        
+        /* ============================================================
+           AUTH HELPERS
+           ============================================================ */
+        
+        function getToken() {
+            return (
+                localStorage.getItem("token") ||
+                localStorage.getItem("access_token") ||
+                localStorage.getItem("authToken") ||
+                ""
+            );
+        }
+        
+        
+        function authHeaders(includeJson = false) {
+        
+            const headers = {};
+        
+            const token = getToken();
+        
+            if (token) {
+                headers["Authorization"] =
+                    `Bearer ${token}`;
+            }
+        
+            if (includeJson) {
+                headers["Content-Type"] =
+                    "application/json";
+            }
+        
+            return headers;
+        }
+        
+        
+        /* ============================================================
+           PROFILE / NAVBAR
+           ============================================================ */
+        
+           async function loadCurrentProfile() {
+
+/*
+ * Do NOT call /api/meetings/me here.
+ *
+ * The existing AgriCentre authentication/profile system
+ * already knows the logged-in user.
+ *
+ * This meeting page should not introduce another
+ * authentication endpoint just to load the navbar.
+ */
+
+console.log("Meeting page loaded.");
+}
+        
+        
+        /* ============================================================
+           MODE SWITCHING
+           ============================================================ */
+        
+        function setMode(mode) {
+        
+            const modes = {
+                schedule:
+                    document.getElementById("scheduleMode"),
+        
+                support:
+                    document.getElementById("supportMode"),
+        
+                join:
+                    document.getElementById("joinMode")
+            };
+        
+        
+            const panels = {
+                schedule:
+                    document.getElementById("schedulePanel"),
+        
+                support:
+                    document.getElementById("supportPanel"),
+        
+                join:
+                    document.getElementById("joinPanel")
+            };
+        
+        
+            Object.values(modes).forEach(card => {
+        
+                if (card) {
+                    card.classList.remove("active");
+                }
+        
+            });
+        
+        
+            Object.values(panels).forEach(panel => {
+        
+                if (panel) {
+                    panel.style.display = "none";
+                }
+        
+            });
+        
+        
+            if (modes[mode]) {
+                modes[mode].classList.add("active");
+            }
+        
+        
+            if (panels[mode]) {
+                panels[mode].style.display = "block";
+            }
+        
+        
+            if (mode === "support") {
+                setSupportMinimumDate();
+            }
+        
+        }
+        
+        
+        /* ============================================================
+           PARTICIPANT ROLE
+           ============================================================ */
+        
+        let selectedRole = "FARMER";
+        
+        let selectedParticipant = null;
+        
+        
+        function changeParticipantRole(role) {
+        
+            selectedRole =
+                String(role || "")
+                    .trim()
+                    .toUpperCase();
+        
+        
+            changeParticipant();
+        
+        
+            const searchInput =
+                document.getElementById(
+                    "participantSearch"
+                );
+        
+        
+            if (searchInput) {
+                searchInput.value = "";
+            }
+        
+        
+            const results =
+                document.getElementById(
+                    "mockResults"
+                );
+        
+        
+            if (results) {
+        
+                results.classList.remove(
+                    "show"
+                );
+        
+                results.innerHTML = "";
+            }
+        
+        }
+        
+        
+        /* ============================================================
+           PARTICIPANT SEARCH
+           ============================================================ */
+        
+        /*
+            IMPORTANT:
+        
+            The logged-in user's identity comes from the backend.
+        
+            The name entered here belongs to the OTHER PERSON.
+        
+            Search is performed using:
+        
+                name + role
+        
+            The selected person's MongoDB ID is then stored.
+        
+            We NEVER use their name as their permanent identity.
+        */
+        function formatParticipantLocation(location) {
+
+if (!location) {
+    return "📍 Location not available";
+}
+
+// GeoJSON object
+if (
+    typeof location === "object" &&
+    location.type === "Point" &&
+    Array.isArray(location.coordinates)
+) {
+
+    const [longitude, latitude] = location.coordinates;
+
+    if (
+        typeof latitude === "number" &&
+        typeof longitude === "number"
+    ) {
+        return `
+            📍 ${latitude.toFixed(4)}, ${longitude.toFixed(4)}
+        `;
+    }
+}
+
+// If location is already a normal string
+if (typeof location === "string") {
+
+    // Try to parse JSON if necessary
+    try {
+
+        const parsed = JSON.parse(location);
+
+        if (
+            parsed.type === "Point" &&
+            Array.isArray(parsed.coordinates)
+        ) {
+
+            const [
+                longitude,
+                latitude
+            ] = parsed.coordinates;
+
+            return `
+                📍 ${Number(latitude).toFixed(4)},
+                ${Number(longitude).toFixed(4)}
+            `;
+        }
+
+    } catch (error) {
+        // Normal text location — use it directly
+    }
+
+    return `📍 ${escapeHtml(location)}`;
+}
+
+return "📍 Location available";
+}
+        async function searchParticipant() {
+
+const input =
+    document.getElementById("participantSearch");
+
+const results =
+    document.getElementById("mockResults");
+
+if (!input || !results) {
+    console.error("Participant search elements not found.");
+    return;
+}
+
+const name = input.value.trim();
+
+if (!selectedRole) {
+    alert("Please select who you want to contact.");
+    return;
+}
+
+if (name.length < 2) {
+    alert("Please enter at least 2 characters of the person's name.");
+    input.focus();
+    return;
+}
+
+const token = localStorage.getItem("token");
+
+if (!token) {
+    alert("Your session has expired. Please login again.");
+    return;
+}
+
+results.innerHTML = `
+    <div class="search-loading">
+        Searching...
+    </div>
+`;
+
+results.classList.add("show");
+
+try {
+
+    const url =
+        `${API_BASE}/api/meetings/search-participants` +
+        `?role=${encodeURIComponent(selectedRole)}` +
+        `&name=${encodeURIComponent(name)}`;
+
+    const response = await fetch(url, {
+
+        method: "GET",
+
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+
+    });
+
+    const data = await response.json();
+    console.log(
+    "SEARCH RESPONSE:",
+    data
+);
+
+console.log(
+    "PARTICIPANTS:",
+    data.participants
+);
+
+    if (!response.ok || !data.success) {
+
+        throw new Error(
+            data.message ||
+            "Unable to search participants."
+        );
+
+    }
+
+    renderParticipantResults(
+        data.participants || []
+    );
+
+} catch (error) {
+
+    console.error(
+        "Participant search error:",
+        error
+    );
+
+    results.innerHTML = `
+        <div class="search-error">
+            ${escapeHtml(
+                error.message ||
+                "Unable to search participants."
+            )}
+        </div>
+    `;
+}
+}
+        /* ============================================================
+           RENDER DATABASE RESULTS
+           ============================================================ */
+        
+           function renderParticipantResults(participants) {
+
+const results =
+    document.getElementById("mockResults");
+
+if (!results) {
+    return;
+}
+
+if (!participants || participants.length === 0) {
+
+    results.innerHTML = `
+        <div class="participant-empty">
+            <div class="participant-empty-icon">🔍</div>
+
+            <div>
+                <strong>No matching participant found</strong>
+
+                <span>
+                    Try another name or select a different role.
+                </span>
+            </div>
+        </div>
+    `;
+
+    results.classList.add("show");
+
+    return;
+}
+
+
+results.innerHTML = participants.map(
+    (participant, index) => {
+
+        const role =
+            getRoleLabel(
+                participant.role
+            );
+
+        const initials =
+            getInitials(
+                participant.name
+            );
+
+        const location =
+            participant.location ||
+            "Location not available";
+
+        const email =
+            participant.email ||
+            "Email not available";
+
+
+        return `
+            <button
+                type="button"
+                class="participant-card"
+                data-index="${index}"
+                aria-label="Select ${escapeHtml(
+                    participant.name
+                )}"
+            >
+
+                <div class="participant-avatar">
+                    ${escapeHtml(initials)}
+                </div>
+
+
+                <div class="participant-info">
+
+                    <div class="participant-name-row">
+
+                        <span class="participant-name">
+                            ${escapeHtml(
+                                participant.name
+                            )}
+                        </span>
+
+                        <span class="participant-verified">
+                            ✓
+                        </span>
+
+                    </div>
+
+
+                    <div class="participant-role">
+                        ${getRoleIcon(
+                            participant.role
+                        )}
+                        ${escapeHtml(role)}
+                    </div>
+
+
+                    <div class="participant-details">
+
+                        <span>
+                            ✉
+                            ${escapeHtml(email)}
+                        </span>
+
+                        <span>
+                            📍
+                            ${escapeHtml(location)}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="participant-select">
+                    <span>Select</span>
+                    <span class="participant-arrow">
+                        →
+                    </span>
+                </div>
+
+            </button>
+        `;
+    }
+).join("");
+
+
+results
+    .querySelectorAll(".participant-card")
+    .forEach(card => {
+
+        card.addEventListener(
+            "click",
+            function () {
+
+                const index =
+                    Number(
+                        this.dataset.index
+                    );
+
+                selectParticipant(
+                    participants[index]
+                );
+
+            }
+        );
+
+    });
+
+
+results.classList.add("show");
+}
+function getInitials(name) {
+
+if (!name) {
+    return "?";
+}
+
+const parts =
+    name
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+if (parts.length === 1) {
+
+    return parts[0]
+        .substring(0, 2)
+        .toUpperCase();
+
+}
+
+return (
+    parts[0][0] +
+    parts[parts.length - 1][0]
+).toUpperCase();
+}
+
+
+function getRoleIcon(role) {
+
+const icons = {
+
+    FARMER:
+        "👨‍🌾",
+
+    WHOLESALER:
+        "🛒",
+
+    VENDOR:
+        "🛍️",
+
+    DRIVER:
+        "🚚"
+
+};
+
+return (
+    icons[
+        String(role || "")
+            .trim()
+            .toUpperCase()
+    ] || "👤"
+);
+}
+        
+        /* ============================================================
+           SELECT PARTICIPANT
+           ============================================================ */
+        
+        function selectParticipant(
+            participant
+        ) {
+        
+            if (
+                !participant ||
+                !participant.id
+            ) {
+        
+                alert(
+                    "Unable to select this participant."
+                );
+        
+                return;
+            }
+        
+        
+            selectedParticipant =
+                participant;
+        
+        
+            const selectedPerson =
+                document.getElementById(
+                    "selectedPerson"
+                );
+        
+        
+            const selectedPersonName =
+                document.getElementById(
+                    "selectedPersonName"
+                );
+        
+        
+            if (selectedPersonName) {
+        
+                const location =
+                    participant.location
+                        ? ` · ${participant.location}`
+                        : "";
+        
+        
+                selectedPersonName.textContent =
+                    `${participant.name}${location}`;
+            }
+        
+        
+            if (selectedPerson) {
+        
+                selectedPerson.classList.add(
+                    "show"
+                );
+        
+            }
+        
+        
+            const results =
+                document.getElementById(
+                    "mockResults"
+                );
+        
+        
+            if (results) {
+        
+                results.classList.remove(
+                    "show"
+                );
+        
+            }
+        
+        
+            const input =
+                document.getElementById(
+                    "participantSearch"
+                );
+        
+        
+            if (input) {
+        
+                input.value =
+                    participant.name;
+        
+            }
+        
+        
+            /*
+                This is the important part.
+        
+                We keep the MongoDB ID, not just the name.
+            */
+        
+            window.selectedParticipantId =
+                participant.id;
+        
+        
+            console.log(
+                "Selected participant ID:",
+                participant.id
+            );
+        
+        }
+        
+        
+        /* ============================================================
+           CHANGE PARTICIPANT
+           ============================================================ */
+        
+        function changeParticipant() {
+        
+            selectedParticipant =
+                null;
+        
+        
+            window.selectedParticipantId =
+                null;
+        
+        
+            const selectedPerson =
+                document.getElementById(
+                    "selectedPerson"
+                );
+        
+        
+            const selectedPersonName =
+                document.getElementById(
+                    "selectedPersonName"
+                );
+        
+        
+            if (selectedPerson) {
+        
+                selectedPerson.classList.remove(
+                    "show"
+                );
+        
+            }
+        
+        
+            if (selectedPersonName) {
+        
+                selectedPersonName.textContent =
+                    "—";
+        
+            }
+        
+        }
+        
+        
+        /* ============================================================
+           SCHEDULE PREVIEW
+           ============================================================ */
+        
+        function previewSchedule() {
+        
+            if (!selectedParticipant) {
+        
+                alert(
+                    "Please search for and select the person you want to meet."
+                );
+        
+                return;
+            }
+        
+        
+            const date =
+                document.getElementById(
+                    "meetingDate"
+                )?.value;
+        
+        
+            const time =
+                document.getElementById(
+                    "meetingTime"
+                )?.value;
+        
+        
+            const purpose =
+                document.getElementById(
+                    "meetingPurpose"
+                )?.value.trim();
+        
+        
+            if (!date) {
+        
+                alert(
+                    "Please select a meeting date."
+                );
+        
+                return;
+            }
+        
+        
+            if (!time) {
+        
+                alert(
+                    "Please select a meeting time."
+                );
+        
+                return;
+            }
+        
+        
+            if (!purpose) {
+        
+                alert(
+                    "Please enter the purpose of the meeting."
+                );
+        
+                return;
+            }
+        
+        
+            const dateObject =
+                new Date(
+                    `${date}T${time}`
+                );
+        
+        
+            if (
+                Number.isNaN(
+                    dateObject.getTime()
+                )
+            ) {
+        
+                alert(
+                    "Please enter a valid date and time."
+                );
+        
+                return;
+            }
+        
+        
+            if (
+                dateObject <= new Date()
+            ) {
+        
+                alert(
+                    "Please select a future date and time."
+                );
+        
+                return;
+            }
+        
+        
+            const previewParticipant =
+                document.getElementById(
+                    "previewParticipant"
+                );
+        
+        
+            const previewDate =
+                document.getElementById(
+                    "previewDate"
+                );
+        
+        
+            const previewTime =
+                document.getElementById(
+                    "previewTime"
+                );
+        
+        
+            if (previewParticipant) {
+        
+                previewParticipant.textContent =
+                    selectedParticipant.name;
+        
+            }
+        
+        
+            if (previewDate) {
+        
+                previewDate.textContent =
+                    new Date(
+                        `${date}T00:00:00`
+                    ).toLocaleDateString(
+                        "en-IN",
+                        {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric"
+                        }
+                    );
+        
+            }
+        
+        
+            if (previewTime) {
+        
+                previewTime.textContent =
+                    new Date(
+                        `1970-01-01T${time}`
+                    ).toLocaleTimeString(
+                        "en-IN",
+                        {
+                            hour: "2-digit",
+                            minute: "2-digit"
+                        }
+                    );
+        
+            }
+        
+        
+            const schedulePreview =
+                document.getElementById(
+                    "schedulePreview"
+                );
+        
+        
+            if (schedulePreview) {
+        
+                schedulePreview.classList.add(
+                    "show"
+                );
+        
+            }
+        
+        }
+        
+        
+        /* ============================================================
+           ACTUAL SCHEDULE API
+           ============================================================ */
+        
+        async function scheduleMeeting() {
+        
+            if (!selectedParticipant) {
+        
+                alert(
+                    "Please select the person you want to meet."
+                );
+        
+                return;
+            }
+        
+        
+            const date =
+                document.getElementById(
+                    "meetingDate"
+                )?.value;
+        
+        
+            const time =
+                document.getElementById(
+                    "meetingTime"
+                )?.value;
+        
+        
+            const purpose =
+                document.getElementById(
+                    "meetingPurpose"
+                )?.value.trim();
+        
+        
+            if (!date || !time || !purpose) {
+        
+                alert(
+                    "Please complete the meeting details."
+                );
+        
+                return;
+            }
+        
+        
+            const dateObject =
+                new Date(
+                    `${date}T${time}`
+                );
+        
+        
+            if (
+                Number.isNaN(
+                    dateObject.getTime()
+                ) ||
+                dateObject <= new Date()
+            ) {
+        
+                alert(
+                    "Please select a future date and time."
+                );
+        
+                return;
+            }
+        
+        
+            const button =
+                document.getElementById(
+                    "scheduleMeetingBtn"
+                );
+        
+        
+            if (button) {
+        
+                button.disabled =
+                    true;
+        
+                button.textContent =
+                    "Scheduling...";
+        
+            }
+        
+        
+            try {
+        
+                const response =
+                    await fetch(
+                        `${API_BASE}/api/meetings/schedule`,
+                        {
+                            method: "POST",
+        
+                            headers:
+                                authHeaders(true),
+        
+                            body: JSON.stringify({
+        
+                                participant_id:
+                                    selectedParticipant.id,
+        
+                                date:
+                                    date,
+        
+                                time:
+                                    time,
+        
+                                purpose:
+                                    purpose
+        
+                            })
+                        }
+                    );
+        
+        
+                const data =
+                    await response.json();
+        
+        
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+        
+                    throw new Error(
+                        data.message ||
+                        "Unable to schedule the meeting."
+                    );
+        
+                }
+        
+        
+                showMeetingSuccess(
+                    data.meeting
+                );
+        
+        
+            } catch (error) {
+        
+                console.error(
+                    "Schedule meeting error:",
+                    error
+                );
+        
+        
+                alert(
+                    error.message ||
+                    "Unable to schedule the meeting."
+                );
+        
+        
+            } finally {
+        
+                if (button) {
+        
+                    button.disabled =
+                        false;
+        
+                    button.textContent =
+                        "Schedule Meeting";
+        
+                }
+        
+            }
+        
+        }
+        
+        
+        /* ============================================================
+           SUCCESS
+           ============================================================ */
+        
+           function showMeetingSuccess(meeting) {
+
+const meetingId =
+    meeting?.meeting_id || "";
+
+const meetingLink =
+    meeting?.meeting_link || "";
+
+
+if (!meetingId || !meetingLink) {
+
+    alert(
+        "Meeting was created, but the meeting details could not be displayed."
+    );
+
+    return;
+}
+
+
+// --------------------------------------------------------
+// UPDATE ALL MEETING ID ELEMENTS
+// --------------------------------------------------------
+
+document
+    .querySelectorAll(
+        "[data-meeting-id], #generatedMeetingId"
+    )
+    .forEach(element => {
+
+        element.textContent =
+            meetingId;
+
+    });
+
+
+// --------------------------------------------------------
+// UPDATE ALL MEETING LINK ELEMENTS
+// --------------------------------------------------------
+
+document
+    .querySelectorAll(
+        "[data-meeting-link], #generatedMeetingLink"
+    )
+    .forEach(element => {
+
+        if (
+            element.tagName === "A"
+        ) {
+
+            element.href =
+                meetingLink;
+
+            element.textContent =
+                meetingLink;
+
+        } else {
+
+            element.textContent =
+                meetingLink;
+
+        }
+
+    });
+
+
+// --------------------------------------------------------
+// SHOW SUCCESS MESSAGE
+// --------------------------------------------------------
+
+const preview =
+    document.getElementById(
+        "schedulePreview"
+    );
+
+
+if (preview) {
+
+    preview.classList.add(
+        "show"
+    );
+
+
+    preview.innerHTML = `
+
+        <div class="preview-title">
+            ✓ Meeting scheduled successfully
+        </div>
+
+        <div class="preview-grid">
+
+            <div class="preview-item">
+
+                <small>
+                    Meeting ID
+                </small>
+
+                <strong>
+                    ${escapeHtml(meetingId)}
+                </strong>
+
+            </div>
+
+
+            <div class="preview-item">
+
+                <small>
+                    Participant
+                </small>
+
+                <strong>
+                    ${escapeHtml(
+                        selectedParticipant?.name
+                        || "Participant"
+                    )}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div
+            style="
+                margin-top:16px;
+                padding:14px;
+                border:1px solid var(--border);
+                border-radius:10px;
+            "
+        >
+
+            <small
+                style="
+                    display:block;
+                    margin-bottom:6px;
+                "
+            >
+                Meeting Link
+            </small>
+
+            <a
+                href="${escapeHtml(meetingLink)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="
+                    color:#35d07f;
+                    word-break:break-all;
+                "
+            >
+                ${escapeHtml(meetingLink)}
+            </a>
+
+        </div>
+
+
+        <div
+            style="
+                margin-top:14px;
+                color:#7f8a99;
+                font-size:13px;
+            "
+        >
+            📧 The AgriCentre team has been notified
+            of this meeting.
+        </div>
+
+
+        <div
+            style="
+                display:flex;
+                gap:10px;
+                margin-top:16px;
+            "
+        >
+
+            <button
+                type="button"
+                class="primary-btn"
+                onclick="window.open(
+                    '${escapeHtml(meetingLink)}',
+                    '_blank',
+                    'noopener,noreferrer'
+                )"
+            >
+                🎥 Join Meeting
+            </button>
+
+            <button
+                type="button"
+                class="secondary-btn"
+                onclick="copyMeetingLink(
+                    '${escapeHtml(meetingLink)}'
+                )"
+            >
+                📋 Copy Link
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+}
+function copyMeetingLink(link) {
+
+navigator.clipboard
+    .writeText(link)
+    .then(() => {
+
+        alert(
+            "Meeting link copied successfully."
+        );
+
+    })
+    .catch(() => {
+
+        alert(
+            "Unable to copy the meeting link."
+        );
+
+    });
+
+}
+        
+        
+        /* ============================================================
+           RESET SCHEDULE FORM
+           ============================================================ */
+        
+        function resetScheduleForm() {
+        
+            const ids = [
+                "participantSearch",
+                "meetingDate",
+                "meetingTime",
+                "meetingPurpose",
+                "orderId"
+            ];
+        
+        
+            ids.forEach(
+                id => {
+        
+                    const element =
+                        document.getElementById(id);
+        
+                    if (element) {
+                        element.value = "";
+                    }
+        
+                }
+            );
+        
+        
+            const meetingType =
+                document.getElementById(
+                    "meetingType"
+                );
+        
+        
+            if (meetingType) {
+        
+                meetingType.value =
+                    "general";
+        
+            }
+        
+        
+            const results =
+                document.getElementById(
+                    "mockResults"
+                );
+        
+        
+            if (results) {
+        
+                results.classList.remove(
+                    "show"
+                );
+        
+                results.innerHTML =
+                    "";
+        
+            }
+        
+        
+            const preview =
+                document.getElementById(
+                    "schedulePreview"
+                );
+        
+        
+            if (preview) {
+        
+                preview.classList.remove(
+                    "show"
+                );
+        
+            }
+        
+        
+            changeParticipant();
+        
+        }
+        
+        
+        /* ============================================================
+           SUPPORT
+           ============================================================ */
+        
+        function setSupportMinimumDate() {
+        
+            const dateInput =
+                document.getElementById(
+                    "supportDate"
+                );
+        
+        
+            if (!dateInput) {
+                return;
+            }
+        
+        
+            const now =
+                new Date();
+        
+        
+            const localDate =
+                new Date(
+                    now.getTime() -
+                    now.getTimezoneOffset() * 60000
+                )
+                .toISOString()
+                .split("T")[0];
+        
+        
+            dateInput.min =
+                localDate;
+        
+        }
+        
+        
+        function previewSupport() {
+        
+            const name =
+                document.getElementById(
+                    "supportName"
+                )?.value.trim();
+        
+        
+            const email =
+                document.getElementById(
+                    "supportEmail"
+                )?.value.trim();
+        
+        
+            const issueSelect =
+                document.getElementById(
+                    "supportIssue"
+                );
+        
+        
+            const issue =
+                issueSelect?.value;
+        
+        
+            const issueText =
+                issueSelect &&
+                issueSelect.selectedIndex >= 0
+                    ? issueSelect
+                        .options[
+                            issueSelect.selectedIndex
+                        ]
+                        .textContent
+                        .trim()
+                    : "";
+        
+        
+            const date =
+                document.getElementById(
+                    "supportDate"
+                )?.value;
+        
+        
+            const time =
+                document.getElementById(
+                    "supportTime"
+                )?.value;
+        
+        
+            const description =
+                document.getElementById(
+                    "supportDescription"
+                )?.value.trim();
+        
+        
+            if (!name) {
+        
+                alert(
+                    "Please enter your name."
+                );
+        
+                return;
+            }
+        
+        
+            if (
+                !email ||
+                !isValidEmail(email)
+            ) {
+        
+                alert(
+                    "Please enter a valid email address."
+                );
+        
+                return;
+            }
+        
+        
+            if (!issue) {
+        
+                alert(
+                    "Please select what you need help with."
+                );
+        
+                return;
+            }
+        
+        
+            if (!date) {
+        
+                alert(
+                    "Please select a preferred date."
+                );
+        
+                return;
+            }
+        
+        
+            if (!time) {
+        
+                alert(
+                    "Please select a preferred time."
+                );
+        
+                return;
+            }
+        
+        
+            if (!description) {
+        
+                alert(
+                    "Please describe your issue."
+                );
+        
+                return;
+            }
+        
+        
+            const dateObject =
+                new Date(
+                    `${date}T${time}`
+                );
+        
+        
+            if (
+                Number.isNaN(
+                    dateObject.getTime()
+                ) ||
+                dateObject <= new Date()
+            ) {
+        
+                alert(
+                    "Please select a future date and time."
+                );
+        
+                return;
+            }
+        
+        
+            const issuePreview =
+                document.getElementById(
+                    "previewSupportIssue"
+                );
+        
+        
+            const datePreview =
+                document.getElementById(
+                    "previewSupportDate"
+                );
+        
+        
+            const timePreview =
+                document.getElementById(
+                    "previewSupportTime"
+                );
+        
+        
+            if (issuePreview) {
+        
+                issuePreview.textContent =
+                    issueText;
+        
+            }
+        
+        
+            if (datePreview) {
+        
+                datePreview.textContent =
+                    new Date(
+                        `${date}T00:00:00`
+                    ).toLocaleDateString(
+                        "en-IN",
+                        {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric"
+                        }
+                    );
+        
+            }
+        
+        
+            if (timePreview) {
+        
+                timePreview.textContent =
+                    new Date(
+                        `1970-01-01T${time}`
+                    ).toLocaleTimeString(
+                        "en-IN",
+                        {
+                            hour: "2-digit",
+                            minute: "2-digit"
+                        }
+                    );
+        
+            }
+        
+        
+            const preview =
+                document.getElementById(
+                    "supportPreview"
+                );
+        
+        
+            if (preview) {
+        
+                preview.classList.add(
+                    "show"
+                );
+        
+            }
+        
+        }
+        
+        async function requestSupportMeeting() {
+
+// First run the existing validation
+previewSupport();
+
+const name =
+    document.getElementById(
+        "supportName"
+    )?.value.trim();
+
+const email =
+    document.getElementById(
+        "supportEmail"
+    )?.value.trim();
+
+const issue =
+    document.getElementById(
+        "supportIssue"
+    )?.value;
+
+const orderId =
+    document.getElementById(
+        "supportOrderId"
+    )?.value.trim();
+
+const date =
+    document.getElementById(
+        "supportDate"
+    )?.value;
+
+const time =
+    document.getElementById(
+        "supportTime"
+    )?.value;
+
+const description =
+    document.getElementById(
+        "supportDescription"
+    )?.value.trim();
+
+
+// Stop if basic validation fails
+if (
+    !name ||
+    !email ||
+    !isValidEmail(email) ||
+    !issue ||
+    !date ||
+    !time ||
+    !description
+) {
+    return;
+}
+
+
+const dateObject =
+    new Date(
+        `${date}T${time}`
+    );
+
+if (
+    Number.isNaN(
+        dateObject.getTime()
+    ) ||
+    dateObject <= new Date()
+) {
+    return;
+}
+
+
+const button =
+    document.querySelector(
+        '#supportPanel button[onclick="requestSupportMeeting()"]'
+    );
+
+
+if (button) {
+
+    button.disabled = true;
+
+    button.textContent =
+        "Requesting...";
+
+}
+
+
+try {
+
+    const response =
+        await fetch(
+            `${API_BASE}/api/meetings/support`,
+            {
+                method: "POST",
+
+                headers:
+                    authHeaders(true),
+
+                body:
+                    JSON.stringify({
+
+                        name:
+                            name,
+
+                        email:
+                            email,
+
+                        issue:
+                            issue,
+
+                        order_id:
+                            orderId,
+
+                        date:
+                            date,
+
+                        time:
+                            time,
+
+                        description:
+                            description
+
+                    })
+            }
+        );
+
+
+    const data =
+        await response.json();
+
+
+    if (
+        !response.ok ||
+        !data.success
+    ) {
+
+        throw new Error(
+            data.message ||
+            "Unable to request support meeting."
+        );
+
+    }
+
+
+    // Show generated meeting information
+    const meeting =
+        data.meeting;
+
+
+    const preview =
+        document.getElementById(
+            "supportPreview"
+        );
+
+
+    if (preview && meeting) {
+
+        preview.classList.add(
+            "show"
+        );
+
+        preview.innerHTML = `
+
+            <div class="preview-title">
+                ✓ Support meeting requested successfully
+            </div>
+
+            <div class="preview-grid">
+
+                <div class="preview-item">
+                    <small>Meeting ID</small>
+                    <strong>
+                        ${escapeHtml(
+                            meeting.meeting_id
+                        )}
+                    </strong>
+                </div>
+
+                <div class="preview-item">
+                    <small>Date</small>
+                    <strong>
+                        ${escapeHtml(
+                            meeting.date
+                        )}
+                    </strong>
+                </div>
+
+                <div class="preview-item">
+                    <small>Time</small>
+                    <strong>
+                        ${escapeHtml(
+                            meeting.time
+                        )}
+                    </strong>
+                </div>
+
+            </div>
+
+            <div
+                style="
+                    margin-top:16px;
+                    padding:14px;
+                    border:1px solid var(--border);
+                    border-radius:10px;
+                "
+            >
+
+                <small
+                    style="
+                        display:block;
+                        margin-bottom:6px;
+                    "
+                >
+                    Meeting Link
+                </small>
+
+                <a
+                    href="${escapeHtml(
+                        meeting.meeting_link
+                    )}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style="
+                        color:#35d07f;
+                        word-break:break-all;
+                    "
+                >
+                    ${escapeHtml(
+                        meeting.meeting_link
+                    )}
+                </a>
+
+            </div>
+
+            <div
+                style="
+                    margin-top:14px;
+                    color:#7f8a99;
+                    font-size:13px;
+                "
+            >
+                📧 The support team and your email
+                have been notified.
+            </div>
+
+            <div
+                style="
+                    display:flex;
+                    gap:10px;
+                    margin-top:16px;
+                "
+            >
+
+                <button
+                    type="button"
+                    class="primary-btn"
+                    onclick="window.open(
+                        '${escapeHtml(
+                            meeting.meeting_link
+                        )}',
+                        '_blank'
+                    )"
+                >
+                    🎥 Join Meeting
+                </button>
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="copyMeetingLink(
+                        '${escapeHtml(
+                            meeting.meeting_link
+                        )}'
+                    )"
+                >
+                    📋 Copy Link
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+
+    alert(
+        "Support meeting requested successfully."
+    );
+
+
+} catch (error) {
+
+    console.error(
+        "Support meeting error:",
+        error
+    );
+
+    alert(
+        error.message ||
+        "Unable to request support meeting."
+    );
+
+
+} finally {
+
+    if (button) {
+
+        button.disabled = false;
+
+        button.textContent =
+            "🏢 Request Support Meeting";
+
+    }
+
+}
+
+}
+        function resetSupportForm() {
+        
+            const ids = [
+                "supportName",
+                "supportEmail",
+                "supportIssue",
+                "supportOrderId",
+                "supportDate",
+                "supportTime",
+                "supportDescription"
+            ];
+        
+        
+            ids.forEach(
+                id => {
+        
+                    const element =
+                        document.getElementById(id);
+        
+                    if (element) {
+                        element.value = "";
+                    }
+        
+                }
+            );
+        
+        
+            const preview =
+                document.getElementById(
+                    "supportPreview"
+                );
+        
+        
+            if (preview) {
+        
+                preview.classList.remove(
+                    "show"
+                );
+        
+            }
+        
+        }
+        
+        
+        /* ============================================================
+           JOIN MEETING
+           ============================================================ */
+        
+        function joinMeeting() {
+        
+            const id =
+                document.getElementById(
+                    "meetingId"
+                )?.value.trim();
+        
+        
+            const link =
+                document.getElementById(
+                    "meetingLink"
+                )?.value.trim();
+        
+        
+            if (!id && !link) {
+        
+                alert(
+                    "Please enter a Meeting ID or meeting link."
+                );
+        
+                return;
+            }
+        
+        
+            let meetingUrl =
+                link;
+        
+        
+            if (!meetingUrl && id) {
+        
+                meetingUrl =
+                    "https://meet.jit.si/" +
+                    encodeURIComponent(id);
+        
+            }
+        
+        
+            if (
+                !/^https?:\/\//i.test(
+                    meetingUrl
+                )
+            ) {
+        
+                alert(
+                    "Please enter a valid meeting link."
+                );
+        
+                return;
+            }
+        
+        
+            window.open(
+                meetingUrl,
+                "_blank",
+                "noopener,noreferrer"
+            );
+        
+        }
+        
+        
+        /* ============================================================
+           SIDEBAR
+           ============================================================ */
+        
+        function initializeSidebar() {
+        
+            const sidebar =
+                document.getElementById(
+                    "sidebar"
+                );
+        
+        
+            const mainArea =
+                document.getElementById(
+                    "mainArea"
+                );
+        
+        
+            const toggle =
+                document.getElementById(
+                    "sidebarToggle"
+                );
+        
+        
+            if (
+                !sidebar ||
+                !mainArea ||
+                !toggle
+            ) {
+                return;
+            }
+        
+        
+            toggle.addEventListener(
+                "click",
+                function() {
+        
+                    if (
+                        window.innerWidth <= 768
+                    ) {
+        
+                        sidebar.classList.toggle(
+                            "open"
+                        );
+        
+                    } else {
+        
+                        sidebar.classList.toggle(
+                            "collapsed"
+                        );
+        
+                        mainArea.classList.toggle(
+                            "expanded"
+                        );
+        
+                    }
+        
+                }
+            );
+        
+        
+            document.addEventListener(
+                "click",
+                function(event) {
+        
+                    if (
+                        window.innerWidth <= 768 &&
+                        !sidebar.contains(
+                            event.target
+                        ) &&
+                        !toggle.contains(
+                            event.target
+                        )
+                    ) {
+        
+                        sidebar.classList.remove(
+                            "open"
+                        );
+        
+                    }
+        
+                }
+            );
+        
+        }
+        
+        
+        /* ============================================================
+           LOGOUT
+           ============================================================ */
+        
+        function logout() {
+        
+            localStorage.removeItem(
+                "token"
+            );
+        
+            localStorage.removeItem(
+                "access_token"
+            );
+        
+            localStorage.removeItem(
+                "authToken"
+            );
+        
+        
+            window.location.href =
+                "login.html";
+        
+        }
+        
+        
+        /* ============================================================
+           UTILITIES
+           ============================================================ */
+        
+        function isValidEmail(
+            email
+        ) {
+        
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                .test(email);
+        
+        }
+        
+        
+        function getRoleLabel(role) {
+
+const labels = {
+
+    FARMER:
+        "Farmer",
+
+    WHOLESALER:
+        "Bulk Buyer",
+
+    VENDOR:
+        "Buyer / Consumer",
+
+    DRIVER:
+        "Driver"
+
+};
+
+return (
+    labels[
+        String(role || "")
+            .trim()
+            .toUpperCase()
+    ] ||
+    "AgriCentre User"
+);
+}
+        
+        
+        function escapeHtml(
+            value
+        ) {
+        
+            return String(
+                value ?? ""
+            )
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+        
+        }
+        
+        
+        /* ============================================================
+           LOAD BUYER FROM FIND BUYERS
+           ============================================================ */
+        
+           async function loadBuyerFromFindBuyers(buyerId) {
+
+if (!buyerId) {
+    return;
+}
+
+/*
+ * IMPORTANT:
+ *
+ * We already received the buyer_id from:
+ *
+ * find-buyers.html
+ *        ↓
+ * meeting.html?buyer_id=...
+ *
+ * Do not make another authenticated request here.
+ *
+ * Store the ID so the meeting form can use it when
+ * scheduling the meeting.
+ */
+
+window.selectedParticipantId = buyerId;
+
+selectedParticipant = {
+    id: buyerId,
+    name: "Selected Buyer"
+};
+
+const selectedPerson =
+    document.getElementById("selectedPerson");
+
+const selectedPersonName =
+    document.getElementById("selectedPersonName");
+
+if (selectedPersonName) {
+    selectedPersonName.textContent =
+        "Selected buyer";
+}
+
+if (selectedPerson) {
+    selectedPerson.classList.add("show");
+}
+
+console.log(
+    "Buyer ID received from Find Buyer:",
+    buyerId
+);
+}
+        
+        /* ============================================================
+           INITIALIZATION
+           ============================================================ */
+        
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+        
+                initializeSidebar();
+        
+                loadCurrentProfile();
+        
+        
+                /* Meeting date cannot be in the past */
+        
+                const meetingDate =
+                    document.getElementById(
+                        "meetingDate"
+                    );
+        
+        
+                if (meetingDate) {
+        
+                    const now =
+                        new Date();
+        
+        
+                    const localDate =
+                        new Date(
+                            now.getTime() -
+                            now.getTimezoneOffset() * 60000
+                        )
+                        .toISOString()
+                        .split("T")[0];
+        
+        
+                    meetingDate.min =
+                        localDate;
+        
+                }
+        
+        
+                /* Search using Enter */
+        
+                const participantSearch =
+                    document.getElementById(
+                        "participantSearch"
+                    );
+        
+        
+                if (participantSearch) {
+        
+                    participantSearch.addEventListener(
+                        "keydown",
+                        function(event) {
+        
+                            if (
+                                event.key === "Enter"
+                            ) {
+        
+                                event.preventDefault();
+        
+                                searchParticipant();
+        
+                            }
+        
+                        }
+                    );
+        
+                }
+        
+        
+                /* Schedule button */
+        
+                const scheduleButton =
+                    document.getElementById(
+                        "scheduleMeetingBtn"
+                    );
+        
+        
+                if (scheduleButton) {
+        
+                    scheduleButton.addEventListener(
+                        "click",
+                        function(event) {
+        
+                            event.preventDefault();
+        
+                            scheduleMeeting();
+        
+                        }
+                    );
+        
+                }
+        
+        
+                /*
+                 * If the user came from:
+                 *
+                 * Find Buyers → Schedule Meeting
+                 *
+                 * the buyer_id is loaded automatically.
+                 */
+        
+                const params =
+                    new URLSearchParams(
+                        window.location.search
+                    );
+        
+        
+                const buyerId =
+                    params.get(
+                        "buyer_id"
+                    );
+        
+        
+                if (buyerId) {
+        
+                    loadBuyerFromFindBuyers(
+                        buyerId
+                    );
+        
+                }
+        
+            }
+        );
+        </script>
+
+</body>
+
+</html>
